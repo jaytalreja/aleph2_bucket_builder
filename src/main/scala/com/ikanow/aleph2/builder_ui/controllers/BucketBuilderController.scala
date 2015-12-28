@@ -23,6 +23,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
 import com.greencatsoft.angularjs._
+import com.greencatsoft.angularjs.extensions._
 
 import ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExportAll
@@ -43,6 +44,9 @@ object BucketBuilderController extends Controller[Scope] {
 
   @inject
   var scope: ControllerData = _  
+  
+  @inject
+  var modal: ModalService = _
   
   override def initialize(): Unit = {
     super.initialize()
@@ -71,11 +75,29 @@ object BucketBuilderController extends Controller[Scope] {
     scope.element_grid_options = GridsterOptions()
   }
 
+  @JSExport
+  def openElementConfig(size: String): Unit = {
+
+		  modal.open(
+				  js.Dynamic.literal(
+						  templateUrl = "templates/form_builder.html",
+						  controller = "bucketBuilderCtrl", //TODO
+						  size = size
+						  //TODO: resolve
+						  )
+						  .asInstanceOf[ModalOptions] 
+				  )
+				  //TODO: promise handle result
+  }
+
   /**
    * The specific scope data used in this controller
    */
   @js.native
   trait ControllerData extends Scope {
+    
+    // Data Model
+    
     var breadcrumb: js.Array[String] = js.native
     
     var element_template_tree: js.Array[ElementTemplateNode] = js.native

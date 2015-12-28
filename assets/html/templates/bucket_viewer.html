@@ -1,7 +1,9 @@
+<!-- Modal templates: -->
+<div class="hide" ng-include="'templates/form_builder.html'"></div> 
+<div class="hide" ng-include="'templates/quick_navigate.html'"></div> 
+
 <div class="row">
 	<div class="col-md-2">
-		<!-- TODO -->
-		<a>TEST (test={{test}})</a>
 		
 		<!-- 1] CATEGORY/ELEMENT TREE -->
 
@@ -13,62 +15,28 @@
 			{{node.label}}
 		</treecontrol>
  
-		<!-- (just here as an example)
-		<div class="list-group">
-
-			<div class="input-group">
-				<span class="input-group-btn">
-					<button class="btn btn-default disabled" type="button">
-						<span class="glyphicon glyphicon-search"></span>
-					</button>
-				</span> <input type="text" class="form-control" placeholder="Elements"
-					ng-model="element_search">
-
-				<div class="input-group-btn" ng-class='{open: new_bucket_open}'>
-					<button class="btn btn-default dropdown-toggle"
-						data-toggle="dropdown" ng-click='new_bucket_open=!new_bucket_open'>New <span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu dropdown-menu-right" role="menu">
-						<li><a href="#/import"
-							ng-click="new_bucket_open=!new_bucket_open; openNewBucket('lg')">New Data Bucket...</a></li>
-						<li><a href="#/import"
-							ng-click="new_bucket_open=!new_bucket_open; openNewBucket('lg')">New Multi Bucket...</a></li>
-						<li><a href="#/import"
-							ng-click="new_bucket_open=!new_bucket_open; openNewBucket('lg')">New Admin Bucket... <span class="glyphicon glyphicon-asterisk"></span>
-						</a></li>
-					</ul>
-				</div>
-				<span class="input-group-btn">
-					<button class="btn btn-default" type="button"
-						tooltip-placement="right" tooltip="Sort buckets by...">
-						<span class="glyphicon glyphicon-sort"></span>
-					</button>
-				</span> <span class="input-group-btn">
-					<button class="btn"
-						ng-click="show_admin_buckets = !show_admin_buckets"
-						ng-model="show_admin_buckets"
-						ng-class="{'btn-default': !show_admin_buckets, 'btn-danger': show_admin_buckets}"
-						type="button" tooltip-placement="right"
-						tooltip="{{show_admin_buckets ? 'Hide':'Show'}} admin buckets">
-						<span class="glyphicon glyphicon-asterisk"></span>
-					</button>
-				</span>
-
-			</div>
-
-		</div>
-		-->
 	</div>
 
 	<!-- 2] BUCKET CONFIGURATION -->
 
 	<div class="col-md-10">
-		<!-- TODO -->
-		<a>GRID (test={{test}})</a>
+		
+		<ol class="breadcrumb" >
+  			<li ng-repeat="bc in breadcrumb"><a href="">{{bc}} </a></li>
+		</ol>		
 		
 		<div gridster="element_grid_options">
 		    <ul>
-		        <li gridster-item="item" ng-repeat="item in element_grid"></li>
+		        <li gridster-item="item" ng-repeat="item in element_grid">
+					<div class="panel panel-default" style="height:100%">
+					  <div class="panel-heading">
+						<a ng-click="controller.openElementConfig('lg')" class="glyphicon glyphicon-cog"></a>
+					  </div>
+					  <div class="panel-body">
+					    TODO Panel content
+					  </div>
+					</div>
+		        </li>
 		    </ul>
 		</div>
 	</div>

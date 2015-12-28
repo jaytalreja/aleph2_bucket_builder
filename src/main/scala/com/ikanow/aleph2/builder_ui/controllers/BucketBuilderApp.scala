@@ -32,11 +32,11 @@ object BucketBuilderApp extends JSApp {
 	def main(): Unit = {
 			val module = Angular.module("aleph2_bucket_builder",Seq("ngRoute"
 			      ,
+	  		    "ui.bootstrap"
+  			    , 
 			      "treeControl"
   			    , 
 	  		    "gridster"
-//			    , 
-//			    "ui-bootstrap"
 //			    , 
 //			    "formly"
 			    ));
