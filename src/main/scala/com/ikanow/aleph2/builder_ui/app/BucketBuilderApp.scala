@@ -45,6 +45,7 @@ object BucketBuilderApp extends JSApp {
   			.controller(BucketBuilderController)
   			.controller(FormBuilderController)
   			.controller(QuickNavigateController)
+  			.factory[ElementServiceFactory]
   			.factory[ElementTemplateServiceFactory]
   			.config(BucketBuilderRouter)
 	}

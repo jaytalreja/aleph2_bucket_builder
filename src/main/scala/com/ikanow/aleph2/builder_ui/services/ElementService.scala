@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
-package com.ikanow.aleph2.builder_ui.controllers
+package com.ikanow.aleph2.builder_ui.services
 
 import com.greencatsoft.angularjs.core._
 import org.scalajs.dom.Element
@@ -30,56 +30,24 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
-import com.ikanow.aleph2.builder_ui.services._
 
-/**
- * Controller for the main page
+/** Retrieves the templates
+ * @author alex
  */
-@JSExport
-@injectable("quickNavigateCtrl")
-object QuickNavigateController extends Controller[Scope] {
-
-  import js.JSConverters._
-
-  @inject
-  var scope: ControllerData = _  
-  
-  @inject
-  var modal: ModalInstance[Unit] = _
-  
-  @inject
-  var element_service: ElementService = _
-  
-  override def initialize(): Unit = {
-    super.initialize()
-    
-    scope.element_tree = js.Array(
-        ElementNode("test1"),
-        ElementNode("test2",
-            js.Array(
-                ElementNode("test2_1"),
-                ElementNode("test2_2")
-                )
-            )
-        )
+@injectable("elementService")
+class ElementService {
+  def requestElements(ideally_from_cache: Boolean): Future[Seq[ElementNode]] = {    
+    //TODO: dummy set of elements
+    Future.successful(Seq.empty)
+  }
+  def overwriteElements(elements: Seq[ElementNode]): Future[Seq[ElementNode]] = {    
+    //TODO: dummy set of elements
+    Future.successful(Seq.empty)
   }
 
-  @JSExport
-  def ok(): Unit = {    
-    modal.close()
-  }  
-  
-  @JSExport
-  def cancel(): Unit = {
-    modal.close()
-  }  
-  
-  /**
-   * The specific scope data used in this controller
-   */
-  @js.native
-  trait ControllerData extends Scope {
-    
-    var element_tree: js.Array[ElementNode] = js.native
-  }
+}
+
+@injectable("elementService")
+class ElementServiceFactory extends Factory[ElementService] {
+  override def apply() = new ElementService
 }

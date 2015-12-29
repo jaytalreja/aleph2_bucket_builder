@@ -51,7 +51,10 @@ object BucketBuilderController extends Controller[Scope] {
   
   @inject
   var element_template_service: ElementTemplateService = _
-  
+
+  @inject
+  var element_service: ElementService = _
+    
   override def initialize(): Unit = {
     super.initialize()
     

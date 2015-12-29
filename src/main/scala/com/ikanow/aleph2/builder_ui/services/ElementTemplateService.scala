@@ -46,5 +46,3 @@ class ElementTemplateService(http: HttpService) {
 class ElementTemplateServiceFactory(http: HttpService) extends Factory[ElementTemplateService] {
   override def apply() = new ElementTemplateService(http)
 }
-object ElementTemplateService extends Service {
-}
