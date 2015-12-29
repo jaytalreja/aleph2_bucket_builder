@@ -31,6 +31,7 @@ import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
 import com.ikanow.aleph2.builder_ui.services._
+import com.ikanow.aleph2.builder_ui.utils.ElementTreeBuilder
 
 /**
  * Controller for the main page
@@ -58,22 +59,17 @@ object BucketBuilderController extends Controller[Scope] {
   override def initialize(): Unit = {
     super.initialize()
     
-    //setup eg scope.title etc
+    scope.breadcrumb = js.Array("Bucket")
+    
+    element_template_service.requestElementTemplates(true)
+        .foreach { beans => {
+            scope.element_template_tree = 
+              ElementTreeBuilder.getTemplateTree(scope.breadcrumb, beans)             
+          }
+        }
     
     //TODO: some dummy setups
     
-    scope.breadcrumb = js.Array("Bucket")
-    
-    scope.element_template_tree = js.Array(
-        ElementTemplateNodeJs("test1"),
-        ElementTemplateNodeJs("test2",
-            js.Array(
-                ElementTemplateNodeJs("test2_1"),
-                ElementTemplateNodeJs("test2_2")
-                )
-            )
-        )
-        
     scope.element_grid = js.Array(
         ElementCardJs(1, 1),
         ElementCardJs(3, 3)

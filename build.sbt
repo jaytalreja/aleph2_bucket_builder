@@ -11,6 +11,13 @@ version := "0.1"
 
 scalaVersion := "2.11.7" // or any other Scala version >= 2.10.2
 
+scalaJSStage in Global := FastOptStage
+
+//DEBUG SETTINGS
+//logBuffered := false
+//logLevel := Level.Debug
+//scalacOptions += "-verbose"
+
 // Scala deps:
 
 libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.8.0"
@@ -33,6 +40,8 @@ libraryDependencies += "org.webjars.bower" % "angular-sanitize" % "1.3.15" exclu
 jsDependencies += "org.webjars.bower" % "angular-sanitize" % "1.3.15" / "angular-sanitize.js" dependsOn "angular.js"
 
 // Bootstrap
+
+//TODO (is this pulling the jquery plugin as a lib (not JS) dep? something is)
 
 libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6"
 //(don't pull the JS for this since we only want its CSS, and its JS requires JQuery)

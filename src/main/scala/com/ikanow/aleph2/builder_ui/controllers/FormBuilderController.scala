@@ -30,6 +30,8 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js.JSON
 
+import js.JSConverters._
+
 import com.ikanow.aleph2.builder_ui.data_model._
 
 /**
@@ -52,19 +54,38 @@ object FormBuilderController extends Controller[Scope] {
 
     //TODO: dummy data
     fields =
-      JSON.parse(upickle.default.write(List(
+      List(
             FormConfigBean(
-                key = "test_field", 
-                `type` = "input", 
+                key = "enabled",
+                `type` = "checkbox",
                 templateOptions = FormConfigTemplateBean(
+                    label = "Enabled?"
+                    )
+                ),
+            FormConfigBean(
+                key = "input_directory",
+                `type` = "input",
+                templateOptions = FormConfigTemplateBean(
+                    label = "Input Spool Directory",
                     `type` = "text",
-                    label = "Test Field",
-                    placeholder = "Enter the test field",
+                    placeholder = "Input path",
+                    required = true
+                    )
+                ),
+            FormConfigBean(
+                key = "columns",
+                `type` = "input",
+                templateOptions = FormConfigTemplateBean(
+                    label = "Columns",
+                    `type` = "textarea",
+                    placeholder = "Comma separated list of fields",
                     required = true
                     )
                 )
-         ))).asInstanceOf[js.Array[js.Any]]
-      
+    )
+    .map { bean => JSON.parse(upickle.default.write(bean)).asInstanceOf[js.Any] }
+    .toJSArray  
+    
     //TODO: convert to HTML if doesn't start with \s*< (stick in a util somewhere)
     scope.form_info_html = "<p>TODO instructions here</p><p>From ElementTemplateBean</p>"
     

@@ -19,7 +19,8 @@ package com.ikanow.aleph2.builder_ui.data_model
  * @author alex
  */
 case class ElementTemplateBean(
-    name: String = null,
+    display_name: String = null,
+    key: String = null,
     categories: Seq[String] = null,
     filters: Seq[String] = null,
     expandable: Boolean = false,

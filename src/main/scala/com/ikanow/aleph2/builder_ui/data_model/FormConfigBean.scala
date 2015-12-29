@@ -27,11 +27,24 @@ import scala.scalajs.js.annotation.JSExport
  *  We then turn into JS objects via upicke/JSON.parse
  * @author alex
  */
-case class FormConfigBean(key: String = null, `type`: String = null, templateOptions: FormConfigTemplateBean = null)
+case class FormConfigBean(
+    key: String = null, 
+    `type`: String = null, 
+    templateOptions: FormConfigTemplateBean = null)
 
+//TODO: need to make this more generic - eg have the union of all known options
+// (or have lots of different objects with different names and map to the same JSON name)
+// (also have a map that maps to templateOptions via upickle naming to handle completely generic cases)
+    
 /** More configuration for Formly
  *  Represented as a bean because we're passing it around as JSON via Java APIs
  *  We then turn into JS objects via upicke/JSON.parse
  * @author alex
  */
-case class FormConfigTemplateBean(`type`: String = null, label: String = null, placeholder: String = null, required: Boolean = false)
+case class FormConfigTemplateBean(
+    `type`: String = null, 
+    label: String = null, 
+    placeholder: String = null, 
+    options: Seq[Map[String, String]] = null,
+    ngOptions: String = null,
+    required: Boolean = false)

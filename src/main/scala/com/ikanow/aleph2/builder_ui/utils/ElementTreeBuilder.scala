@@ -21,15 +21,27 @@ import com.greencatsoft.angularjs.core._
 import scala.scalajs.js
 import com.greencatsoft.angularjs._
 
+import js.JSConverters._
+
 /** Utilities to build the element and element template trees
  * @author alex
  */
 object ElementTreeBuilder {
   
     def getTemplateTree(breadcrumb: js.Array[String], templates: Seq[ElementTemplateBean]): js.Array[ElementTemplateNodeJs] = {
-      val breadcrumb_str = breadcrumb.mkString(".")
+      val breadcrumb_str = breadcrumb.mkString("/")
       
-      //TODO
-      return js.Array()
+      templates
+        // Step 1, build a map of beans against their categories
+        .filter { bean => !bean.categories.filter { path => path.equals(breadcrumb_str) }.isEmpty }
+        .flatMap { bean => bean.categories.map { cat => (cat, bean) } }
+        .groupBy(_._1)
+        .mapValues(_.map(_._2))
+        // Step 2, convert to a simple tree
+        .map { case (category, bean_list) => 
+              ElementTemplateNodeJs(category,
+                  bean_list.map { bean => ElementTemplateNodeJs(bean.display_name) }.toJSArray
+                  )
+              }.toJSArray
     }  
 }
