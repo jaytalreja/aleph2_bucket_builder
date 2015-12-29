@@ -23,14 +23,14 @@ import com.greencatsoft.angularjs._
 /** Type of elements that populates the element template tree
  * @author alex
  */
-trait ElementTemplateNode extends js.Object {
+trait ElementTemplateNodeJs extends js.Object {
   
   val label: String = js.native
-  val childen: js.Array[ElementTemplateNode] = js.native
+  val childen: js.Array[ElementTemplateNodeJs] = js.native
 }
 
-object ElementTemplateNode {
-  def apply(label: String): ElementTemplateNode = js.Dynamic.literal(label = label).asInstanceOf[ElementTemplateNode]
-  def apply(label: String, children: js.Array[ElementTemplateNode]): ElementTemplateNode = 
-    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementTemplateNode] 
+object ElementTemplateNodeJs {
+  def apply(label: String): ElementTemplateNodeJs = js.Dynamic.literal(label = label).asInstanceOf[ElementTemplateNodeJs]
+  def apply(label: String, children: js.Array[ElementTemplateNodeJs]): ElementTemplateNodeJs = 
+    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementTemplateNodeJs] 
 }

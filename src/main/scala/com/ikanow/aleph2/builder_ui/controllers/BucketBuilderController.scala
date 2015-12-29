@@ -65,21 +65,21 @@ object BucketBuilderController extends Controller[Scope] {
     scope.breadcrumb = js.Array("Bucket")
     
     scope.element_template_tree = js.Array(
-        ElementTemplateNode("test1"),
-        ElementTemplateNode("test2",
+        ElementTemplateNodeJs("test1"),
+        ElementTemplateNodeJs("test2",
             js.Array(
-                ElementTemplateNode("test2_1"),
-                ElementTemplateNode("test2_2")
+                ElementTemplateNodeJs("test2_1"),
+                ElementTemplateNodeJs("test2_2")
                 )
             )
         )
         
     scope.element_grid = js.Array(
-        ElementCard(1, 1),
-        ElementCard(3, 3)
+        ElementCardJs(1, 1),
+        ElementCardJs(3, 3)
         )
         
-    scope.element_grid_options = GridsterOptions()
+    scope.element_grid_options = GridsterOptionsJs()
   }
 
   @JSExport
@@ -122,9 +122,9 @@ object BucketBuilderController extends Controller[Scope] {
     
     var breadcrumb: js.Array[String] = js.native
     
-    var element_template_tree: js.Array[ElementTemplateNode] = js.native
+    var element_template_tree: js.Array[ElementTemplateNodeJs] = js.native
     
-    var element_grid: js.Array[ElementCard] = js.native
-    var element_grid_options: GridsterOptions = js.native
+    var element_grid: js.Array[ElementCardJs] = js.native
+    var element_grid_options: GridsterOptionsJs = js.native
   }
 }

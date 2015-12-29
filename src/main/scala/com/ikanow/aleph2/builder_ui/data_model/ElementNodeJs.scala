@@ -20,19 +20,17 @@ import scala.scalajs.js
 import com.greencatsoft.angularjs._
 
 @js.native
-/** Represents a grid element
+/** Type of elements that populates the element template tree
  * @author alex
  */
-trait ElementCardJs extends js.Object {  
-  val sizeX: Int = js.native
-  val sizeY: Int = js.native
-  val row: Int = js.native
-  val col: Int = js.native  
+trait ElementNodeJs extends js.Object {
+  
+  val label: String = js.native
+  val childen: js.Array[ElementTemplateNodeJs] = js.native
 }
 
-object ElementCardJs {
-  def apply(row: Int, col: Int): ElementCardJs = 
-    js.Dynamic.literal(row = row, col = col, sizeX = 1, sizeY = 1).asInstanceOf[ElementCardJs]
+object ElementNodeJs {
+  def apply(label: String): ElementNodeJs = js.Dynamic.literal(label = label).asInstanceOf[ElementNodeJs]
+  def apply(label: String, children: js.Array[ElementNodeJs]): ElementNodeJs = 
+    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementNodeJs] 
 }
-
-

@@ -18,7 +18,9 @@ package com.ikanow.aleph2.builder_ui.data_model
 /** The JSON bean that represents an element builder
  * @author alex
  */
-class ElementTemplateBean 
+class ElementTemplateBean(
+    
+    )
 {
   //TODO
 }

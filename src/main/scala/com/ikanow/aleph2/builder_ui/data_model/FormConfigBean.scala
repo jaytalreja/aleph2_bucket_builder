@@ -19,18 +19,19 @@ import com.greencatsoft.angularjs.core._
 import scala.scalajs.js
 import com.greencatsoft.angularjs._
 
-@js.native
-/** Type of elements that populates the element template tree
+import scala.scalajs.js.annotation.JSExportAll
+import scala.scalajs.js.annotation.JSExport
+
+/** The configuration object for Formly
+ *  Represented as a bean because we're passing it around as JSON via Java APIs
+ *  We then turn into JS objects via upicke/JSON.parse
  * @author alex
  */
-trait ElementNode extends js.Object {
-  
-  val label: String = js.native
-  val childen: js.Array[ElementTemplateNode] = js.native
-}
+case class FormConfigBean(key: String, `type`: String, templateOptions: FormConfigTemplateBean)
 
-object ElementNode {
-  def apply(label: String): ElementNode = js.Dynamic.literal(label = label).asInstanceOf[ElementNode]
-  def apply(label: String, children: js.Array[ElementNode]): ElementNode = 
-    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementNode] 
-}
+/** More configuration for Formly
+ *  Represented as a bean because we're passing it around as JSON via Java APIs
+ *  We then turn into JS objects via upicke/JSON.parse
+ * @author alex
+ */
+case class FormConfigTemplateBean(`type`: String, label: String, placeholder: String, required: Boolean)

@@ -36,11 +36,11 @@ import com.ikanow.aleph2.builder_ui.data_model._
  */
 @injectable("elementService")
 class ElementService {
-  def requestElements(ideally_from_cache: Boolean): Future[Seq[ElementNode]] = {    
+  def requestElements(ideally_from_cache: Boolean): Future[Seq[ElementNodeJs]] = {    
     //TODO: dummy set of elements
     Future.successful(Seq.empty)
   }
-  def overwriteElements(elements: Seq[ElementNode]): Future[Seq[ElementNode]] = {    
+  def overwriteElements(elements: Seq[ElementNodeJs]): Future[Seq[ElementNodeJs]] = {    
     //TODO: dummy set of elements
     Future.successful(Seq.empty)
   }

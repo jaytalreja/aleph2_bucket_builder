@@ -28,6 +28,7 @@ import com.greencatsoft.angularjs.extensions._
 import ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.JSON
 
 import com.ikanow.aleph2.builder_ui.data_model._
 
@@ -48,25 +49,28 @@ object FormBuilderController extends Controller[Scope] {
   
   override def initialize(): Unit = {
     super.initialize()
-    
+
+    //TODO: dummy data
+    fields =
+      JSON.parse(upickle.default.write(List(
+            FormConfigBean("test_field", "input", 
+                FormConfigTemplateBean(
+                    "text",
+                    "Test Field",
+                    "Enter the test field",
+                    true
+                    )
+                )
+         ))).asInstanceOf[js.Array[js.Any]]
+      
   }
 
   @JSExport
   var model: js.Object = js.Object()
 
   @JSExport
-  var fields: js.Array[FormConfig] = 
-    js.Array(
-        FormConfig("test_field", "input", 
-            FormConfigTemplate(
-                "text",
-                "Test Field",
-                "Enter the test field",
-                true
-                )
-            )
-        )
-  
+  var fields: js.Array[js.Any] = js.Array()
+    
   @JSExport
   def ok(): Unit = {    
     modal.close()
@@ -82,6 +86,6 @@ object FormBuilderController extends Controller[Scope] {
    */
   @js.native
   trait ControllerData extends Scope {
-    
+    //(no state here)
   }
 }

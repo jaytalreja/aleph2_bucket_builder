@@ -23,7 +23,7 @@ import com.greencatsoft.angularjs._
 /** Configures the Gridster Grid
  * @author alex
  */
-trait GridsterOptions extends js.Object {  
+trait GridsterOptionsJs extends js.Object {  
   val minRows: Int = js.native
   val maxRows: Int = js.native
   val columns: Int = js.native
@@ -34,8 +34,8 @@ trait GridsterOptions extends js.Object {
   val defaultSizeY: Int = js.native
   val mobileBreakPoint: Int = js.native
   
-  val resizable: GridsterOptions_Resizable = js.native
-  val draggable: GridsterOptions_Draggable = js.native
+  val resizable: GridsterOptions_ResizableJs = js.native
+  val draggable: GridsterOptions_DraggableJs = js.native
   
 }
 
@@ -43,7 +43,7 @@ trait GridsterOptions extends js.Object {
 /** Configures the Gridster Grid - resize specific
  * @author alex
  */
-trait GridsterOptions_Resizable extends js.Object {  
+trait GridsterOptions_ResizableJs extends js.Object {  
   val enabled: Boolean = js.native
 }
 
@@ -51,36 +51,36 @@ trait GridsterOptions_Resizable extends js.Object {
 /** Configures the Gridster Grid - drag specific
  * @author alex
  */
-trait GridsterOptions_Draggable extends js.Object {  
+trait GridsterOptions_DraggableJs extends js.Object {  
   val enabled: Boolean = js.native
 }
 
-object GridsterOptions {
-  def apply(): GridsterOptions = 
+object GridsterOptionsJs {
+  def apply(): GridsterOptionsJs = 
     js.Dynamic.literal(
         minRows = 2,
         maxRows = 100,
         defaultSizeX = 1,
         defaultSizeY = 1,
-        resizable = GridsterOptions_Resizable(false),
-        draggable = GridsterOptions_Draggable(true)
+        resizable = GridsterOptions_ResizableJs(false),
+        draggable = GridsterOptions_DraggableJs(true)
         )
-        .asInstanceOf[GridsterOptions]
+        .asInstanceOf[GridsterOptionsJs]
 }
 
-object GridsterOptions_Resizable {
-  def apply(enabled: Boolean): GridsterOptions_Resizable = 
+object GridsterOptions_ResizableJs {
+  def apply(enabled: Boolean): GridsterOptions_ResizableJs = 
     js.Dynamic.literal(
         enabled = enabled
         )
-        .asInstanceOf[GridsterOptions_Resizable]
+        .asInstanceOf[GridsterOptions_ResizableJs]
 }
 
-object GridsterOptions_Draggable {
-  def apply(enabled: Boolean): GridsterOptions_Draggable = 
+object GridsterOptions_DraggableJs {
+  def apply(enabled: Boolean): GridsterOptions_DraggableJs = 
     js.Dynamic.literal(
         enabled = enabled
         )
-        .asInstanceOf[GridsterOptions_Draggable]
+        .asInstanceOf[GridsterOptions_DraggableJs]
 }
 

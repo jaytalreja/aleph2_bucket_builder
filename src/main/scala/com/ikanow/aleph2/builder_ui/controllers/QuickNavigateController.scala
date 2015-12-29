@@ -54,11 +54,11 @@ object QuickNavigateController extends Controller[Scope] {
     super.initialize()
     
     scope.element_tree = js.Array(
-        ElementNode("test1"),
-        ElementNode("test2",
+        ElementNodeJs("test1"),
+        ElementNodeJs("test2",
             js.Array(
-                ElementNode("test2_1"),
-                ElementNode("test2_2")
+                ElementNodeJs("test2_1"),
+                ElementNodeJs("test2_2")
                 )
             )
         )
@@ -80,6 +80,6 @@ object QuickNavigateController extends Controller[Scope] {
   @js.native
   trait ControllerData extends Scope {
     
-    var element_tree: js.Array[ElementNode] = js.native
+    var element_tree: js.Array[ElementNodeJs] = js.native
   }
 }

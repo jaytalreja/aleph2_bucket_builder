@@ -26,8 +26,8 @@ import com.greencatsoft.angularjs._
  */
 object ElementTreeBuilder {
   
-    def getTemplateTree(breadcrumb: js.Array[String], templates: Seq[ElementTemplateBean]): js.Array[ElementTemplateNode] = {
-      val breadcrumb_str = breadcrumb.mkString(".")
+    def getTemplateTree(breadcrumb: js.Array[String], templates: Seq[ElementTemplateBean]): js.Array[ElementTemplateNodeJs] = {
+      val breadcrumb_str = breadcrumb.drop(1).mkString(".")
       
       //TODO
       return js.Array()
