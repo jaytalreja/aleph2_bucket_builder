@@ -14,14 +14,13 @@
 * limitations under the License.
 ******************************************************************************/
 
-package com.ikanow.aleph2.builder_ui.controllers
+package com.ikanow.aleph2.builder_ui.app
 
 import com.greencatsoft.angularjs.core._
 import scala.scalajs.js.JSApp
 import com.greencatsoft.angularjs._
 import scala.scalajs.js.annotation.JSExport
 import com.ikanow.aleph2.builder_ui.controllers._
-import com.ikanow.aleph2.builder_ui.app.BucketBuilderRouter
 import com.ikanow.aleph2.builder_ui.services._
 
 @JSExport
