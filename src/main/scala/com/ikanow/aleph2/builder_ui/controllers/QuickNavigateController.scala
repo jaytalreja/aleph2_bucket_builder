@@ -30,6 +30,7 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
+import com.ikanow.aleph2.builder_ui.services._
 
 /**
  * Controller for the main page
@@ -45,6 +46,9 @@ object QuickNavigateController extends Controller[Scope] {
   
   @inject
   var modal: ModalInstance[Unit] = _
+  
+  @inject
+  var element_template_service: ElementTemplateService = _
   
   override def initialize(): Unit = {
     super.initialize()

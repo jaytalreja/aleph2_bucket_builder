@@ -36,7 +36,7 @@ import com.ikanow.aleph2.builder_ui.data_model._
  */
 @injectable("elementTemplateService")
 class ElementTemplateService(http: HttpService) {
-  def requestElementTemplates(): Future[Seq[ElementTemplateBean]] = {    
+  def requestElementTemplates(ideally_from_cache: Boolean): Future[Seq[ElementTemplateBean]] = {    
     //TODO: dummy set of elements
     Future.successful(Seq.empty)
   }
