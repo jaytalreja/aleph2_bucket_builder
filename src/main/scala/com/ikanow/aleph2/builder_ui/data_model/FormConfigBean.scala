@@ -27,11 +27,11 @@ import scala.scalajs.js.annotation.JSExport
  *  We then turn into JS objects via upicke/JSON.parse
  * @author alex
  */
-case class FormConfigBean(key: String, `type`: String, templateOptions: FormConfigTemplateBean)
+case class FormConfigBean(key: String = null, `type`: String = null, templateOptions: FormConfigTemplateBean = null)
 
 /** More configuration for Formly
  *  Represented as a bean because we're passing it around as JSON via Java APIs
  *  We then turn into JS objects via upicke/JSON.parse
  * @author alex
  */
-case class FormConfigTemplateBean(`type`: String, label: String, placeholder: String, required: Boolean)
+case class FormConfigTemplateBean(`type`: String = null, label: String = null, placeholder: String = null, required: Boolean = false)

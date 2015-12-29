@@ -18,9 +18,11 @@ package com.ikanow.aleph2.builder_ui.data_model
 /** The JSON bean that represents an element builder
  * @author alex
  */
-class ElementTemplateBean(
-    
+case class ElementTemplateBean(
+    name: String = null,
+    categories: Seq[String] = null,
+    filters: Seq[String] = null,
+    expandable: Boolean = false,
+    schema: Seq[FormConfigBean] = null,
+    form_info: String = null
     )
-{
-  //TODO
-}

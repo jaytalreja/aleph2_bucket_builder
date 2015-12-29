@@ -30,7 +30,8 @@ import com.ikanow.aleph2.builder_ui.services._
 object BucketBuilderApp extends JSApp {
 
 	def main(): Unit = {
-			val module = Angular.module("aleph2_bucket_builder",Seq("ngRoute"
+			val module = Angular.module("aleph2_bucket_builder",Seq(
+			    "ngRoute", "ngSanitize"
 			      ,
 	  		    "ui.bootstrap"
   			    , 

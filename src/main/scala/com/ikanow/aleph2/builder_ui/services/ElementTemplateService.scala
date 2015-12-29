@@ -37,6 +37,22 @@ import com.ikanow.aleph2.builder_ui.data_model._
 @injectable("elementTemplateService")
 class ElementTemplateService(http: HttpService) {
   def requestElementTemplates(ideally_from_cache: Boolean): Future[Seq[ElementTemplateBean]] = {    
+    
+    List(
+        ElementTemplateBean(
+            name = "Empty Data Schema",
+            categories = List("metadata"),
+            filters = List("Bucket"),
+            expandable = true,
+            schema = List(
+                FormConfigBean(
+                    )
+                )
+            )
+        
+        )
+    
+    
     //TODO: dummy set of elements
     Future.successful(Seq.empty)
   }

@@ -53,16 +53,21 @@ object FormBuilderController extends Controller[Scope] {
     //TODO: dummy data
     fields =
       JSON.parse(upickle.default.write(List(
-            FormConfigBean("test_field", "input", 
-                FormConfigTemplateBean(
-                    "text",
-                    "Test Field",
-                    "Enter the test field",
-                    true
+            FormConfigBean(
+                key = "test_field", 
+                `type` = "input", 
+                templateOptions = FormConfigTemplateBean(
+                    `type` = "text",
+                    label = "Test Field",
+                    placeholder = "Enter the test field",
+                    required = true
                     )
                 )
          ))).asInstanceOf[js.Array[js.Any]]
       
+    //TODO: convert to HTML if doesn't start with \s*< (stick in a util somewhere)
+    scope.form_info_html = "<p>TODO instructions here</p><p>From ElementTemplateBean</p>"
+    
   }
 
   @JSExport
@@ -86,6 +91,6 @@ object FormBuilderController extends Controller[Scope] {
    */
   @js.native
   trait ControllerData extends Scope {
-    //(no state here)
+    var form_info_html: String = js.native
   }
 }
