@@ -30,6 +30,7 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
+import com.ikanow.aleph2.builder_ui.services._
 
 /**
  * Controller for the main page
@@ -47,6 +48,9 @@ object BucketBuilderController extends Controller[Scope] {
   
   @inject
   var modal: ModalService = _
+  
+  @inject
+  var element_template_service: ElementTemplateService = _
   
   override def initialize(): Unit = {
     super.initialize()
@@ -82,6 +86,21 @@ object BucketBuilderController extends Controller[Scope] {
 				  js.Dynamic.literal(
 						  templateUrl = "templates/form_builder.html",
 						  controller = "formBuilderCtrl", 
+						  size = size
+						  //TODO: resolve
+						  )
+						  .asInstanceOf[ModalOptions] 
+				  )
+				  //TODO: promise handle result
+  }
+
+  @JSExport
+  def openElementNavigator(size: String): Unit = {
+
+		  modal.open(
+				  js.Dynamic.literal(
+						  templateUrl = "templates/quick_navigate.html",
+						  controller = "quickNavigateCtrl", 
 						  size = size
 						  //TODO: resolve
 						  )

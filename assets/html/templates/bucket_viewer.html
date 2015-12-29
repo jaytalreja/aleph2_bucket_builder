@@ -29,25 +29,34 @@
 
 	<div class="col-md-10">
 		
-		<ol class="breadcrumb" >
-  			<li ng-repeat="bc in breadcrumb"><a href="">{{bc}} </a></li>
-		</ol>		
-		
-		<div gridster="element_grid_options">
-		    <ul>
-		        <li gridster-item="item" ng-repeat="item in element_grid">
-					<div class="panel panel-default" style="height:100%">
-					  <div class="panel-heading">
-						<a ng-click="controller.openElementConfig('xl')" class="glyphicon glyphicon-cog"></a>
-						<a class="glyphicon glyphicon-fullscreen"></a>
-						<a class="glyphicon glyphicon-trash"></a>						
-					  </div>
-					  <div class="panel-body">
-					    TODO Panel content
-					  </div>
-					</div>
-		        </li>
-		    </ul>
+		<div class="row">
+			<div class="col-md-5">
+				<ol class="breadcrumb" >
+					<li><a ng-click="controller.openElementNavigator('med')" class="glyphicon glyphicon-list-alt"></a></li>
+		  			<li ng-repeat="bc in breadcrumb"><a href="">{{bc}}</a></li>
+				</ol>		
+			</div>
 		</div>
+		
+		<div class="row">
+			<div class="col-md-11">
+				<div gridster="element_grid_options">
+				    <ul>
+				        <li gridster-item="item" ng-repeat="item in element_grid">
+							<div class="panel panel-default" style="height:100%">
+							  <div class="panel-heading">
+								<a ng-click="controller.openElementConfig('xl')" class="glyphicon glyphicon-cog"></a>
+								<a class="glyphicon glyphicon-fullscreen"></a>
+								<a class="glyphicon glyphicon-trash"></a>						
+							  </div>
+							  <div class="panel-body">
+							    TODO Panel content
+							  </div>
+							</div>
+				        </li>
+				    </ul>
+				</div>				    
+			</div>
+		</div>			
 	</div>
 </div>

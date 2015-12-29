@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
-package com.ikanow.aleph2.builder_ui.services
+package com.ikanow.aleph2.builder_ui.controllers
 
 import com.greencatsoft.angularjs.core._
 import org.scalajs.dom.Element
@@ -31,20 +31,51 @@ import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
 
-/** Retrieves the templates
- * @author alex
+/**
+ * Controller for the main page
  */
-@injectable("elementTemplateService")
-class ElementTemplateService(http: HttpService) {
-  def requestElementTemplates(): Future[Seq[ElementTemplateBean]] = {    
-    //TODO: dummy set of elements
-    Future.successful(Seq.empty)
-  }
-}
+@JSExport
+@injectable("quickNavigateCtrl")
+object QuickNavigateController extends Controller[Scope] {
 
-@injectable("elementTemplateService")
-class ElementTemplateServiceFactory(http: HttpService) extends Factory[ElementTemplateService] {
-  override def apply() = new ElementTemplateService(http)
-}
-object ElementTemplateService extends Service {
+  import js.JSConverters._
+
+  @inject
+  var scope: ControllerData = _  
+  
+  @inject
+  var modal: ModalInstance[Unit] = _
+  
+  override def initialize(): Unit = {
+    super.initialize()
+    
+    scope.element_tree = js.Array(
+        ElementNode("test1"),
+        ElementNode("test2",
+            js.Array(
+                ElementNode("test2_1"),
+                ElementNode("test2_2")
+                )
+            )
+        )
+  }
+
+  @JSExport
+  def ok(): Unit = {    
+    modal.close()
+  }  
+  
+  @JSExport
+  def cancel(): Unit = {
+    modal.close()
+  }  
+  
+  /**
+   * The specific scope data used in this controller
+   */
+  @js.native
+  trait ControllerData extends Scope {
+    
+    var element_tree: js.Array[ElementNode] = js.native
+  }
 }

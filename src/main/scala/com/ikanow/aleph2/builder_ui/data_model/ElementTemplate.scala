@@ -13,40 +13,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 ******************************************************************************/
-
-package com.ikanow.aleph2.builder_ui.controllers
+package com.ikanow.aleph2.builder_ui.data_model
 
 import com.greencatsoft.angularjs.core._
-import scala.scalajs.js.JSApp
+import scala.scalajs.js
 import com.greencatsoft.angularjs._
-import scala.scalajs.js.annotation.JSExport
-import com.ikanow.aleph2.builder_ui.controllers._
-import com.ikanow.aleph2.builder_ui.app.BucketBuilderRouter
-import com.ikanow.aleph2.builder_ui.services._
 
-@JSExport
-/** Main Angular app declaration
+@js.native
+/** Type of elements that populates the element template tree
  * @author alex
  */
-object BucketBuilderApp extends JSApp {
+trait ElementNode extends js.Object {
+  
+  val label: String = js.native
+  val childen: js.Array[ElementTemplateNode] = js.native
+}
 
-	def main(): Unit = {
-			val module = Angular.module("aleph2_bucket_builder",Seq("ngRoute"
-			      ,
-	  		    "ui.bootstrap"
-  			    , 
-			      "treeControl"
-  			    , 
-	  		    "gridster"
-  			    , 
-  			    "formly", "formlyBootstrap"
-			    ));
-			
-			module
-  			.controller(BucketBuilderController)
-  			.controller(FormBuilderController)
-  			.controller(QuickNavigateController)
-  			.factory[ElementTemplateServiceFactory]
-  			.config(BucketBuilderRouter)
-	}
+object ElementNode {
+  def apply(label: String): ElementNode = js.Dynamic.literal(label = label).asInstanceOf[ElementNode]
+  def apply(label: String, children: js.Array[ElementNode]): ElementNode = 
+    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementNode] 
 }
