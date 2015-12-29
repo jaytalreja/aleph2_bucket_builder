@@ -37,12 +37,13 @@ object BucketBuilderApp extends JSApp {
 			      "treeControl"
   			    , 
 	  		    "gridster"
-//			    , 
-//			    "formly"
+  			    , 
+  			    "formly", "formlyBootstrap"
 			    ));
 			
 			module
   			.controller(BucketBuilderController)
+  			.controller(FormBuilderController)
   			.config(BucketBuilderRouter)
 	}
 }

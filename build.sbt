@@ -29,12 +29,12 @@ libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6"
 libraryDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" exclude ("org.webjars.bower", "angular")
 jsDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" / "ui-bootstrap-tpls.js" dependsOn "angular.js"
 
-//jsDependencies += "org.webjars.bower" % "api-check" % "7.5.0" / "dist/api-check.js" dependsOn "angular.js"
+jsDependencies += "org.webjars.bower" % "api-check" % "7.5.0" / "dist/api-check.js" dependsOn "angular.js"
 	//(create fake dep to avoid multiple dependencies)
-//jsDependencies += "org.webjars.bower" % "angular-formly" % "7.3.0" / "formly.js" dependsOn "dist/api-check.js"
+jsDependencies += "org.webjars.bower" % "angular-formly" % "7.3.0" / "formly.js" dependsOn "dist/api-check.js"
 
-//libraryDependencies += "org.webjars.bower" % "angular-formly-templates-bootstrap" % "6.1.5" exclude ("org.webjars.bower", "bootstrap")
-//jsDependencies += "org.webjars.bower" % "angular-formly-templates-bootstrap" % "6.1.5" / "angular-formly-templates-bootstrap.js"
+libraryDependencies += "org.webjars.bower" % "angular-formly-templates-bootstrap" % "6.1.5" exclude ("org.webjars.bower", "bootstrap")
+jsDependencies += "org.webjars.bower" % "angular-formly-templates-bootstrap" % "6.1.5" / "angular-formly-templates-bootstrap.js" dependsOn "formly.js"
 
 libraryDependencies += "org.webjars.bower" % "angular-gridster" % "0.13.5" exclude ("org.webjars.bower", "angular")
 jsDependencies += "org.webjars.bower" % "angular-gridster" % "0.13.5" / "angular-gridster.js" dependsOn "angular.js"

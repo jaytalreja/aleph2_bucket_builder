@@ -9,6 +9,14 @@
 
 		<!-- 1.1] TREE CONTROLS -->
 
+		<div class="input-group">
+			<span class="input-group-btn">
+				<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
+			 </span>
+			<input type="text" class="form-control" placeholder="Elements" ng-model="element_search">
+		</div>
+
+
 		<!-- 1.2] ACTUAL TREE -->
 
 		<treecontrol class="tree-classic" tree-model="element_template_tree">
@@ -30,7 +38,9 @@
 		        <li gridster-item="item" ng-repeat="item in element_grid">
 					<div class="panel panel-default" style="height:100%">
 					  <div class="panel-heading">
-						<a ng-click="controller.openElementConfig('lg')" class="glyphicon glyphicon-cog"></a>
+						<a ng-click="controller.openElementConfig('xl')" class="glyphicon glyphicon-cog"></a>
+						<a class="glyphicon glyphicon-fullscreen"></a>
+						<a class="glyphicon glyphicon-trash"></a>						
 					  </div>
 					  <div class="panel-body">
 					    TODO Panel content

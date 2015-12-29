@@ -35,74 +35,53 @@ import com.ikanow.aleph2.builder_ui.data_model._
  * Controller for the main page
  */
 @JSExport
-@injectable("bucketBuilderCtrl")
-object BucketBuilderController extends Controller[Scope] {
+@injectable("formBuilderCtrl")
+object FormBuilderController extends Controller[Scope] {
 
   import js.JSConverters._
-
-  val templateUrl = "templates/bucket_viewer.html"
 
   @inject
   var scope: ControllerData = _  
   
   @inject
-  var modal: ModalService = _
+  var modal: ModalInstance[Unit] = _
   
   override def initialize(): Unit = {
     super.initialize()
     
-    //setup eg scope.title etc
-    
-    //TODO: some dummy setups
-    
-    scope.breadcrumb = js.Array("Bucket")
-    
-    scope.element_template_tree = js.Array(
-        ElementTemplateNode("test1"),
-        ElementTemplateNode("test2",
-            js.Array(
-                ElementTemplateNode("test2_1"),
-                ElementTemplateNode("test2_2")
-                )
-            )
-        )
-        
-    scope.element_grid = js.Array(
-        ElementCard(1, 1),
-        ElementCard(3, 3)
-        )
-        
-    scope.element_grid_options = GridsterOptions()
   }
 
   @JSExport
-  def openElementConfig(size: String): Unit = {
+  var model: js.Object = js.Object()
 
-		  modal.open(
-				  js.Dynamic.literal(
-						  templateUrl = "templates/form_builder.html",
-						  controller = "formBuilderCtrl", 
-						  size = size
-						  //TODO: resolve
-						  )
-						  .asInstanceOf[ModalOptions] 
-				  )
-				  //TODO: promise handle result
-  }
-
+  @JSExport
+  var fields: js.Array[FormConfig] = 
+    js.Array(
+        FormConfig("test_field", "input", 
+            FormConfigTemplate(
+                "text",
+                "Test Field",
+                "Enter the test field",
+                true
+                )
+            )
+        )
+  
+  @JSExport
+  def ok(): Unit = {    
+    modal.close()
+  }  
+  
+  @JSExport
+  def cancel(): Unit = {
+    modal.close()
+  }  
+  
   /**
    * The specific scope data used in this controller
    */
   @js.native
   trait ControllerData extends Scope {
     
-    // Data Model
-    
-    var breadcrumb: js.Array[String] = js.native
-    
-    var element_template_tree: js.Array[ElementTemplateNode] = js.native
-    
-    var element_grid: js.Array[ElementCard] = js.native
-    var element_grid_options: GridsterOptions = js.native
   }
 }
