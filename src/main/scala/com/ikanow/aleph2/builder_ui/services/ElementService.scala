@@ -45,6 +45,13 @@ class ElementService {
     Future.successful(Seq.empty)
   }
 
+  def setCurrentElement(new_card: ElementCardJs):Unit = {
+    curr_card = new_card;
+  }
+  def getCurrentElement():ElementCardJs = curr_card
+  
+  var curr_card: ElementCardJs = null;
+  
 }
 
 @injectable("elementService")

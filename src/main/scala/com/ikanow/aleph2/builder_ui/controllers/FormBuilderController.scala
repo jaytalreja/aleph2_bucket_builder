@@ -33,62 +33,70 @@ import scala.scalajs.js.JSON
 import js.JSConverters._
 
 import com.ikanow.aleph2.builder_ui.data_model._
+import com.ikanow.aleph2.builder_ui.services._
 
 /**
  * Controller for the main page
  */
 @JSExport
 @injectable("formBuilderCtrl")
-object FormBuilderController extends Controller[Scope] {
+class FormBuilderController(
+    scope: FormBuilderScope,
+    element_service: ElementService,
+    modal: ModalInstance[Unit])
+    
+  extends AbstractController[Scope](scope) {
 
-  @inject
-  var scope: ControllerData = _  
-  
-  @inject
-  var modal: ModalInstance[Unit] = _
-  
   override def initialize(): Unit = {
     super.initialize()
 
+    val curr_card = element_service.getCurrentElement();
+    
+    fields = curr_card.form_metadata
+    
     //TODO: dummy data
-    fields =
-      List(
-            FormConfigBean(
-                key = "enabled",
-                `type` = "checkbox",
-                templateOptions = FormConfigTemplateBean(
-                    label = "Enabled?"
-                    )
-                ),
-            FormConfigBean(
-                key = "input_directory",
-                `type` = "input",
-                templateOptions = FormConfigTemplateBean(
-                    label = "Input Spool Directory",
-                    `type` = "text",
-                    placeholder = "Input path",
-                    required = true
-                    )
-                ),
-            FormConfigBean(
-                key = "columns",
-                `type` = "input",
-                templateOptions = FormConfigTemplateBean(
-                    label = "Columns",
-                    `type` = "textarea",
-                    placeholder = "Comma separated list of fields",
-                    required = true
-                    )
-                )
-    )
-    .map { bean => JSON.parse(upickle.default.write(bean)).asInstanceOf[js.Any] }
-    .toJSArray  
+//    fields =
+//      List(
+//            FormConfigBean(
+//                key = "enabled",
+//                `type` = "checkbox",
+//                templateOptions = FormConfigTemplateBean(
+//                    label = "Enabled?"
+//                    )
+//                ),
+//            FormConfigBean(
+//                key = "input_directory",
+//                `type` = "input",
+//                templateOptions = FormConfigTemplateBean(
+//                    label = "Input Spool Directory",
+//                    `type` = "text",
+//                    placeholder = "Input path",
+//                    required = true
+//                    )
+//                ),
+//            FormConfigBean(
+//                key = "columns",
+//                `type` = "input",
+//                templateOptions = FormConfigTemplateBean(
+//                    label = "Columns",
+//                    `type` = "textarea",
+//                    placeholder = "Comma separated list of fields",
+//                    required = true
+//                    )
+//                )
+//    )
+//    .map { bean => JSON.parse(upickle.default.write(bean)).asInstanceOf[js.Any] }
+//    .toJSArray  
     
     //TODO: convert to HTML if doesn't start with \s*< (stick in a util somewhere)
-    scope.form_info_html = "<p>TODO instructions here</p><p>From ElementTemplateBean</p>"
+    //form_info_html = "<p>TODO instructions here</p><p>From ElementTemplateBean</p>"
+    scope.form_info_html = curr_card.form_info
     
   }
 
+  @JSExport
+  var form_info_html: String = "<p></p>"
+  
   @JSExport
   var model: js.Object = js.Object()
 
@@ -103,13 +111,13 @@ object FormBuilderController extends Controller[Scope] {
   @JSExport
   def cancel(): Unit = {
     modal.close()
-  }  
-  
-  /**
-   * The specific scope data used in this controller
-   */
-  @js.native
-  trait ControllerData extends Scope {
-    var form_info_html: String = js.native
-  }
+  }    
+}
+
+/**
+ * The specific scope data used in this controller
+ */
+@js.native
+trait FormBuilderScope extends Scope {
+  var form_info_html: String = js.native
 }

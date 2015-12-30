@@ -52,7 +52,7 @@
 				        <li gridster-item="item" ng-repeat="item in element_grid">
 							<div class="panel panel-default" style="height:100%">
 							  <div class="panel-heading">
-								<a ng-show="item.configurable" ng-click="controller.openElementConfig('xl')" class="glyphicon glyphicon-cog"></a>
+								<a ng-show="item.configurable" ng-click="controller.openElementConfig(item, 'xl')" class="glyphicon glyphicon-cog"></a>
 								<a ng-show="item.expandable" class="glyphicon glyphicon-fullscreen"></a>
 								<a ng-show="item.deletable" class="glyphicon glyphicon-trash"></a>						
 							  </div>

@@ -96,19 +96,22 @@ object BucketBuilderController extends Controller[Scope] {
     // Get current highest row:
     val max_row = 1 + scope.element_grid.map { card => card.row }.reduceOption(_ max _).getOrElse(-1)
     scope.element_grid.push(ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean))
+    
+    //TODO: manipulate the actual state
   }
   
   @JSExport
-  def openElementConfig(size: String): Unit = {
-
+  def openElementConfig(item: ElementCardJs, size: String): Unit = {
+      // Can't get resolve working so going via the service:
+     element_service.setCurrentElement(item);
+    
 		  modal.open(
 				  js.Dynamic.literal(
 						  templateUrl = "templates/form_builder.html",
 						  controller = "formBuilderCtrl", 
 						  size = size
-						  //TODO: resolve
 						  )
-						  .asInstanceOf[ModalOptions] 
+						  .asInstanceOf[ModalOptions]
 				  )
 				  //TODO: promise handle result
   }

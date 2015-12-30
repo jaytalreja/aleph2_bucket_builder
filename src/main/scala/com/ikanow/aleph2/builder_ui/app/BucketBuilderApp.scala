@@ -42,12 +42,17 @@ object BucketBuilderApp extends JSApp {
   			    "formly", "formlyBootstrap"
 			    ));
 			
+			// Legacy property method - move over to the c'tor method
 			module
   			.controller(BucketBuilderController)
-  			.controller(FormBuilderController)
   			.controller(QuickNavigateController)
   			.factory[ElementServiceFactory]
   			.factory[ElementTemplateServiceFactory]
   			.config(BucketBuilderRouter)
+
+  		// Preferred c'tor method
+			module
+  			.controller[FormBuilderController]
+  			
 	}
 }
