@@ -33,6 +33,7 @@ trait GridsterOptionsJs extends js.Object {
   val defaultSizeX: Int = js.native
   val defaultSizeY: Int = js.native
   val mobileBreakPoint: Int = js.native
+  val floating: Boolean = js.native
   
   val resizable: GridsterOptions_ResizableJs = js.native
   val draggable: GridsterOptions_DraggableJs = js.native
@@ -62,6 +63,7 @@ object GridsterOptionsJs {
         maxRows = 100,
         defaultSizeX = 1,
         defaultSizeY = 1,
+        floating = false,
         resizable = GridsterOptions_ResizableJs(false),
         draggable = GridsterOptions_DraggableJs(true)
         )

@@ -26,7 +26,7 @@
 					filter-expression="element_search" expanded-nodes="element_template_tree_expanded"
 					options="element_template_tree_opts">
 					{{node.label}}
-					<a ng-click="controller.insertElement(node)" class="glyphicon glyphicon-plus"></a>
+					<a ng-click="controller.insertElement(node)" ng-hide="node.category" class="glyphicon glyphicon-plus"></a>
 				</treecontrol>
 		  </div>
 		</div>
@@ -52,12 +52,12 @@
 				        <li gridster-item="item" ng-repeat="item in element_grid">
 							<div class="panel panel-default" style="height:100%">
 							  <div class="panel-heading">
-								<a ng-click="controller.openElementConfig('xl')" class="glyphicon glyphicon-cog"></a>
-								<a class="glyphicon glyphicon-fullscreen"></a>
-								<a class="glyphicon glyphicon-trash"></a>						
+								<a ng-show="item.configurable" ng-click="controller.openElementConfig('xl')" class="glyphicon glyphicon-cog"></a>
+								<a ng-show="item.expandable" class="glyphicon glyphicon-fullscreen"></a>
+								<a ng-show="item.deletable" class="glyphicon glyphicon-trash"></a>						
 							  </div>
 							  <div class="panel-body">
-							    TODO Panel content
+							    {{item.label}}
 							  </div>
 							</div>
 				        </li>

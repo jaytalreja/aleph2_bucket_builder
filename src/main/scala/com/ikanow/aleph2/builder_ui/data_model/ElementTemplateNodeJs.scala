@@ -27,12 +27,25 @@ trait ElementTemplateNodeJs extends js.Object {
   
   val templateIndex: Int = js.native
   val label: String = js.native
+  val category:Boolean
   val childen: js.Array[ElementTemplateNodeJs] = js.native
 }
 
 object ElementTemplateNodeJs {
+   /** Build child element
+   * @param templateIndex
+   * @param label
+   * @return
+   */
   def apply(templateIndex: Int, label: String): ElementTemplateNodeJs = 
-    js.Dynamic.literal(templateIndex = templateIndex, label = label).asInstanceOf[ElementTemplateNodeJs]
+    js.Dynamic.literal(templateIndex = templateIndex, label = label, category = false).asInstanceOf[ElementTemplateNodeJs]
+  
+   /** Build category
+   * @param templateIndex
+   * @param label
+   * @param children
+   * @return
+   */
   def apply(templateIndex: Int, label: String, children: js.Array[ElementTemplateNodeJs]): ElementTemplateNodeJs = 
-    js.Dynamic.literal(templateIndex = templateIndex, label = label, children = children).asInstanceOf[ElementTemplateNodeJs] 
+      js.Dynamic.literal(templateIndex = templateIndex, label = label, children = children, category = true).asInstanceOf[ElementTemplateNodeJs] 
 }

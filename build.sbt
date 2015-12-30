@@ -1,3 +1,5 @@
+//NOTE: upickle fails unless compiled from clean
+
 // Plugins
 
 enablePlugins(ScalaJSPlugin)
@@ -41,7 +43,7 @@ jsDependencies += "org.webjars.bower" % "angular-sanitize" % "1.3.15" / "angular
 
 // Bootstrap
 
-libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6" ("org.webjars.bower", "jquery")
+libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6" exclude ("org.webjars.bower", "jquery")
 
 libraryDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" exclude ("org.webjars.bower", "angular")
 jsDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" / "ui-bootstrap-tpls.js" dependsOn "angular.js"

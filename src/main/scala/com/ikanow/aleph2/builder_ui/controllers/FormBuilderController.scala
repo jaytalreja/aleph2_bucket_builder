@@ -41,8 +41,6 @@ import com.ikanow.aleph2.builder_ui.data_model._
 @injectable("formBuilderCtrl")
 object FormBuilderController extends Controller[Scope] {
 
-  import js.JSConverters._
-
   @inject
   var scope: ControllerData = _  
   

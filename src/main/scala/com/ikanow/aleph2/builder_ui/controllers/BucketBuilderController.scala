@@ -70,18 +70,15 @@ object BucketBuilderController extends Controller[Scope] {
             ElementTreeBuilder.getTemplateTree(scope.breadcrumb, beans)             
             
           scope.element_template_tree_expanded = 
-            scope.element_template_tree.filter { node => true }.toJSArray
+            scope.element_template_tree.filter { node => node.category }.toJSArray
       }}
     
     scope.element_template_tree_opts = js.Dynamic.literal(
         dirSelectable = false
         )
     
-    //TODO: some dummy setups
-    
     scope.element_grid = js.Array(
-        ElementCardJs("TEST", 1, 1, true),
-        ElementCardJs("TEST", 3, 3, false)
+        ElementCardJs.buildDummy("Add content from 'Templates' list")
         )
         
     scope.element_grid_options = GridsterOptionsJs()
@@ -89,13 +86,16 @@ object BucketBuilderController extends Controller[Scope] {
 
   @JSExport
   def insertElement(node: js.Object):Unit = {
+    // Remove any dummy elements:
+    scope.element_grid = scope.element_grid.filter { node => node.deletable }
+    
     // Get the value
     var template = node.asInstanceOf[ElementTemplateNodeJs]
     var bean = scope.element_template_array(template.templateIndex)
     
     // Get current highest row:
     val max_row = 1 + scope.element_grid.map { card => card.row }.reduceOption(_ max _).getOrElse(-1)
-    scope.element_grid.push(ElementCardJs(bean.display_name, max_row, 0, bean.expandable))
+    scope.element_grid.push(ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean))
   }
   
   @JSExport
