@@ -58,26 +58,46 @@ object BucketBuilderController extends Controller[Scope] {
     
   override def initialize(): Unit = {
     super.initialize()
-    
+
+    //TODO: want 2 breadcrumb strings, one for display + one for filtering
     scope.breadcrumb = js.Array("Bucket")
     
-    element_template_service.requestElementTemplates(true)
-        .foreach { beans => {
-            scope.element_template_tree = 
-              ElementTreeBuilder.getTemplateTree(scope.breadcrumb, beans)             
-          }
-        }
+    element_template_service.requestElementTemplates(true).foreach { beans => 
+      {
+          scope.element_template_array = beans.toArray
+        
+          scope.element_template_tree = 
+            ElementTreeBuilder.getTemplateTree(scope.breadcrumb, beans)             
+            
+          scope.element_template_tree_expanded = 
+            scope.element_template_tree.filter { node => true }.toJSArray
+      }}
+    
+    scope.element_template_tree_opts = js.Dynamic.literal(
+        dirSelectable = false
+        )
     
     //TODO: some dummy setups
     
     scope.element_grid = js.Array(
-        ElementCardJs(1, 1),
-        ElementCardJs(3, 3)
+        ElementCardJs("TEST", 1, 1, true),
+        ElementCardJs("TEST", 3, 3, false)
         )
         
     scope.element_grid_options = GridsterOptionsJs()
   }
 
+  @JSExport
+  def insertElement(node: js.Object):Unit = {
+    // Get the value
+    var template = node.asInstanceOf[ElementTemplateNodeJs]
+    var bean = scope.element_template_array(template.templateIndex)
+    
+    // Get current highest row:
+    val max_row = 1 + scope.element_grid.map { card => card.row }.reduceOption(_ max _).getOrElse(-1)
+    scope.element_grid.push(ElementCardJs(bean.display_name, max_row, 0, bean.expandable))
+  }
+  
   @JSExport
   def openElementConfig(size: String): Unit = {
 
@@ -119,8 +139,13 @@ object BucketBuilderController extends Controller[Scope] {
     var breadcrumb: js.Array[String] = js.native
     
     var element_template_tree: js.Array[ElementTemplateNodeJs] = js.native
+    var element_template_tree_expanded: js.Array[ElementTemplateNodeJs] = js.native
+    var element_template_tree_opts: js.Object = js.native
     
     var element_grid: js.Array[ElementCardJs] = js.native
     var element_grid_options: GridsterOptionsJs = js.native
+
+    // Not visible by JS:
+    var element_template_array: Array[ElementTemplateBean]
   }
 }

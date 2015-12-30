@@ -24,15 +24,18 @@ import com.greencatsoft.angularjs._
  * @author alex
  */
 trait ElementCardJs extends js.Object {  
+  val label: String = js.native
   val sizeX: Int = js.native
   val sizeY: Int = js.native
   val row: Int = js.native
   val col: Int = js.native  
+  val expandable: Boolean = js.native
 }
 
 object ElementCardJs {
-  def apply(row: Int, col: Int): ElementCardJs = 
-    js.Dynamic.literal(row = row, col = col, sizeX = 1, sizeY = 1).asInstanceOf[ElementCardJs]
+  def apply(label: String, row: Int, col: Int, expandable: Boolean): ElementCardJs = 
+    js.Dynamic.literal(label = label, row = row, col = col, sizeX = 1, sizeY = 1, expandable = expandable)
+      .asInstanceOf[ElementCardJs]
 }
 
 

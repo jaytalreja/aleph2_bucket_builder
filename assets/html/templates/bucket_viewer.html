@@ -3,31 +3,38 @@
 <div class="hide" ng-include="'templates/quick_navigate.html'"></div> 
 
 <div class="row">
-	<div class="col-md-2">
+	<div class="col-md-3">
 		
 		<!-- 1] CATEGORY/ELEMENT TREE -->
 
-		<!-- 1.1] TREE CONTROLS -->
-
-		<div class="input-group">
-			<span class="input-group-btn">
-				<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
-			 </span>
-			<input type="text" class="form-control" placeholder="Elements" ng-model="element_search">
+		<div class="panel panel-default" style="height:100%">
+		  <div class="panel-heading">Templates</div>
+		  <div class="panel-body">
+		  
+				<!-- 1.1] TREE CONTROLS -->
+		
+				<div class="input-group">
+					<span class="input-group-btn">
+						<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
+					 </span>
+					<input type="text" class="form-control" placeholder="Search" ng-model="element_search">
+				</div>		
+		
+				<!-- 1.2] ACTUAL TREE -->
+		
+				<treecontrol class="tree-classic" tree-model="element_template_tree" 
+					filter-expression="element_search" expanded-nodes="element_template_tree_expanded"
+					options="element_template_tree_opts">
+					{{node.label}}
+					<a ng-click="controller.insertElement(node)" class="glyphicon glyphicon-plus"></a>
+				</treecontrol>
+		  </div>
 		</div>
-
-
-		<!-- 1.2] ACTUAL TREE -->
-
-		<treecontrol class="tree-classic" tree-model="element_template_tree">
-			{{node.label}}
-		</treecontrol>
- 
 	</div>
 
 	<!-- 2] BUCKET CONFIGURATION -->
 
-	<div class="col-md-10">
+	<div class="col-md-9">
 		
 		<div class="row">
 			<div class="col-md-5">

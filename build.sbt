@@ -41,10 +41,7 @@ jsDependencies += "org.webjars.bower" % "angular-sanitize" % "1.3.15" / "angular
 
 // Bootstrap
 
-//TODO (is this pulling the jquery plugin as a lib (not JS) dep? something is)
-
-libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6"
-//(don't pull the JS for this since we only want its CSS, and its JS requires JQuery)
+libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6" ("org.webjars.bower", "jquery")
 
 libraryDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" exclude ("org.webjars.bower", "angular")
 jsDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" / "ui-bootstrap-tpls.js" dependsOn "angular.js"

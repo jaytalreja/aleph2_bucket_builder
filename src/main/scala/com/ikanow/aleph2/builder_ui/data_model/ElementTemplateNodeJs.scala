@@ -25,12 +25,14 @@ import com.greencatsoft.angularjs._
  */
 trait ElementTemplateNodeJs extends js.Object {
   
+  val templateIndex: Int = js.native
   val label: String = js.native
   val childen: js.Array[ElementTemplateNodeJs] = js.native
 }
 
 object ElementTemplateNodeJs {
-  def apply(label: String): ElementTemplateNodeJs = js.Dynamic.literal(label = label).asInstanceOf[ElementTemplateNodeJs]
-  def apply(label: String, children: js.Array[ElementTemplateNodeJs]): ElementTemplateNodeJs = 
-    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementTemplateNodeJs] 
+  def apply(templateIndex: Int, label: String): ElementTemplateNodeJs = 
+    js.Dynamic.literal(templateIndex = templateIndex, label = label).asInstanceOf[ElementTemplateNodeJs]
+  def apply(templateIndex: Int, label: String, children: js.Array[ElementTemplateNodeJs]): ElementTemplateNodeJs = 
+    js.Dynamic.literal(templateIndex = templateIndex, label = label, children = children).asInstanceOf[ElementTemplateNodeJs] 
 }

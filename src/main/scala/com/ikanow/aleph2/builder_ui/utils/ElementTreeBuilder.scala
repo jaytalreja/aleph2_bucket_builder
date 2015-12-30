@@ -32,15 +32,18 @@ object ElementTreeBuilder {
       val breadcrumb_str = breadcrumb.mkString("/")
       
       templates
+        .zipWithIndex
         // Step 1, build a map of beans against their categories
-        .filter { bean => !bean.categories.filter { path => path.equals(breadcrumb_str) }.isEmpty }
-        .flatMap { bean => bean.categories.map { cat => (cat, bean) } }
+        .filter { case (bean, index) => !bean.filters
+                            .filter { path => path.equals(breadcrumb_str) }.isEmpty 
+         }
+        .flatMap { case (bean, index) => bean.categories.map { cat => (cat, (bean, index)) } }
         .groupBy(_._1)
-        .mapValues(_.map(_._2))
+        .mapValues(_.map(_._2).sortBy { case (bean, index) => bean.display_name })
         // Step 2, convert to a simple tree
         .map { case (category, bean_list) => 
-              ElementTemplateNodeJs(category,
-                  bean_list.map { bean => ElementTemplateNodeJs(bean.display_name) }.toJSArray
+              ElementTemplateNodeJs(-1, category,
+                  bean_list.map { case (bean, index) => ElementTemplateNodeJs(index, bean.display_name) }.toJSArray
                   )
               }.toJSArray
     }  
