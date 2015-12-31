@@ -36,19 +36,17 @@ import com.ikanow.aleph2.builder_ui.data_model._
  */
 @injectable("elementService")
 class ElementService {
-  def requestElements(ideally_from_cache: Boolean): Future[Seq[ElementNodeJs]] = {    
-    //TODO: dummy set of elements
-    Future.successful(Seq.empty)
-  }
-  def overwriteElements(elements: Seq[ElementNodeJs]): Future[Seq[ElementNodeJs]] = {    
-    //TODO: dummy set of elements
-    Future.successful(Seq.empty)
+  
+  val root:ElementNodeJs = ElementNodeJs.buildRoot()
+  
+  def getMutableRoot(): Future[ElementNodeJs] = {    
+    Future.successful(root)
   }
 
-  def setCurrentElement(new_card: ElementCardJs):Unit = {
+  def setElementToEdit(new_card: ElementCardJs):Unit = {
     curr_card = new_card;
   }
-  def getCurrentElement():ElementCardJs = curr_card
+  def getElementToEdit():ElementCardJs = curr_card
   
   var curr_card: ElementCardJs = null;
   

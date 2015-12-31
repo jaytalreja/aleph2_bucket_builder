@@ -26,6 +26,8 @@ libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.8.0"
 
 libraryDependencies += "com.lihaoyi" %%% "upickle" % "0.3.6"
 
+libraryDependencies += "com.lihaoyi" %%% "scalatags" % "0.5.3"
+
 resolvers +=
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 

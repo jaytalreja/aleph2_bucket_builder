@@ -53,15 +53,7 @@ object QuickNavigateController extends Controller[Scope] {
   override def initialize(): Unit = {
     super.initialize()
     
-    scope.element_tree = js.Array(
-        ElementNodeJs("test1"),
-        ElementNodeJs("test2",
-            js.Array(
-                ElementNodeJs("test2_1"),
-                ElementNodeJs("test2_2")
-                )
-            )
-        )
+    element_service.getMutableRoot().foreach { root => scope.element_tree = root }    
   }
 
   @JSExport
@@ -80,6 +72,6 @@ object QuickNavigateController extends Controller[Scope] {
   @js.native
   trait ControllerData extends Scope {
     
-    var element_tree: js.Array[ElementNodeJs] = js.native
+    var element_tree: ElementNodeJs = js.native
   }
 }

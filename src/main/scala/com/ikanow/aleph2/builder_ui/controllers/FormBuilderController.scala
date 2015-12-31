@@ -32,6 +32,8 @@ import scala.scalajs.js.JSON
 
 import js.JSConverters._
 
+import scalatags.Text.all._
+
 import com.ikanow.aleph2.builder_ui.data_model._
 import com.ikanow.aleph2.builder_ui.services._
 
@@ -50,48 +52,16 @@ class FormBuilderController(
   override def initialize(): Unit = {
     super.initialize()
 
-    val curr_card = element_service.getCurrentElement();
+    val curr_card = element_service.getElementToEdit();
     
     fields = curr_card.form_metadata
     
-    //TODO: dummy data
-//    fields =
-//      List(
-//            FormConfigBean(
-//                key = "enabled",
-//                `type` = "checkbox",
-//                templateOptions = FormConfigTemplateBean(
-//                    label = "Enabled?"
-//                    )
-//                ),
-//            FormConfigBean(
-//                key = "input_directory",
-//                `type` = "input",
-//                templateOptions = FormConfigTemplateBean(
-//                    label = "Input Spool Directory",
-//                    `type` = "text",
-//                    placeholder = "Input path",
-//                    required = true
-//                    )
-//                ),
-//            FormConfigBean(
-//                key = "columns",
-//                `type` = "input",
-//                templateOptions = FormConfigTemplateBean(
-//                    label = "Columns",
-//                    `type` = "textarea",
-//                    placeholder = "Comma separated list of fields",
-//                    required = true
-//                    )
-//                )
-//    )
-//    .map { bean => JSON.parse(upickle.default.write(bean)).asInstanceOf[js.Any] }
-//    .toJSArray  
-    
-    //TODO: convert to HTML if doesn't start with \s*< (stick in a util somewhere)
-    //form_info_html = "<p>TODO instructions here</p><p>From ElementTemplateBean</p>"
-    scope.form_info_html = curr_card.form_info
-    
+    scope.form_info_html = {
+      if (curr_card.form_info.matches("^\\s*<"))
+        curr_card.form_info
+      else
+        p(curr_card.form_info).toString()
+    }
   }
 
   @JSExport

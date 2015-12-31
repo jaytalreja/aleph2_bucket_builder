@@ -21,6 +21,7 @@ import org.scalajs.dom.raw.HTMLElement
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
+import scala.scalajs.js.JSON
 import scala.scalajs.js.JSApp
 import com.greencatsoft.angularjs._
 import com.greencatsoft.angularjs.extensions._
@@ -62,6 +63,8 @@ object BucketBuilderController extends Controller[Scope] {
     //TODO: want 2 breadcrumb strings, one for display + one for filtering
     scope.breadcrumb = js.Array("Bucket")
     
+    element_service.getMutableRoot().foreach { root => scope.curr_element = root }
+    
     element_template_service.requestElementTemplates(true).foreach { beans => 
       {
           scope.element_template_array = beans.toArray
@@ -86,24 +89,31 @@ object BucketBuilderController extends Controller[Scope] {
 
   @JSExport
   def insertElement(node: js.Object):Unit = {
+    
     // Remove any dummy elements:
     scope.element_grid = scope.element_grid.filter { node => node.deletable }
     
     // Get the value
-    var template = node.asInstanceOf[ElementTemplateNodeJs]
-    var bean = scope.element_template_array(template.templateIndex)
+    val template = node.asInstanceOf[ElementTemplateNodeJs]
+    val bean = scope.element_template_array(template.templateIndex)
     
     // Get current highest row:
     val max_row = 1 + scope.element_grid.map { card => card.row }.reduceOption(_ max _).getOrElse(-1)
-    scope.element_grid.push(ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean))
     
-    //TODO: manipulate the actual state
+    // Add new card
+    val new_card = ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean)
+    scope.element_grid.push(new_card)
+    
+    // Add to the current element's children
+    scope.curr_element.children.push(
+        ElementNodeJs(new_card.label, new_card, scope.curr_element)
+        )
   }
   
   @JSExport
   def openElementConfig(item: ElementCardJs, size: String): Unit = {
       // Can't get resolve working so going via the service:
-     element_service.setCurrentElement(item);
+     element_service.setElementToEdit(item);
     
 		  modal.open(
 				  js.Dynamic.literal(
@@ -113,22 +123,21 @@ object BucketBuilderController extends Controller[Scope] {
 						  )
 						  .asInstanceOf[ModalOptions]
 				  )
-				  //TODO: promise handle result
   }
 
   @JSExport
   def openElementNavigator(size: String): Unit = {
 
+      //TODO: handle
+    
 		  modal.open(
 				  js.Dynamic.literal(
 						  templateUrl = "templates/quick_navigate.html",
 						  controller = "quickNavigateCtrl", 
 						  size = size
-						  //TODO: resolve
 						  )
 						  .asInstanceOf[ModalOptions] 
 				  )
-				  //TODO: promise handle result
   }
 
   /**
@@ -140,15 +149,17 @@ object BucketBuilderController extends Controller[Scope] {
     // Data Model
     
     var breadcrumb: js.Array[String] = js.native
+
+    var curr_element: ElementNodeJs = js.native
     
     var element_template_tree: js.Array[ElementTemplateNodeJs] = js.native
     var element_template_tree_expanded: js.Array[ElementTemplateNodeJs] = js.native
     var element_template_tree_opts: js.Object = js.native
+    // Not visible by JS:
+    var element_template_array: Array[ElementTemplateBean]
     
     var element_grid: js.Array[ElementCardJs] = js.native
     var element_grid_options: GridsterOptionsJs = js.native
 
-    // Not visible by JS:
-    var element_template_array: Array[ElementTemplateBean]
   }
 }

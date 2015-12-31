@@ -24,13 +24,22 @@ import com.greencatsoft.angularjs._
  * @author alex
  */
 trait ElementNodeJs extends js.Object {
+  val root: Boolean = js.native
+  val parent: ElementNodeJs = js.native
   
   val label: String = js.native
-  val childen: js.Array[ElementTemplateNodeJs] = js.native
+  val children: js.Array[ElementNodeJs] = js.native
+  
+  val element: ElementCardJs = js.native
 }
 
 object ElementNodeJs {
-  def apply(label: String): ElementNodeJs = js.Dynamic.literal(label = label).asInstanceOf[ElementNodeJs]
-  def apply(label: String, children: js.Array[ElementNodeJs]): ElementNodeJs = 
-    js.Dynamic.literal(label = label, children = children).asInstanceOf[ElementNodeJs] 
+  def buildRoot(): ElementNodeJs =
+    js.Dynamic.literal(root = true, label = "root", children = js.Array()).asInstanceOf[ElementNodeJs]
+  
+  def apply(label: String, element: ElementCardJs, parent: ElementNodeJs): ElementNodeJs = 
+    js.Dynamic.literal(root = false, label = label, element = element, parent = parent, children = js.Array()).asInstanceOf[ElementNodeJs]
+  
+  def apply(label: String, element: ElementCardJs, parent: ElementNodeJs, children: js.Array[ElementNodeJs]): ElementNodeJs = 
+    js.Dynamic.literal(root = false, label = label, element = element, parent = parent, children = children).asInstanceOf[ElementNodeJs] 
 }
