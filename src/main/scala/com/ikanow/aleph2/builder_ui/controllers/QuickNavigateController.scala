@@ -44,6 +44,10 @@ object QuickNavigateController extends Controller[Scope] {
   @inject
   var scope: ControllerData = _  
   
+  //TODO: need to move to c'tor intialization to make this work it seems
+  @inject
+  var rootScope: RootScope = _
+  
   @inject
   var modal: ModalInstance[Unit] = _
   
@@ -69,6 +73,10 @@ object QuickNavigateController extends Controller[Scope] {
   
   @JSExport
   def ok(): Unit = {    
+    
+    //TODO: send the selected item
+    rootScope.$broadcast("quickNavigate", "TODOTEST")
+    
     modal.close()
   }  
   

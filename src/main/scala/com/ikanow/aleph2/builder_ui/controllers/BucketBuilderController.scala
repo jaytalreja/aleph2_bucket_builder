@@ -83,6 +83,10 @@ object BucketBuilderController extends Controller[Scope] {
         )    
     
     recalculateTemplates()
+    
+    scope.$on("quick_navigate", (event: js.Any) => {
+      //TODO navigateTo
+    })
   }
 
   def recalculateTemplates():Unit = {

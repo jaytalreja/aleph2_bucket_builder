@@ -44,6 +44,7 @@ import com.ikanow.aleph2.builder_ui.services._
 @injectable("formBuilderCtrl")
 class FormBuilderController(
     scope: FormBuilderScope,
+    rootScope: RootScope,
     element_service: ElementService,
     modal: ModalInstance[Unit])
     
