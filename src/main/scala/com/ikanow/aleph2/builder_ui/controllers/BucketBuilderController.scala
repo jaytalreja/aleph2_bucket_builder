@@ -60,17 +60,20 @@ object BucketBuilderController extends Controller[Scope] {
   override def initialize(): Unit = {
     super.initialize()
 
-    scope.breadcrumb = js.Array("Bucket")
-    scope.breadcrumb_system = js.Array("Bucket")
+    scope.breadcrumb = js.Array()
+    scope.breadcrumb_system = js.Array()
     
-    element_service.getMutableRoot().foreach { root => scope.curr_element = root }
+    element_service.getMutableRoot().foreach { root => {
+        scope.curr_element = root 
+        rebuildBreadcrumbs(root)            
+      }}
     
     scope.element_grid = js.Array(
         ElementCardJs.buildDummy("Add content from 'Templates' list")
         )
         
     scope.element_grid_options = GridsterOptionsJs()
-    
+        
     scope.element_template_tree = js.Array()
    
     scope.element_template_tree_expanded = js.Array()
@@ -131,19 +134,54 @@ object BucketBuilderController extends Controller[Scope] {
   def expandElement(item: ElementCardJs): Unit = {
     
     scope.curr_element.children.find { node => node.element == item }.foreach { new_node => {
-    
+      navigateTo(new_node)
+    }}
+  }
+  
+ 	// @param delta - if called externally must be <0 to go back, >0 to set to an abs value, 0 is for internal only
+  @JSExport
+  def navigateBack(delta: Int):Unit = {
+    if ((delta < 0) && !scope.curr_element.root) {
+      scope.curr_element = scope.curr_element.parent
+      if (-1 == delta)
+        navigateTo(scope.curr_element)
+      else
+        navigateBack(delta + 1)
+    }
+    else if (delta > 0) {
+      //eg 0 == Bucket, 1 == Bucket > blahA, 2 == Bucket > blahB
+      navigateBack(delta - scope.breadcrumb.length)
+    }
+  }
+
+  def navigateTo(new_node: ElementNodeJs): Unit = {
       scope.curr_element = new_node
       
       scope.element_grid.clear()
       scope.element_grid.appendAll(scope.curr_element.children.map { node => node.element })
       
       // Update the breadcrumbs and get the next set of templates
-      val new_path_el = item.template_json.get("key").get.toString()
-      scope.breadcrumb.push(item.label)
-      scope.breadcrumb_system.push(new_path_el)
-      
+      rebuildBreadcrumbs(new_node)
+
       recalculateTemplates()
-    }}
+  }
+  
+  def rebuildBreadcrumbs(new_node: ElementNodeJs):Unit = {
+      scope.breadcrumb.clear()
+      scope.breadcrumb.appendAll(
+          rebuildBreadcrumb(List(), new_node, n => n.element.label).reverse
+          )
+      scope.breadcrumb_system.clear()
+      scope.breadcrumb_system.appendAll(
+          rebuildBreadcrumb(List(), new_node, n => n.element.template_json.get("key").get.toString()).reverse
+          )    
+  }
+  
+  def rebuildBreadcrumb(acc:List[String], element: ElementNodeJs, extractor: ElementNodeJs => String):List[String] = {
+    if (element.root)
+      element.label :: acc
+    else 
+      extractor(element) :: rebuildBreadcrumb(acc, element.parent, extractor)
   }
   
   @JSExport

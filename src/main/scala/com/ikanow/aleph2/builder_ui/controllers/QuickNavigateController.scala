@@ -53,9 +53,20 @@ object QuickNavigateController extends Controller[Scope] {
   override def initialize(): Unit = {
     super.initialize()
     
-    element_service.getMutableRoot().foreach { root => scope.element_tree = root }    
+    element_service.getMutableRoot().foreach { root => { 
+      scope.element_tree = js.Array(root)
+      //expand all:
+      scope.element_tree_expanded = flatten(List(), root).toJSArray
+    }}
   }
 
+  def flatten(acc: List[ElementNodeJs], root: ElementNodeJs): List[ElementNodeJs] = {
+    if (null == root.children)
+      root :: acc
+    else
+      root :: acc ++ root.children.flatMap { child => flatten(acc, child) }
+  }
+  
   @JSExport
   def ok(): Unit = {    
     modal.close()
@@ -72,6 +83,7 @@ object QuickNavigateController extends Controller[Scope] {
   @js.native
   trait ControllerData extends Scope {
     
-    var element_tree: ElementNodeJs = js.native
+    var element_tree: js.Array[ElementNodeJs] = js.native
+    var element_tree_expanded: js.Array[ElementNodeJs] = js.native
   }
 }

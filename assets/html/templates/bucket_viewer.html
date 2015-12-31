@@ -39,8 +39,9 @@
 		<div class="row">
 			<div class="col-md-5">
 				<ol class="breadcrumb" >
+					<li><a ng-click="controller.navigateBack(-1)" class="glyphicon glyphicon-menu-left"></a></li>
 					<li><a ng-click="controller.openElementNavigator('med')" class="glyphicon glyphicon-list-alt"></a></li>
-		  			<li ng-repeat="bc in breadcrumb"><a href="">{{bc}}</a></li>
+		  			<li ng-repeat="bc in breadcrumb"><a ng-click="controller.navigateBack(1 + $index)">{{bc}}</a></li>
 				</ol>		
 			</div>
 		</div>
