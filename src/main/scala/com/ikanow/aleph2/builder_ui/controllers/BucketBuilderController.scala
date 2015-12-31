@@ -71,6 +71,14 @@ object BucketBuilderController extends Controller[Scope] {
         
     scope.element_grid_options = GridsterOptionsJs()
     
+    scope.element_template_tree = js.Array()
+   
+    scope.element_template_tree_expanded = js.Array()
+    
+    scope.element_template_tree_opts = js.Dynamic.literal(
+        dirSelectable = false
+        )    
+    
     recalculateTemplates()
   }
 
@@ -80,16 +88,21 @@ object BucketBuilderController extends Controller[Scope] {
       {
           scope.element_template_array = beans.toArray
         
-          scope.element_template_tree = 
-            ElementTreeBuilder.getTemplateTree(scope.breadcrumb, beans)             
-            
-          scope.element_template_tree_expanded = 
+          scope.element_template_tree.clear()
+          scope.element_template_tree.appendAll(
+            ElementTreeBuilder.getTemplateTree(scope.breadcrumb_system, beans)
+          )
+          
+          scope.element_template_tree_expanded.clear()
+          scope.element_template_tree_expanded.appendAll(
             scope.element_template_tree.filter { node => node.category }.toJSArray
-      }}
-    
-    scope.element_template_tree_opts = js.Dynamic.literal(
-        dirSelectable = false
-        )    
+          )
+          
+          // (needed because of the future - not sure if this will still be the case if the promise is 
+          //  composed from the http service - you can't nest $apply so will need to monitor this)
+          scope.$apply("")
+      }
+    }    
   }
   
   @JSExport
@@ -97,18 +110,17 @@ object BucketBuilderController extends Controller[Scope] {
     
     // Remove any dummy elements:
     scope.element_grid = scope.element_grid.filter { node => node.deletable }
-
+    
     // Get the value
-    //val template = node.asInstanceOf[ElementTemplateNodeJs]
     val bean = scope.element_template_array(template.templateIndex)
     
     // Get current highest row:
     val max_row = 1 + scope.element_grid.map { card => card.row }.reduceOption(_ max _).getOrElse(-1)
-    
+
     // Add new card
     val new_card = ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean)
     scope.element_grid.push(new_card)
-    
+
     // Add to the current element's children
     scope.curr_element.children.push(
         ElementNodeJs(new_card.label, new_card, scope.curr_element)
@@ -117,17 +129,21 @@ object BucketBuilderController extends Controller[Scope] {
 
   @JSExport
   def expandElement(item: ElementCardJs): Unit = {
-    //TODO
-    // The idea here is to set current card to selected one
-    // update the breadcrumb
-    // and then recalculate all the templates
     
-    // Update the breadcrumbs and get the next set of templates
-    scope.breadcrumb.push(item.label)
-    val new_path_el = item.template_json.get("key").get.toString()
-    scope.breadcrumb_system.push(new_path_el)
+    scope.curr_element.children.find { node => node.element == item }.foreach { new_node => {
     
-    recalculateTemplates()
+      scope.curr_element = new_node
+      
+      scope.element_grid.clear()
+      scope.element_grid.appendAll(scope.curr_element.children.map { node => node.element })
+      
+      // Update the breadcrumbs and get the next set of templates
+      val new_path_el = item.template_json.get("key").get.toString()
+      scope.breadcrumb.push(item.label)
+      scope.breadcrumb_system.push(new_path_el)
+      
+      recalculateTemplates()
+    }}
   }
   
   @JSExport
@@ -148,8 +164,6 @@ object BucketBuilderController extends Controller[Scope] {
   @JSExport
   def openElementNavigator(size: String): Unit = {
 
-      //TODO: handle
-    
 		  modal.open(
 				  js.Dynamic.literal(
 						  templateUrl = "templates/quick_navigate.html",
