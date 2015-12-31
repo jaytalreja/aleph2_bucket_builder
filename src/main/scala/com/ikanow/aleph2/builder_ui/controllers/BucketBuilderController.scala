@@ -60,10 +60,21 @@ object BucketBuilderController extends Controller[Scope] {
   override def initialize(): Unit = {
     super.initialize()
 
-    //TODO: want 2 breadcrumb strings, one for display + one for filtering
     scope.breadcrumb = js.Array("Bucket")
+    scope.breadcrumb_system = js.Array("Bucket")
     
     element_service.getMutableRoot().foreach { root => scope.curr_element = root }
+    
+    scope.element_grid = js.Array(
+        ElementCardJs.buildDummy("Add content from 'Templates' list")
+        )
+        
+    scope.element_grid_options = GridsterOptionsJs()
+    
+    recalculateTemplates()
+  }
+
+  def recalculateTemplates():Unit = {
     
     element_template_service.requestElementTemplates(true).foreach { beans => 
       {
@@ -78,23 +89,17 @@ object BucketBuilderController extends Controller[Scope] {
     
     scope.element_template_tree_opts = js.Dynamic.literal(
         dirSelectable = false
-        )
-    
-    scope.element_grid = js.Array(
-        ElementCardJs.buildDummy("Add content from 'Templates' list")
-        )
-        
-    scope.element_grid_options = GridsterOptionsJs()
+        )    
   }
-
+  
   @JSExport
-  def insertElement(node: js.Object):Unit = {
+  def insertElement(template: ElementTemplateNodeJs):Unit = {
     
     // Remove any dummy elements:
     scope.element_grid = scope.element_grid.filter { node => node.deletable }
-    
+
     // Get the value
-    val template = node.asInstanceOf[ElementTemplateNodeJs]
+    //val template = node.asInstanceOf[ElementTemplateNodeJs]
     val bean = scope.element_template_array(template.templateIndex)
     
     // Get current highest row:
@@ -108,6 +113,21 @@ object BucketBuilderController extends Controller[Scope] {
     scope.curr_element.children.push(
         ElementNodeJs(new_card.label, new_card, scope.curr_element)
         )
+  }
+
+  @JSExport
+  def expandElement(item: ElementCardJs): Unit = {
+    //TODO
+    // The idea here is to set current card to selected one
+    // update the breadcrumb
+    // and then recalculate all the templates
+    
+    // Update the breadcrumbs and get the next set of templates
+    scope.breadcrumb.push(item.label)
+    val new_path_el = item.template_json.get("key").get.toString()
+    scope.breadcrumb_system.push(new_path_el)
+    
+    recalculateTemplates()
   }
   
   @JSExport
@@ -149,6 +169,7 @@ object BucketBuilderController extends Controller[Scope] {
     // Data Model
     
     var breadcrumb: js.Array[String] = js.native
+    var breadcrumb_system: js.Array[String] = js.native
 
     var curr_element: ElementNodeJs = js.native
     

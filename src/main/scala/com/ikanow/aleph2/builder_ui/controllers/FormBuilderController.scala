@@ -57,7 +57,7 @@ class FormBuilderController(
     fields = curr_card.form_metadata
     
     scope.form_info_html = {
-      if (curr_card.form_info.matches("^\\s*<"))
+      if (curr_card.form_info.trim().startsWith("<"))
         curr_card.form_info
       else
         p(curr_card.form_info).toString()
