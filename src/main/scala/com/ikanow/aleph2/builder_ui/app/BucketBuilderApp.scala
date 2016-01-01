@@ -45,13 +45,14 @@ object BucketBuilderApp extends JSApp {
 			// Legacy property method - move over to the c'tor method
 			module
   			.controller(BucketBuilderController)
-  			.controller(QuickNavigateController)
   			.factory[ElementServiceFactory]
   			.factory[ElementTemplateServiceFactory]
+  			.factory[UndoRedoServiceFactory]
   			.config(BucketBuilderRouter)
 
   		// Preferred c'tor method
 			module
+  			.controller[QuickNavigateController]
   			.controller[FormBuilderController]
   			
 	}

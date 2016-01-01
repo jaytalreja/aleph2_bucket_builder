@@ -84,8 +84,8 @@ object BucketBuilderController extends Controller[Scope] {
     
     recalculateTemplates()
     
-    scope.$on("quick_navigate", (event: js.Any) => {
-      //TODO navigateTo
+    scope.$on("quick_navigate", (event: Event, message: ElementNodeJs) => {
+      navigateTo(message)
     })
   }
 
@@ -167,6 +167,8 @@ object BucketBuilderController extends Controller[Scope] {
       // Update the breadcrumbs and get the next set of templates
       rebuildBreadcrumbs(new_node)
 
+      element_service.setElementLevel(new_node)
+      
       recalculateTemplates()
   }
   

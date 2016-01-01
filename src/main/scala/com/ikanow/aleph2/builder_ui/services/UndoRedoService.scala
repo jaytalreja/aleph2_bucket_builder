@@ -34,32 +34,42 @@ import com.ikanow.aleph2.builder_ui.data_model._
 /** Retrieves the templates
  * @author alex
  */
-@injectable("elementService")
-class ElementService {
+@injectable("undoRedoService")
+class UndoRedoService {
   
-  val root:ElementNodeJs = ElementNodeJs.buildRoot()
-  
-  def getMutableRoot(): Future[ElementNodeJs] = {    
-    Future.successful(root)
-  }
-
-  def setElementToEdit(new_card: ElementCardJs):Unit = {
-    curr_card = new_card;
-  }
-  def getElementToEdit():ElementCardJs = curr_card
-  
-  var curr_card: ElementCardJs = null;
-  
-  def setElementLevel(new_level: ElementNodeJs):Unit = {
-    curr_level = new_level
+  def registerState(new_root: ElementNodeJs): Unit = {
+    undo_list = new_root :: undo_list
+    redo_list = List() // (remove all elements from the redo list)
   }
   
-  def getElementLevel():ElementNodeJs = curr_level
+  def getPrevState(): Option[ElementNodeJs] = {
+    val to_return: Option[ElementNodeJs] = undo_list match {
+      case head :: tail => {
+        undo_list = undo_list.drop(1)
+        redo_list = head :: redo_list
+        Option(head)
+      }
+      case default => Option.empty
+    }
+    to_return
+  }
   
-  var curr_level: ElementNodeJs = root;
+  def getNextState(): Option[ElementNodeJs] = {
+    val to_return: Option[ElementNodeJs] = redo_list match {
+      case head :: tail => {
+        redo_list = redo_list.drop(1)
+        Option(head)
+      }
+      case default => Option.empty
+    }
+    to_return
+  }
+  
+  protected var undo_list: List[ElementNodeJs] = List()
+  protected var redo_list: List[ElementNodeJs] = List()
 }
 
-@injectable("elementService")
-class ElementServiceFactory extends Factory[ElementService] {
-  override def apply() = new ElementService
+@injectable("undoRedoService")
+class UndoRedoServiceFactory extends Factory[UndoRedoService] {
+  override def apply() = new UndoRedoService
 }

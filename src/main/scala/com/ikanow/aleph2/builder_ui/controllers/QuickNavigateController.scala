@@ -37,31 +37,30 @@ import com.ikanow.aleph2.builder_ui.services._
  */
 @JSExport
 @injectable("quickNavigateCtrl")
-object QuickNavigateController extends Controller[Scope] {
+class QuickNavigateController(
+    scope: QuickNavigationScope, 
+    rootScope: RootScope, 
+    modal: ModalInstance[Unit],
+    element_service: ElementService
+    ) extends AbstractController[Scope](scope) {
 
   import js.JSConverters._
 
-  @inject
-  var scope: ControllerData = _  
-  
-  //TODO: need to move to c'tor intialization to make this work it seems
-  @inject
-  var rootScope: RootScope = _
-  
-  @inject
-  var modal: ModalInstance[Unit] = _
-  
-  @inject
-  var element_service: ElementService = _
-  
   override def initialize(): Unit = {
     super.initialize()
     
+    scope.selected_item = element_service.getElementLevel()
+
     element_service.getMutableRoot().foreach { root => { 
       scope.element_tree = js.Array(root)
       //expand all:
       scope.element_tree_expanded = flatten(List(), root).toJSArray
     }}
+    
+    scope.element_tree_opts = js.Dynamic.literal(
+        //(no options)
+        )    
+    
   }
 
   def flatten(acc: List[ElementNodeJs], root: ElementNodeJs): List[ElementNodeJs] = {
@@ -74,8 +73,11 @@ object QuickNavigateController extends Controller[Scope] {
   @JSExport
   def ok(): Unit = {    
     
-    //TODO: send the selected item
-    rootScope.$broadcast("quickNavigate", "TODOTEST")
+    val to_navigate:ElementNodeJs = 
+        if (scope.selected_item.element.expandable) scope.selected_item
+        else scope.selected_item.parent
+    
+    rootScope.$broadcast("quick_navigate", to_navigate)
     
     modal.close()
   }  
@@ -83,15 +85,22 @@ object QuickNavigateController extends Controller[Scope] {
   @JSExport
   def cancel(): Unit = {
     modal.close()
-  }  
-  
-  /**
-   * The specific scope data used in this controller
-   */
-  @js.native
-  trait ControllerData extends Scope {
-    
-    var element_tree: js.Array[ElementNodeJs] = js.native
-    var element_tree_expanded: js.Array[ElementNodeJs] = js.native
   }
+  
+  @JSExport
+  def isSelectable(node: ElementNodeJs):Boolean = node.element.expandable
 }
+
+/**
+ * The specific scope data used in this controller
+ */
+@js.native
+trait QuickNavigationScope extends Scope {
+  var selected_item: ElementNodeJs = js.native
+  
+  var element_tree: js.Array[ElementNodeJs] = js.native
+  var element_tree_expanded: js.Array[ElementNodeJs] = js.native
+  
+  var element_tree_opts: js.Object = js.native
+}
+
