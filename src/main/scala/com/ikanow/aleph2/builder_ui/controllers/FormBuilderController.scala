@@ -46,6 +46,7 @@ class FormBuilderController(
     scope: FormBuilderScope,
     rootScope: RootScope,
     element_service: ElementService,
+    undo_redo_service: UndoRedoService,
     modal: ModalInstance[Unit])
     
   extends AbstractController[Scope](scope) {
@@ -53,15 +54,18 @@ class FormBuilderController(
   override def initialize(): Unit = {
     super.initialize()
 
-    val curr_card = element_service.getElementToEdit();
+    val curr_card_node = element_service.getElementToEdit();
     
-    fields = curr_card.form_metadata
+    fields = curr_card_node.element.form_metadata
+    
+    // deep copy:
+    model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
     
     scope.form_info_html = {
-      if (curr_card.form_info.trim().startsWith("<"))
-        curr_card.form_info
+      if (curr_card_node.element.form_info.trim().startsWith("<"))
+        curr_card_node.element.form_info
       else
-        p(curr_card.form_info).toString()
+        p(curr_card_node.element.form_info).toString()
     }
   }
 
@@ -69,13 +73,25 @@ class FormBuilderController(
   var form_info_html: String = "<p></p>"
   
   @JSExport
-  var model: js.Object = js.Object()
+  var model: js.Dictionary[js.Any] = null
 
   @JSExport
   var fields: js.Array[js.Any] = js.Array()
     
   @JSExport
   def ok(): Unit = {    
+    val curr_card_node = element_service.getElementToEdit();
+    
+    // First register with undo service
+    
+    //TODO: not working
+    //undo_redo_service.registerState(ModifyElement(curr_card_node, curr_card_node))
+    
+    // Now mutate the state
+    
+    curr_card_node.element.form_model.clear()
+    model.map { case (key, value) => curr_card_node.element.form_model.put(key, value) }    
+    
     modal.close()
   }  
   

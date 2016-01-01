@@ -40,6 +40,7 @@ trait ElementCardJs extends js.Object {
   // Template info
   val form_metadata: js.Array[js.Any] = js.native
   val form_info: String = js.native
+  val form_model: js.Dictionary[js.Any] = js.native
   val template_json:js.Dictionary[js.Any] = js.native
 }
 
@@ -54,7 +55,9 @@ object ElementCardJs {
     
     js.Dynamic.literal(label = label, row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,
-                        form_metadata = form_metadata, form_info = form_info, template_json = template_json
+                        form_metadata = form_metadata, form_info = form_info, 
+                        form_model = js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]],
+                        template_json = template_json
                         )
       .asInstanceOf[ElementCardJs]
   }

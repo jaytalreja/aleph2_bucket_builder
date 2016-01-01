@@ -144,21 +144,6 @@ object BucketBuilderController extends Controller[Scope] {
   }
   
   @JSExport
-  def deleteElementConfig(card: ElementCardJs):Unit = {
-    // Remove from list (bail if an internal error occurs)
-    
-    scope.curr_element.children.find(node => node.element == card).foreach { node => {
-      scope.curr_element.children.remove(scope.curr_element.children.indexOf(node)) 
-      
-      // Remove from grid
-      scope.element_grid.remove(scope.element_grid.indexOf(card))
-    
-      // Register with undo
-      undo_redo_service.registerState(DeleteElement(node))      
-    }}
-  }
-  
-  @JSExport
   def insertElement(template: ElementTemplateNodeJs):Unit = {
     
     // Remove any dummy elements:
@@ -241,18 +226,35 @@ object BucketBuilderController extends Controller[Scope] {
   @JSExport
   def openElementConfig(item: ElementCardJs, size: String): Unit = {
       // Can't get resolve working so going via the service:
-     element_service.setElementToEdit(item);
-    
-		  modal.open(
-				  js.Dynamic.literal(
-						  templateUrl = "templates/form_builder.html",
-						  controller = "formBuilderCtrl", 
-						  size = size
-						  )
-						  .asInstanceOf[ModalOptions]
-				  )
+    scope.curr_element.children.find(node => node.element == item).foreach { node => {
+       element_service.setElementToEdit(node);
+      
+  		  modal.open(
+  				  js.Dynamic.literal(
+  						  templateUrl = "templates/form_builder.html",
+  						  controller = "formBuilderCtrl", 
+  						  size = size
+  						  )
+  						  .asInstanceOf[ModalOptions]
+  				  )
+    }}
   }
 
+  @JSExport
+  def deleteElementConfig(card: ElementCardJs):Unit = {
+    // Remove from list (bail if an internal error occurs)
+    
+    scope.curr_element.children.find(node => node.element == card).foreach { node => {
+      scope.curr_element.children.remove(scope.curr_element.children.indexOf(node)) 
+      
+      // Remove from grid
+      scope.element_grid.remove(scope.element_grid.indexOf(card))
+    
+      // Register with undo
+      undo_redo_service.registerState(DeleteElement(node))      
+    }}
+  }
+  
   @JSExport
   def openElementNavigator(size: String): Unit = {
 
