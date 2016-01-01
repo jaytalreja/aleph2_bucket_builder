@@ -24,4 +24,4 @@ case class DeleteElement(old_element: ElementNodeJs) extends UndoRedoElement
 /** When built externally, just repeat the same element (ie the one about to be -but not yet- mutated) as both args
  * @author alex
  */
-case class ModifyElement(modified_element: ElementNodeJs, repeat_1st_element: ElementNodeJs) extends UndoRedoElement
+case class ModifyElement(about_to_modify_copy: ElementNodeJs, about_to_modify_ref: ElementNodeJs) extends UndoRedoElement

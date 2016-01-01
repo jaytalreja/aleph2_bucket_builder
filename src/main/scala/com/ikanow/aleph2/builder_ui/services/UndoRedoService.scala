@@ -79,11 +79,8 @@ protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
         }
         case DeleteElement(deleted_element) => deleted_element.parent.children.push(deleted_element)
         case ModifyElement(old_element, curr_element) => {
-          val index = curr_element.parent.children.prefixLength { el => el != curr_element }
-          if (index < curr_element.parent.children.length) {
-            curr_element.parent.children.remove(index)
-            curr_element.parent.children.push(old_element)
-          }
+          curr_element.parent.children.remove(curr_element.parent.children.indexOf(curr_element))
+          curr_element.parent.children.push(old_element)
         }
       }    
   }
@@ -111,7 +108,7 @@ protected def adjustElement(state_change: UndoRedoElement): UndoRedoElement = {
     state_change match {
       case ModifyElement(curr_element, curr_element_again) => {        
         val copy_of_curr_element = ElementNodeJs(curr_element.label, 
-            JSON.parse(JSON.stringify(curr_element.element)).asInstanceOf[ElementCardJs],//(deep copy element) 
+            ElementCardJs.from(curr_element.element), //(deep copy element) 
             curr_element.parent, curr_element.children)
         ModifyElement(copy_of_curr_element, curr_element)
       }

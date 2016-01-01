@@ -45,6 +45,16 @@ trait ElementCardJs extends js.Object {
 }
 
 object ElementCardJs {
+  def from(copy: ElementCardJs) = {
+    js.Dynamic.literal(label = copy.label, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
+                        expandable = copy.expandable, configurable = copy.configurable, deletable = copy.deletable,
+                        form_metadata = copy.form_metadata, form_info = copy.form_info, 
+                        form_model = JSON.parse(JSON.stringify(copy.form_model)), // extra deep!
+                        template_json = copy.template_json
+                        )
+      .asInstanceOf[ElementCardJs]    
+  }
+  
   def apply(label: String, row: Int, col: Int, expandable: Boolean, template: ElementTemplateBean): ElementCardJs = {
     val form_info = template.form_info
     

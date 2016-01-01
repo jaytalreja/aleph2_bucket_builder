@@ -112,7 +112,7 @@ object BucketBuilderController extends Controller[Scope] {
       case DeleteElement(deleted) => {
         navigateTo(deleted.parent)
       }
-      case ModifyElement(modded, original) => {
+      case ModifyElement(original, modded) => {
         navigateTo(original.parent)
         this.openElementConfig(original.element, "xl")
       }

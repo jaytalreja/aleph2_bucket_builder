@@ -84,8 +84,7 @@ class FormBuilderController(
     
     // First register with undo service
     
-    //TODO: not working
-    //undo_redo_service.registerState(ModifyElement(curr_card_node, curr_card_node))
+    undo_redo_service.registerState(ModifyElement(curr_card_node, curr_card_node))
     
     // Now mutate the state
     
