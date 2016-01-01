@@ -56,7 +56,7 @@ class FormBuilderController(
 
     val curr_card_node = element_service.getElementToEdit();
     
-    fields = curr_card_node.element.form_metadata
+    fields = curr_card_node.element.template_json.get("schema").getOrElse(js.Array()).asInstanceOf[js.Array[js.Any]]
     
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]

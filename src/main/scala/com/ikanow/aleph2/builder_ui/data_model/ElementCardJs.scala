@@ -38,7 +38,6 @@ trait ElementCardJs extends js.Object {
   val deletable: Boolean = js.native
   
   // Template info
-  val form_metadata: js.Array[js.Any] = js.native
   val form_info: String = js.native
   val form_model: js.Dictionary[js.Any] = js.native
   val template_json:js.Dictionary[js.Any] = js.native
@@ -48,7 +47,7 @@ object ElementCardJs {
   def from(copy: ElementCardJs) = {
     js.Dynamic.literal(label = copy.label, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
                         expandable = copy.expandable, configurable = copy.configurable, deletable = copy.deletable,
-                        form_metadata = copy.form_metadata, form_info = copy.form_info, 
+                        form_info = copy.form_info, 
                         form_model = JSON.parse(JSON.stringify(copy.form_model)), // extra deep!
                         template_json = copy.template_json
                         )
@@ -61,11 +60,10 @@ object ElementCardJs {
     import upickle.default._
     
     val template_json = JSON.parse(write(template)).asInstanceOf[js.Dictionary[js.Any]]
-    val form_metadata = template_json.get("schema").getOrElse(js.Dynamic.literal).asInstanceOf[js.Any]
     
     js.Dynamic.literal(label = label, row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,
-                        form_metadata = form_metadata, form_info = form_info, 
+                        form_info = form_info, 
                         form_model = js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]],
                         template_json = template_json
                         )
