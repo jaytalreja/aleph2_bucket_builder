@@ -19,6 +19,7 @@ import com.ikanow.aleph2.builder_ui.data_model._
 
 import com.greencatsoft.angularjs.core._
 import scala.scalajs.js
+import scala.scalajs.js.JSON
 import com.greencatsoft.angularjs._
 
 import js.JSConverters._
@@ -47,4 +48,14 @@ object ElementTreeBuilder {
                   )
               }.toJSArray
     }  
+    
+    
+    def stringifyTree(root: ElementNodeJs): String = {
+        JSON.stringify(root, (k: String, v: js.Any) => {
+          if ((null == v) || (k.startsWith("$")))
+            js.undefined.asInstanceOf[js.Any]
+          else
+            v
+        })
+    }
 }

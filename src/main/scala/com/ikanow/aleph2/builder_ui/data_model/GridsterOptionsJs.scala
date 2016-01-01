@@ -64,7 +64,7 @@ object GridsterOptionsJs {
         defaultSizeX = 1,
         defaultSizeY = 1,
         floating = false,
-        resizable = GridsterOptions_ResizableJs(false),
+        resizable = GridsterOptions_ResizableJs(true),
         draggable = GridsterOptions_DraggableJs(true)
         )
         .asInstanceOf[GridsterOptionsJs]

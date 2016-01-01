@@ -107,13 +107,13 @@ object BucketBuilderController extends Controller[Scope] {
   protected def handleUndoRedo(maybe_change:Option[UndoRedoElement]):Unit = {
     maybe_change.foreach { change => change match {
       case AddElement(added) => {
-        navigateTo(added.parent)
+        navigateTo(added.$parent)
       }
       case DeleteElement(deleted) => {
-        navigateTo(deleted.parent)
+        navigateTo(deleted.$parent)
       }
       case ModifyElement(original, modded) => {
-        navigateTo(original.parent)
+        navigateTo(original.$parent)
         this.openElementConfig(original.element, "xl")
       }
     }}    
@@ -153,7 +153,7 @@ object BucketBuilderController extends Controller[Scope] {
     val bean = scope.element_template_array(template.templateIndex)
     
     // Get current highest row:
-    val max_row = 1 + scope.element_grid.map { card => card.row }.reduceOption(_ max _).getOrElse(-1)
+    val max_row = 1 + scope.element_grid.map { card => card.row + card.sizeY - 1 }.reduceOption(_ max _).getOrElse(-1)
 
     // Add new card
     val new_card = ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean)
@@ -179,7 +179,7 @@ object BucketBuilderController extends Controller[Scope] {
   @JSExport
   def navigateBack(delta: Int):Unit = {
     if ((delta < 0) && !scope.curr_element.root) {
-      scope.curr_element = scope.curr_element.parent
+      scope.curr_element = scope.curr_element.$parent
       if (-1 == delta)
         navigateTo(scope.curr_element)
       else
@@ -220,7 +220,7 @@ object BucketBuilderController extends Controller[Scope] {
     if (element.root)
       element.label :: acc
     else 
-      extractor(element) :: rebuildBreadcrumb(acc, element.parent, extractor)
+      extractor(element) :: rebuildBreadcrumb(acc, element.$parent, extractor)
   }
   
   @JSExport
@@ -268,6 +268,11 @@ object BucketBuilderController extends Controller[Scope] {
 				  )
   }
 
+  @JSExport
+  def logCurrentTree(): Unit = {
+    println(ElementTreeBuilder.stringifyTree(scope.curr_element))
+  }
+  
   /**
    * The specific scope data used in this controller
    */

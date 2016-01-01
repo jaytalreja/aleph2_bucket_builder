@@ -25,7 +25,7 @@ import com.greencatsoft.angularjs._
  */
 trait ElementNodeJs extends js.Object {
   val root: Boolean = js.native
-  val parent: ElementNodeJs = js.native
+  val $parent: ElementNodeJs = js.native
   
   val label: String = js.native
   val children: js.Array[ElementNodeJs] = js.native
@@ -38,8 +38,8 @@ object ElementNodeJs {
     js.Dynamic.literal(root = true, label = "Bucket", children = js.Array()).asInstanceOf[ElementNodeJs]
   
   def apply(label: String, element: ElementCardJs, parent: ElementNodeJs): ElementNodeJs = 
-    js.Dynamic.literal(root = false, label = label, element = element, parent = parent, children = js.Array()).asInstanceOf[ElementNodeJs]
+    js.Dynamic.literal(root = false, label = label, element = element, $parent = parent, children = js.Array()).asInstanceOf[ElementNodeJs]
   
   def apply(label: String, element: ElementCardJs, parent: ElementNodeJs, children: js.Array[ElementNodeJs]): ElementNodeJs = 
-    js.Dynamic.literal(root = false, label = label, element = element, parent = parent, children = children).asInstanceOf[ElementNodeJs] 
+    js.Dynamic.literal(root = false, label = label, element = element, $parent = parent, children = children).asInstanceOf[ElementNodeJs] 
 }

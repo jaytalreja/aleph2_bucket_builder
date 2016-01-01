@@ -75,7 +75,7 @@ class QuickNavigateController(
     
     val to_navigate:ElementNodeJs = 
         if (scope.selected_item.element.expandable) scope.selected_item
-        else scope.selected_item.parent
+        else scope.selected_item.$parent
     
     rootScope.$broadcast("quick_navigate", to_navigate)
     

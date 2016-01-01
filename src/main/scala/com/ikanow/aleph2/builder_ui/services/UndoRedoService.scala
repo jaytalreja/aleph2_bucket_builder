@@ -72,15 +72,15 @@ class UndoRedoService {
 protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
       el match {
         case AddElement(added_element) => {
-          val index = added_element.parent.children.prefixLength { el => el != added_element }
-          if (index < added_element.parent.children.length) {
-            added_element.parent.children.remove(index)
+          val index = added_element.$parent.children.prefixLength { el => el != added_element }
+          if (index < added_element.$parent.children.length) {
+            added_element.$parent.children.remove(index)
           }
         }
-        case DeleteElement(deleted_element) => deleted_element.parent.children.push(deleted_element)
+        case DeleteElement(deleted_element) => deleted_element.$parent.children.push(deleted_element)
         case ModifyElement(old_element, curr_element) => {
-          curr_element.parent.children.remove(curr_element.parent.children.indexOf(curr_element))
-          curr_element.parent.children.push(old_element)
+          curr_element.$parent.children.remove(curr_element.$parent.children.indexOf(curr_element))
+          curr_element.$parent.children.push(old_element)
         }
       }    
   }
@@ -109,7 +109,7 @@ protected def adjustElement(state_change: UndoRedoElement): UndoRedoElement = {
       case ModifyElement(curr_element, curr_element_again) => {        
         val copy_of_curr_element = ElementNodeJs(curr_element.label, 
             ElementCardJs.from(curr_element.element), //(deep copy element) 
-            curr_element.parent, curr_element.children)
+            curr_element.$parent, curr_element.children)
         ModifyElement(copy_of_curr_element, curr_element)
       }
       case default => state_change
