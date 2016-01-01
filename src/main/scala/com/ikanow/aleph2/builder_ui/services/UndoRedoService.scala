@@ -29,6 +29,8 @@ import ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
+import scala.collection.mutable.MutableList
+
 import com.ikanow.aleph2.builder_ui.data_model._
 
 /** Retrieves the templates
@@ -37,55 +39,88 @@ import com.ikanow.aleph2.builder_ui.data_model._
 @injectable("undoRedoService")
 class UndoRedoService {
   
-  def registerState(state_change: UndoRedoElement): Unit = {
-    val actual_state_change = state_change match {
-      case ModifyElement(curr_element, curr_element_again) => {        
-        //  def apply(label: String, element: ElementCardJs, parent: ElementNodeJs, children: js.Array[ElementNodeJs]): ElementNodeJs = 
+  def registerState(state_change: UndoRedoElement): Unit = {    
+    undo_list += adjustElement(state_change)
+    redo_list.clear()
+  }
+  
+  def restorePrevState(curr_state: ElementNodeJs): Option[UndoRedoElement] = {
+    restoreOrUnrestoreState(curr_state, undo_list, redo_list)
+  }
+  def redoUndoneState(curr_state: ElementNodeJs): Option[UndoRedoElement] = {
+    restoreOrUnrestoreState(curr_state, redo_list, undo_list)
+  }
 
+  protected def restoreOrUnrestoreState(curr_state: ElementNodeJs, 
+      list1: MutableList[UndoRedoElement], list2: MutableList[UndoRedoElement]): Option[UndoRedoElement] = {    
+    if (list1.isEmpty) {
+      Option.empty
+    }
+    else {
+      val head = list1.head
+      list1.drop(1)
+      list2 += reverseElement(head)
+        mutateState(head, curr_state)
+        Option(head)
+    }
+  }
+  
+  /** Apply an undo/redo element to the state
+ * @param el
+ * @param state
+ */
+protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
+      el match {
+        case AddElement(added_element) => {
+          val index = added_element.parent.children.prefixLength { el => el != added_element }
+          if (index < added_element.parent.children.length) {
+            added_element.parent.children.remove(index)
+          }
+        }
+        case DeleteElement(deleted_element) => deleted_element.parent.children.push(deleted_element)
+        case ModifyElement(old_element, curr_element) => {
+          val index = curr_element.parent.children.prefixLength { el => el != curr_element }
+          if (index < curr_element.parent.children.length) {
+            curr_element.parent.children.remove(index)
+            curr_element.parent.children.push(old_element)
+          }
+        }
+      }    
+  }
+  
+  /** For switching between undo and redo lists
+ * @param el
+ * @return
+ */
+protected def reverseElement(el: UndoRedoElement): UndoRedoElement = {
+      el match {
+        case AddElement(added_element) => DeleteElement(added_element)
+        case DeleteElement(deleted_element) => AddElement(deleted_element)
+        case ModifyElement(old_element, curr_element) => {
+          //(if this is here then old_element is now in the global mutable state so just switch them)
+          ModifyElement(curr_element, old_element)
+        }
+      }
+  }
+  
+ /** 
+ * @param state_change
+ * @return
+ */
+protected def adjustElement(state_change: UndoRedoElement): UndoRedoElement = {
+    state_change match {
+      case ModifyElement(curr_element, curr_element_again) => {        
         val copy_of_curr_element = ElementNodeJs(curr_element.label, 
             JSON.parse(JSON.stringify(curr_element.element)).asInstanceOf[ElementCardJs],//(deep copy element) 
             curr_element.parent, curr_element.children)
         ModifyElement(copy_of_curr_element, curr_element)
       }
       case default => state_change
-    }
-    
-    undo_list = actual_state_change :: undo_list
-    redo_list = List() // (remove all elements from the redo list)
+    }    
   }
   
-  def restorePrevState(curr_state: ElementNodeJs): Option[UndoRedoElement] = {
-    val to_return = undo_list match {
-      case head :: tail => {
-        undo_list = undo_list.drop(1)
-        redo_list = head :: redo_list
-        head match {
-          case AddElement(added_element) => {
-            val index = added_element.parent.children.prefixLength { el => el != added_element }
-            if (index < added_element.parent.children.length) {
-              added_element.parent.children.remove(index)
-            }
-          }
-          case DeleteElement(deleted_element) => deleted_element.parent.children.push(deleted_element)
-          case ModifyElement(old_element, curr_element) => {
-            val index = curr_element.parent.children.prefixLength { el => el != curr_element }
-            if (index < curr_element.parent.children.length) {
-              curr_element.parent.children.remove(index)
-              curr_element.parent.children.push(old_element)
-            }
-          }
-        }
-        Option(head)
-      }
-      case default => Option.empty
-    }
-    to_return
-  }
-
-  //TODO redoUndoneState
-  
-  protected var undo_list: List[UndoRedoElement] = List()
-  protected var redo_list: List[UndoRedoElement] = List()
+  protected var undo_list: MutableList[UndoRedoElement] = MutableList()
+  protected var redo_list: MutableList[UndoRedoElement] = MutableList()
 }
 
 @injectable("undoRedoService")
