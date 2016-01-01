@@ -57,6 +57,9 @@ object BucketBuilderController extends Controller[Scope] {
   @inject
   var element_service: ElementService = _
     
+  @inject
+  var undo_redo_service: UndoRedoService = _
+  
   override def initialize(): Unit = {
     super.initialize()
 
@@ -89,9 +92,37 @@ object BucketBuilderController extends Controller[Scope] {
     })
   }
 
-  def recalculateTemplates():Unit = {
+  @JSExport
+  def undo(): Unit = {
+    val maybe_change = undo_redo_service.restorePrevState(scope.curr_element)
+    handleUndoRedo(maybe_change)
+  }
+
+  @JSExport
+  def redo(): Unit = {    
+    val maybe_change = undo_redo_service.redoUndoneState(scope.curr_element)
+    handleUndoRedo(maybe_change)
+  }
+
+  protected def handleUndoRedo(maybe_change:Option[UndoRedoElement]):Unit = {
+    maybe_change.foreach { change => change match {
+      case AddElement(added) => {
+        navigateTo(added.parent)
+      }
+      case DeleteElement(deleted) => {
+        navigateTo(deleted.parent)
+      }
+      case ModifyElement(modded, original) => {
+        navigateTo(original.parent)
+        this.openElementConfig(original.element, "xl")
+      }
+    }}    
+  }
+  
+  @JSExport
+  def recalculateTemplates(reload: Boolean = false):Unit = {
     
-    element_template_service.requestElementTemplates(true).foreach { beans => 
+    element_template_service.requestElementTemplates(!reload).foreach { beans => 
       {
           scope.element_template_array = beans.toArray
         
@@ -113,6 +144,21 @@ object BucketBuilderController extends Controller[Scope] {
   }
   
   @JSExport
+  def deleteElementConfig(card: ElementCardJs):Unit = {
+    // Remove from list (bail if an internal error occurs)
+    
+    scope.curr_element.children.find(node => node.element == card).foreach { node => {
+      scope.curr_element.children.remove(scope.curr_element.children.indexOf(node)) 
+      
+      // Remove from grid
+      scope.element_grid.remove(scope.element_grid.indexOf(card))
+    
+      // Register with undo
+      undo_redo_service.registerState(DeleteElement(node))      
+    }}
+  }
+  
+  @JSExport
   def insertElement(template: ElementTemplateNodeJs):Unit = {
     
     // Remove any dummy elements:
@@ -129,13 +175,15 @@ object BucketBuilderController extends Controller[Scope] {
     scope.element_grid.push(new_card)
 
     // Add to the current element's children
-    scope.curr_element.children.push(
-        ElementNodeJs(new_card.label, new_card, scope.curr_element)
-        )
+    val new_node = ElementNodeJs(new_card.label, new_card, scope.curr_element)
+    scope.curr_element.children.push(new_node)
+        
+    // Register with undo
+    undo_redo_service.registerState(AddElement(new_node))
   }
 
   @JSExport
-  def expandElement(item: ElementCardJs): Unit = {
+  def expandElementConfig(item: ElementCardJs): Unit = {
     
     scope.curr_element.children.find { node => node.element == item }.foreach { new_node => {
       navigateTo(new_node)

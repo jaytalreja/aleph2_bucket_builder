@@ -18,6 +18,9 @@
 						<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
 					 </span>
 					<input type="text" class="form-control" placeholder="Search" ng-model="element_search">
+					<span class="input-group-btn">
+						<button class="btn btn-default" ng-click="controller.recalculateTemplates(true)" type="button"><span class="glyphicon glyphicon-refresh"></span></button>
+					 </span>
 				</div>		
 		
 				<!-- 1.2] ACTUAL TREE -->
@@ -37,12 +40,18 @@
 	<div class="col-md-9">
 		
 		<div class="row">
-			<div class="col-md-5">
+			<div class="col-md-9">
 				<ol class="breadcrumb" >
 					<li><a ng-click="controller.navigateBack(-1)" class="glyphicon glyphicon-menu-left"></a></li>
 					<li><a ng-click="controller.openElementNavigator('med')" class="glyphicon glyphicon-list-alt"></a></li>
 		  			<li ng-repeat="bc in breadcrumb"><a ng-click="controller.navigateBack(1 + $index)">{{bc}}</a></li>
 				</ol>		
+			</div>
+			<div class="col-md-2">
+				<div class="btn-group" role="group">
+					<button type="button" ng-click="controller.undo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat icon-flipped"></span></button>
+					<button type="button" ng-click="controller.redo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
+				</div>
 			</div>
 		</div>
 		
@@ -54,8 +63,8 @@
 							<div class="panel panel-default" style="height:100%">
 							  <div class="panel-heading">
 								<a ng-show="item.configurable" ng-click="controller.openElementConfig(item, 'xl')" class="glyphicon glyphicon-cog"></a>
-								<a ng-show="item.expandable" ng-click="controller.expandElement(item)" class="glyphicon glyphicon-fullscreen"></a>
-								<a ng-show="item.deletable" class="glyphicon glyphicon-trash"></a>						
+								<a ng-show="item.expandable" ng-click="controller.expandElementConfig(item)" class="glyphicon glyphicon-fullscreen"></a>
+								<a ng-show="item.deletable" ng-click="controller.deleteElementConfig(item)" class="glyphicon glyphicon-trash"></a>						
 							  </div>
 							  <div class="panel-body">
 							    {{item.label}}

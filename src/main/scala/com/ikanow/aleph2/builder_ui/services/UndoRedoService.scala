@@ -29,7 +29,7 @@ import ExecutionContext.Implicits.global
 import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
-import scala.collection.mutable.MutableList
+import scala.collection.mutable.ListBuffer
 
 import com.ikanow.aleph2.builder_ui.data_model._
 
@@ -40,7 +40,7 @@ import com.ikanow.aleph2.builder_ui.data_model._
 class UndoRedoService {
   
   def registerState(state_change: UndoRedoElement): Unit = {    
-    undo_list += adjustElement(state_change)
+    adjustElement(state_change) +=: undo_list
     redo_list.clear()
   }
   
@@ -52,16 +52,16 @@ class UndoRedoService {
   }
 
   protected def restoreOrUnrestoreState(curr_state: ElementNodeJs, 
-      list1: MutableList[UndoRedoElement], list2: MutableList[UndoRedoElement]): Option[UndoRedoElement] = {    
+      list1: ListBuffer[UndoRedoElement], list2: ListBuffer[UndoRedoElement]): Option[UndoRedoElement] = {    
     if (list1.isEmpty) {
       Option.empty
     }
     else {
       val head = list1.head
-      list1.drop(1)
-      list2 += reverseElement(head)
-        mutateState(head, curr_state)
-        Option(head)
+      list1.remove(0)
+      reverseElement(head) +=: list2
+      mutateState(head, curr_state)
+      Option(head)
     }
   }
   
@@ -119,8 +119,8 @@ protected def adjustElement(state_change: UndoRedoElement): UndoRedoElement = {
     }    
   }
   
-  protected var undo_list: MutableList[UndoRedoElement] = MutableList()
-  protected var redo_list: MutableList[UndoRedoElement] = MutableList()
+  protected var undo_list: ListBuffer[UndoRedoElement] = ListBuffer()
+  protected var redo_list: ListBuffer[UndoRedoElement] = ListBuffer()
 }
 
 @injectable("undoRedoService")
