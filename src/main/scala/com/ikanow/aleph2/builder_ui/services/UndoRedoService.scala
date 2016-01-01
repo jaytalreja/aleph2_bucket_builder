@@ -21,7 +21,7 @@ import org.scalajs.dom.raw.HTMLElement
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.JSON
 import com.greencatsoft.angularjs._
 import com.greencatsoft.angularjs.extensions._
 
@@ -37,36 +37,55 @@ import com.ikanow.aleph2.builder_ui.data_model._
 @injectable("undoRedoService")
 class UndoRedoService {
   
-  def registerState(new_root: ElementNodeJs): Unit = {
-    undo_list = new_root :: undo_list
+  def registerState(state_change: UndoRedoElement): Unit = {
+    val actual_state_change = state_change match {
+      case ModifyElement(curr_element, curr_element_again) => {        
+        //  def apply(label: String, element: ElementCardJs, parent: ElementNodeJs, children: js.Array[ElementNodeJs]): ElementNodeJs = 
+
+        val copy_of_curr_element = ElementNodeJs(curr_element.label, 
+            JSON.parse(JSON.stringify(curr_element.element)).asInstanceOf[ElementCardJs],//(deep copy element) 
+            curr_element.parent, curr_element.children)
+        ModifyElement(copy_of_curr_element, curr_element)
+      }
+      case default => state_change
+    }
+    
+    undo_list = actual_state_change :: undo_list
     redo_list = List() // (remove all elements from the redo list)
   }
   
-  def getPrevState(): Option[ElementNodeJs] = {
-    val to_return: Option[ElementNodeJs] = undo_list match {
+  def restorePrevState(curr_state: ElementNodeJs): Option[UndoRedoElement] = {
+    val to_return = undo_list match {
       case head :: tail => {
         undo_list = undo_list.drop(1)
         redo_list = head :: redo_list
+        head match {
+          case AddElement(added_element) => {
+            val index = added_element.parent.children.prefixLength { el => el != added_element }
+            if (index < added_element.parent.children.length) {
+              added_element.parent.children.remove(index)
+            }
+          }
+          case DeleteElement(deleted_element) => deleted_element.parent.children.push(deleted_element)
+          case ModifyElement(old_element, curr_element) => {
+            val index = curr_element.parent.children.prefixLength { el => el != curr_element }
+            if (index < curr_element.parent.children.length) {
+              curr_element.parent.children.remove(index)
+              curr_element.parent.children.push(old_element)
+            }
+          }
+        }
         Option(head)
       }
       case default => Option.empty
     }
     to_return
   }
+
+  //TODO redoUndoneState
   
-  def getNextState(): Option[ElementNodeJs] = {
-    val to_return: Option[ElementNodeJs] = redo_list match {
-      case head :: tail => {
-        redo_list = redo_list.drop(1)
-        Option(head)
-      }
-      case default => Option.empty
-    }
-    to_return
-  }
-  
-  protected var undo_list: List[ElementNodeJs] = List()
-  protected var redo_list: List[ElementNodeJs] = List()
+  protected var undo_list: List[UndoRedoElement] = List()
+  protected var redo_list: List[UndoRedoElement] = List()
 }
 
 @injectable("undoRedoService")
