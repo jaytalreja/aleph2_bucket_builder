@@ -188,7 +188,7 @@
 	}],
 	"form_info": "Configures the integrated Aleph2 Flume output"
 }, {
-	"display_name": "Empty Data Schema",
+	"display_name": "Search Index Schema",
 	"key": "search_index_schema",
 	"categories": ["Data Schema"],
 	"filters": ["Bucket/data_schema"],

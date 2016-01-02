@@ -34,6 +34,12 @@ trait ElementTemplateJs extends js.Object {
     val expandable: Boolean = js.native
     val schema: js.Array[FormConfigJs] = js.native
     val form_info: String = js.native
+    
+    // String versions of the functions
+    val validation_function: String = js.native 
+    val building_function: String = js.native
+    val post_building_function: String = js.native // (for expandable cards)
+    val post_validation_function: String = js.native // (for expandable cards)
 }
 
 object ElementTemplateJs {
@@ -44,7 +50,10 @@ object ElementTemplateJs {
     filters: js.Array[String] = null,
     expandable: Boolean = false,
     schema: js.Array[FormConfigJs] = null,
-    form_info: String = null) =
+    form_info: String = null
+    ) =
   js.Dynamic.literal(display_name = display_name, key = key, categories = categories, filters = filters,
-      expandable = expandable, schema = schema, form_info = form_info).asInstanceOf[ElementTemplateJs]
+      expandable = expandable, schema = schema, form_info = form_info
+      )
+      .asInstanceOf[ElementTemplateJs]
 }
