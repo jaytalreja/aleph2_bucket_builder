@@ -60,6 +60,9 @@ object BucketBuilderController extends Controller[Scope] {
   @inject
   var undo_redo_service: UndoRedoService = _
   
+  @inject 
+  var global_io_service: GlobalInputOutputService = _
+  
   override def initialize(): Unit = {
     super.initialize()
 
@@ -124,7 +127,7 @@ object BucketBuilderController extends Controller[Scope] {
     
     element_template_service.requestElementTemplates(!reload).foreach { beans => 
       {
-          scope.element_template_array = beans.toArray
+          scope.element_template_array = beans
         
           scope.element_template_tree.clear()
           scope.element_template_tree.appendAll(
@@ -289,8 +292,8 @@ object BucketBuilderController extends Controller[Scope] {
     var element_template_tree: js.Array[ElementTemplateNodeJs] = js.native
     var element_template_tree_expanded: js.Array[ElementTemplateNodeJs] = js.native
     var element_template_tree_opts: js.Object = js.native
-    // Not visible by JS:
-    var element_template_array: Array[ElementTemplateBean]
+
+    var element_template_array: js.Array[ElementTemplateJs]
     
     var element_grid: js.Array[ElementCardJs] = js.native
     var element_grid_options: GridsterOptionsJs = js.native

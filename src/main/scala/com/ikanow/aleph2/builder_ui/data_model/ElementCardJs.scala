@@ -54,12 +54,10 @@ object ElementCardJs {
       .asInstanceOf[ElementCardJs]    
   }
   
-  def apply(label: String, row: Int, col: Int, expandable: Boolean, template: ElementTemplateBean): ElementCardJs = {
+  def apply(label: String, row: Int, col: Int, expandable: Boolean, template: ElementTemplateJs): ElementCardJs = {
     val form_info = template.form_info
     
-    import upickle.default._
-    
-    val template_json = JSON.parse(write(template)).asInstanceOf[js.Dictionary[js.Any]]
+    val template_json = JSON.parse(JSON.stringify(template)).asInstanceOf[js.Dictionary[js.Any]]
     
     js.Dynamic.literal(label = label, row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,

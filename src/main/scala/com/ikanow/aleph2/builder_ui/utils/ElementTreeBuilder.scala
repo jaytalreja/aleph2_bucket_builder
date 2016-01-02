@@ -29,7 +29,7 @@ import js.JSConverters._
  */
 object ElementTreeBuilder {
   
-    def getTemplateTree(breadcrumb: js.Array[String], templates: Seq[ElementTemplateBean]): js.Array[ElementTemplateNodeJs] = {
+    def getTemplateTree(breadcrumb: js.Array[String], templates: js.Array[ElementTemplateJs]): js.Array[ElementTemplateNodeJs] = {
       val breadcrumb_str = breadcrumb.mkString("/")
       
       templates

@@ -1,0 +1,210 @@
+{
+	"ret_val": [{
+	"display_name": "Empty Data Schema",
+	"key": "data_schema",
+	"categories": ["Metadata"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired attributes from those available.\n                </p>\n              "
+}, {
+	"display_name": "Analytic Thread",
+	"key": "analytic_thread",
+	"categories": ["Analytics"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the different analytic jobs that can be performed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired attributes (jobs, triggers) from those available.\n                </p>\n              "
+}, {
+	"display_name": "Batch Enrichment Topology",
+	"key": "batch_enrichment_topology",
+	"categories": ["Enrichment"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the \"single topology\" batch enrichment that can be performed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add and configure the desired topologies from those available.\n                </p>\n              "
+}, {
+	"display_name": "Batch Enrichment Pipeline",
+	"key": "batch_enrichment_pipeline",
+	"categories": ["Enrichment"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the batch enrichment pipeline that can be composed and executed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired pipeline elements from those available.\n                </p>\n              "
+}, {
+	"display_name": "Streaming Enrichment Topology",
+	"key": "streaming_enrichment_topology",
+	"categories": ["Enrichment"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the \"single topology\" streaming enrichment that can be performed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add and configure the desired topologies from those available.\n                </p>\n              "
+}, {
+	"display_name": "Streaming Enrichment Pipeline",
+	"key": "streaming_enrichment_pipeline",
+	"categories": ["Enrichment"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the streaming enrichment pipeline that can be composed and executed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired pipeline elements from those available.\n                </p>\n              "
+}, {
+	"display_name": "Flume Harvester",
+	"key": "harvest_flume",
+	"categories": ["Harvesters"],
+	"filters": ["Bucket"],
+	"expandable": true,
+	"schema": null,
+	"form_info": "\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired inputs, outputs, and processing options from those available.\n                </p>\n              "
+}, {
+	"display_name": "CSV Input",
+	"key": "csv_input",
+	"categories": ["Inputs"],
+	"filters": ["Bucket/harvest_flume"],
+	"expandable": false,
+	"schema": [{
+		"key": "enabled",
+		"type": "checkbox",
+		"templateOptions": {
+			"type": null,
+			"label": "Enabled?",
+			"placeholder": null,
+			"options": null,
+			"ngOptions": null,
+			"required": false
+		}
+	}, {
+		"key": "input_directory",
+		"type": "input",
+		"templateOptions": {
+			"type": "text",
+			"label": "Input Spool Directory",
+			"placeholder": "Input path",
+			"options": null,
+			"ngOptions": null,
+			"required": true
+		}
+	}, {
+		"key": "columns",
+		"type": "input",
+		"templateOptions": {
+			"type": "textarea",
+			"label": "Columns",
+			"placeholder": "Comma separated list of fields",
+			"options": null,
+			"ngOptions": null,
+			"required": true
+		}
+	}],
+	"form_info": "Configures an input for the Flume processing"
+}, {
+	"display_name": "Generic Flume Configuration",
+	"key": "generic_config",
+	"categories": ["Processing"],
+	"filters": ["Bucket/harvest_flume"],
+	"expandable": false,
+	"schema": [{
+		"key": "enabled",
+		"type": "checkbox",
+		"templateOptions": {
+			"type": null,
+			"label": "Enabled?",
+			"placeholder": null,
+			"options": null,
+			"ngOptions": null,
+			"required": false
+		}
+	}, {
+		"key": "use_integrated_input",
+		"type": "checkbox",
+		"templateOptions": {
+			"type": null,
+			"label": "Use integrated input elements",
+			"placeholder": null,
+			"options": null,
+			"ngOptions": null,
+			"required": false
+		}
+	}, {
+		"key": "use_integrated_output",
+		"type": "checkbox",
+		"templateOptions": {
+			"type": null,
+			"label": "Use integrated output elements",
+			"placeholder": null,
+			"options": null,
+			"ngOptions": null,
+			"required": false
+		}
+	}, {
+		"key": "config",
+		"type": "input",
+		"templateOptions": {
+			"type": "textarea",
+			"label": "Flume Configuration",
+			"placeholder": "Standard Flume configuration",
+			"options": null,
+			"ngOptions": null,
+			"required": true
+		}
+	}],
+	"form_info": "Allows generic (non Aleph2 supported) processing, though can re-use Aleph2-supported input and output blocks (TODO restrictions)"
+}, {
+	"display_name": "JSON output",
+	"key": "json_output",
+	"categories": ["Outputs"],
+	"filters": ["Bucket/harvest_flume"],
+	"expandable": false,
+	"schema": [{
+		"key": "enabled",
+		"type": "checkbox",
+		"templateOptions": {
+			"type": null,
+			"label": "Enabled?",
+			"placeholder": null,
+			"options": null,
+			"ngOptions": null,
+			"required": false
+		}
+	}, {
+		"key": "output",
+		"type": "select",
+		"templateOptions": {
+			"type": null,
+			"label": "JSON format",
+			"placeholder": null,
+			"options": [{
+				"name": "Deserialize 'message' field, ignore metadata fields",
+				"value": "message_only"
+			}, {
+				"name": "Deserialize 'message' field, append metadata fields",
+				"value": "message_metadata"
+			}, {
+				"name": "Ignore 'message' field, append metadata fields",
+				"value": "metadata_only"
+			}],
+			"ngOptions": null,
+			"required": true
+		}
+	}],
+	"form_info": "Configures the integrated Aleph2 Flume output"
+}, {
+	"display_name": "Empty Data Schema",
+	"key": "search_index_schema",
+	"categories": ["Data Schema"],
+	"filters": ["Bucket/data_schema"],
+	"expandable": false,
+	"schema": [{
+		"key": "enabled",
+		"type": "checkbox",
+		"templateOptions": {
+			"type": null,
+			"label": "Enabled?",
+			"placeholder": null,
+			"options": null,
+			"ngOptions": null,
+			"required": false
+		}
+	}],
+	"form_info": "Defines the searchability attributes of the stored data objects (TODO)"
+}]
+}

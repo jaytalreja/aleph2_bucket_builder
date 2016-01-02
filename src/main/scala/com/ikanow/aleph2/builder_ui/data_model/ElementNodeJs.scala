@@ -34,8 +34,8 @@ trait ElementNodeJs extends js.Object {
 }
 
 object ElementNodeJs {
-  def buildRoot(): ElementNodeJs =
-    js.Dynamic.literal(root = true, label = "Bucket", children = js.Array()).asInstanceOf[ElementNodeJs]
+  def buildRoot(root_label: String): ElementNodeJs =
+    js.Dynamic.literal(root = true, label = root_label, children = js.Array()).asInstanceOf[ElementNodeJs]
   
   def apply(label: String, element: ElementCardJs, parent: ElementNodeJs): ElementNodeJs = 
     js.Dynamic.literal(root = false, label = label, element = element, $parent = parent, children = js.Array()).asInstanceOf[ElementNodeJs]

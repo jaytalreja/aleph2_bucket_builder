@@ -22,29 +22,29 @@ import com.greencatsoft.angularjs._
 import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
-/** The configuration object for Formly
- *  Represented as a bean because we're passing it around as JSON via Java APIs
- *  We then turn into JS objects via upicke/JSON.parse
+@js.native
+/** The JS object (JSON) that represents an element builder
  * @author alex
  */
-case class FormConfigBean(
-    key: String = null, 
-    `type`: String = null, 
-    templateOptions: FormConfigTemplateBean = null)
+trait ElementTemplateJs extends js.Object {
+    val display_name: String = js.native
+    val key: String = js.native
+    val categories: js.Array[String] = js.native
+    val filters: js.Array[String] = js.native
+    val expandable: Boolean = js.native
+    val schema: js.Array[FormConfigJs] = js.native
+    val form_info: String = js.native
+}
 
-//TODO: need to make this more generic - eg have the union of all known options
-// (or have lots of different objects with different names and map to the same JSON name)
-// (also have a map that maps to templateOptions via upickle naming to handle completely generic cases)
-    
-/** More configuration for Formly
- *  Represented as a bean because we're passing it around as JSON via Java APIs
- *  We then turn into JS objects via upicke/JSON.parse
- * @author alex
- */
-case class FormConfigTemplateBean(
-    `type`: String = null, 
-    label: String = null, 
-    placeholder: String = null, 
-    options: Seq[Map[String, String]] = null,
-    ngOptions: String = null,
-    required: Boolean = false)
+object ElementTemplateJs {
+  def apply(
+    display_name: String = null,
+    key: String = null,
+    categories: js.Array[String] = null,
+    filters: js.Array[String] = null,
+    expandable: Boolean = false,
+    schema: js.Array[FormConfigJs] = null,
+    form_info: String = null) =
+  js.Dynamic.literal(display_name = display_name, key = key, categories = categories, filters = filters,
+      expandable = expandable, schema = schema, form_info = form_info).asInstanceOf[ElementTemplateJs]
+}

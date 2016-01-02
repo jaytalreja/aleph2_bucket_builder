@@ -48,6 +48,7 @@ object BucketBuilderApp extends JSApp {
   			.factory[ElementServiceFactory]
   			.factory[ElementTemplateServiceFactory]
   			.factory[UndoRedoServiceFactory]
+  			.factory[GlobalInputOutputServiceFactory]
   			.config(BucketBuilderRouter)
 
   		// Preferred c'tor method

@@ -22,6 +22,23 @@
 	<!-- Form -->
 	<link rel="stylesheet" href="../css/form_builder.css" />
 	
+	<script>
+		// Global input/output parameters
+		// Input:		
+		var aleph2_json_builder__root_element = "Bucket"
+		
+		var aleph2_json_builder__generated_input_obj = {}
+		var aleph2_json_builder__config_input_obj = null
+		//(example input)
+		//{"root":true,"label":"Bucket","children":[{"root":false,"label":"Flume Harvester","element":{"label":"Flume Harvester","row":0,"col":0,"sizeX":1,"sizeY":1,"expandable":true,"configurable":true,"deletable":true,"form_info":"\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired inputs, outputs, and processing options from those available.\n                </p>\n              ","form_model":{},"template_json":{"display_name":"Flume Harvester","key":"harvest_flume","categories":["Harvesters"],"filters":["Bucket"],"expandable":true,"form_info":"\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired inputs, outputs, and processing options from those available.\n                </p>\n              "}},"children":[]}]}	
+	
+		var aleph2_json_builder__template_url = "../../assets/json/sample_templates.json"
+		function aleph2_json_builder__template_conversion_fn(input_json) { return input_json.ret_val }
+		// Output
+		var aleph2_json_builder__config_output_str = "{}"
+		var aleph2_json_builder__generated_output_str = "{}"
+	</script>
+	
 </head>
 
 <body>

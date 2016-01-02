@@ -34,32 +34,28 @@ import com.ikanow.aleph2.builder_ui.data_model._
 /** Retrieves the templates
  * @author alex
  */
-@injectable("elementService")
-class ElementService(global_io_service: GlobalInputOutputService) {
-  
-  val root:ElementNodeJs = ElementNodeJs.buildRoot(global_io_service.root_element())
-  
-  def getMutableRoot(): Future[ElementNodeJs] = {    
-    Future.successful(root)
-  }
+@injectable("globalIoService")
+class GlobalInputOutputService {
 
-  def setElementToEdit(new_card_node: ElementNodeJs):Unit = {
-    curr_card_node = new_card_node;
+  def root_element(): String = js.Dynamic.global.aleph2_json_builder__root_element.asInstanceOf[String]
+  
+  def template_url(): String = js.Dynamic.global.aleph2_json_builder__template_url.asInstanceOf[String]
+
+  def template_conversion_fn: js.Function1[js.Any, js.Array[js.Any]] = js.Dynamic.global.aleph2_json_builder__template_conversion_fn.asInstanceOf[js.Function1[js.Any, js.Array[js.Any]]]
+  
+  def config_input_object(): js.Dictionary[js.Any] = js.Dynamic.global.aleph2_json_builder__config_input_object.asInstanceOf[js.Dictionary[js.Any]]  
+
+  def config_generated_object(): js.Dictionary[js.Any] = js.Dynamic.global.aleph2_json_builder__generated_input_object.asInstanceOf[js.Dictionary[js.Any]]  
+  
+  def setConfigOutputStr(str: String): Unit = {
+    js.Dynamic.global.aleph2_json_builder.aleph2_json_builder__config_output_str = str
   }
-  def getElementToEdit():ElementNodeJs = curr_card_node
-  
-  var curr_card_node: ElementNodeJs = null;
-  
-  def setElementLevel(new_level: ElementNodeJs):Unit = {
-    curr_level = new_level
+  def setGeneratedOutputStr(str: String): Unit = {
+    js.Dynamic.global.aleph2_json_builder.aleph2_json_builder__generated_output_str = str
   }
-  
-  def getElementLevel():ElementNodeJs = curr_level
-  
-  var curr_level: ElementNodeJs = root;
 }
 
-@injectable("elementService")
-class ElementServiceFactory(global_io_service: GlobalInputOutputService) extends Factory[ElementService] {
-  override def apply() = new ElementService(global_io_service)
+@injectable("globalIoService")
+class GlobalInputOutputServiceFactory extends Factory[GlobalInputOutputService] {
+  override def apply() = new GlobalInputOutputService
 }
