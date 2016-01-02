@@ -60,8 +60,8 @@ object BucketBuilderController extends Controller[Scope] {
   @inject
   var undo_redo_service: UndoRedoService = _
   
-  @inject 
-  var global_io_service: GlobalInputOutputService = _
+  @inject
+  var json_gen_service: JsonGenerationService = _
   
   override def initialize(): Unit = {
     super.initialize()
@@ -122,6 +122,7 @@ object BucketBuilderController extends Controller[Scope] {
         this.openElementConfig(original.element, "xl")
       }
     }}    
+    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
   }
   
   @JSExport
@@ -170,6 +171,9 @@ object BucketBuilderController extends Controller[Scope] {
         
     // Register with undo
     undo_redo_service.registerState(AddElement(new_node))
+    
+    // Recalculate derived json
+    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }        
   }
 
   @JSExport
@@ -257,6 +261,9 @@ object BucketBuilderController extends Controller[Scope] {
     
       // Register with undo
       undo_redo_service.registerState(DeleteElement(node))      
+      
+      // Recalculate derived json
+      element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }              
     }}
   }
   
@@ -273,11 +280,6 @@ object BucketBuilderController extends Controller[Scope] {
 				  )
   }
 
-  @JSExport
-  def logCurrentTree(): Unit = {
-    println(ElementTreeBuilder.stringifyTree(scope.curr_element))
-  }
-  
   /**
    * The specific scope data used in this controller
    */

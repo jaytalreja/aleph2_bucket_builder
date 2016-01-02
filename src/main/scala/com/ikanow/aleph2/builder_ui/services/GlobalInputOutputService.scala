@@ -55,10 +55,10 @@ class GlobalInputOutputService {
   def generated_input_object(): js.Dictionary[js.Any] = js.Dynamic.global.aleph2_json_builder__generated_input_object.asInstanceOf[js.Dictionary[js.Any]]  
   
   def setConfigOutputStr(str: String): Unit = {
-    js.Dynamic.global.aleph2_json_builder.aleph2_json_builder__config_output_str = str
+    js.Dynamic.global.aleph2_json_builder__config_output_str = str
   }
   def setGeneratedOutputStr(str: String): Unit = {
-    js.Dynamic.global.aleph2_json_builder.aleph2_json_builder__generated_output_str = str
+    js.Dynamic.global.aleph2_json_builder__generated_output_str = str
   }
 }
 

@@ -47,6 +47,7 @@ class FormBuilderController(
     rootScope: RootScope,
     element_service: ElementService,
     undo_redo_service: UndoRedoService,
+    json_gen_service: JsonGenerationService,
     modal: ModalInstance[Unit])
     
   extends AbstractController[Scope](scope) {
@@ -90,6 +91,8 @@ class FormBuilderController(
     
     curr_card_node.element.form_model.clear()
     model.map { case (key, value) => curr_card_node.element.form_model.put(key, value) }    
+    
+    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
     
     modal.close()
   }  
