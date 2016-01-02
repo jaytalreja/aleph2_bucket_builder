@@ -30,6 +30,7 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
+import com.ikanow.aleph2.builder_ui.utils._
 
 /** Retrieves the templates
  * @author alex
@@ -37,9 +38,11 @@ import com.ikanow.aleph2.builder_ui.data_model._
 @injectable("elementService")
 class ElementService(global_io_service: GlobalInputOutputService) {
   
-  val root:ElementNodeJs = ElementNodeJs.buildRoot(global_io_service.root_element())
-  
-  def getMutableRoot(): Future[ElementNodeJs] = {    
+  val root:ElementNodeJs = global_io_service.config_input_object()
+                            .map { start_obj => ElementTreeBuilder.fillInImportedTree(start_obj) }
+                            .getOrElse(ElementNodeJs.buildRoot(global_io_service.root_element()))
+      
+  def getMutableRoot(): Future[ElementNodeJs] = {   
     Future.successful(root)
   }
 

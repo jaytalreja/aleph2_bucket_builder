@@ -29,6 +29,11 @@ import js.JSConverters._
  */
 object ElementTreeBuilder {
   
+    /** Filters the templates and converts to a category-template "tree" (2 levels)
+     * @param breadcrumb
+     * @param templates
+     * @return
+     */
     def getTemplateTree(breadcrumb: js.Array[String], templates: js.Array[ElementTemplateJs]): js.Array[ElementTemplateNodeJs] = {
       val breadcrumb_str = breadcrumb.mkString("/")
       
@@ -49,7 +54,24 @@ object ElementTreeBuilder {
               }.toJSArray
     }  
     
+    /** Add the $parent attribute to a tree that's been imported from JSON
+     * @param root
+     * @return
+     */
+    def fillInImportedTree(root: ElementNodeJs): ElementNodeJs = {
+      def recursive(root: ElementNodeJs, parent: ElementNodeJs):Unit = {
+        root.$parent = parent
+        if (null != root.children)
+          root.children.foreach { child => recursive(child, root) }        
+      }
+      recursive(root, null)
+      root
+    }
     
+    /** Removes all the JS-specific parameters and stringify
+     * @param root
+     * @return
+     */
     def stringifyTree(root: ElementNodeJs): String = {
         JSON.stringify(root, (k: String, v: js.Any) => {
           if ((null == v) || (k.startsWith("$")))

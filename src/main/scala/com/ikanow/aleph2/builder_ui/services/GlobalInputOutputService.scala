@@ -43,9 +43,16 @@ class GlobalInputOutputService {
 
   def template_conversion_fn: js.Function1[js.Any, js.Array[js.Any]] = js.Dynamic.global.aleph2_json_builder__template_conversion_fn.asInstanceOf[js.Function1[js.Any, js.Array[js.Any]]]
   
-  def config_input_object(): js.Dictionary[js.Any] = js.Dynamic.global.aleph2_json_builder__config_input_object.asInstanceOf[js.Dictionary[js.Any]]  
+  def config_input_object(): Option[ElementNodeJs] = 
+    if ((js.Dynamic.global.aleph2_json_builder__config_input_object == null)
+        ||
+        (js.Dynamic.global.aleph2_json_builder__config_input_object == js.undefined)
+        )
+      Option.empty
+    else
+      Option.apply(js.Dynamic.global.aleph2_json_builder__config_input_object.asInstanceOf[ElementNodeJs])  
 
-  def config_generated_object(): js.Dictionary[js.Any] = js.Dynamic.global.aleph2_json_builder__generated_input_object.asInstanceOf[js.Dictionary[js.Any]]  
+  def generated_input_object(): js.Dictionary[js.Any] = js.Dynamic.global.aleph2_json_builder__generated_input_object.asInstanceOf[js.Dictionary[js.Any]]  
   
   def setConfigOutputStr(str: String): Unit = {
     js.Dynamic.global.aleph2_json_builder.aleph2_json_builder__config_output_str = str

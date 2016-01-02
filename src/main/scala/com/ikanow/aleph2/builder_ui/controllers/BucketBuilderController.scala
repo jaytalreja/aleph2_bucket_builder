@@ -68,16 +68,18 @@ object BucketBuilderController extends Controller[Scope] {
 
     scope.breadcrumb = js.Array()
     scope.breadcrumb_system = js.Array()
+    scope.element_grid = js.Array()        
     
     element_service.getMutableRoot().foreach { root => {
         scope.curr_element = root 
         rebuildBreadcrumbs(root)            
+        
+        scope.element_grid.appendAll(scope.curr_element.children.map { node => node.element })
+        if (scope.element_grid.isEmpty) {
+          scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
+        }        
       }}
     
-    scope.element_grid = js.Array(
-        ElementCardJs.buildDummy("Add content from 'Templates' list")
-        )
-        
     scope.element_grid_options = GridsterOptionsJs()
         
     scope.element_template_tree = js.Array()

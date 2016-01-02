@@ -25,7 +25,7 @@ import com.greencatsoft.angularjs._
  */
 trait ElementNodeJs extends js.Object {
   val root: Boolean = js.native
-  val $parent: ElementNodeJs = js.native
+  var $parent: ElementNodeJs = js.native
   
   val label: String = js.native
   val children: js.Array[ElementNodeJs] = js.native
