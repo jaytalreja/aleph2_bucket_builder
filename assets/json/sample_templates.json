@@ -8,6 +8,22 @@
 	"schema": null,
 	"form_info": "\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired attributes from those available.\n                </p>\n              "
 }, {
+	"display_name": "Global Javascript",
+	"key": "global_js",
+	"categories": ["Metadata"],
+	"filters": ["Bucket"],
+	"expandable": false,
+	"schema": [{
+		"key": "script",
+		"type": "code_input",
+		"templateOptions": {
+			"lineNumbers": true,
+			"indentWithTabs": true,
+			"mode": "javascript"
+		}
+	}],
+	"form_info": "Place global Javascript code in here"
+}, {
 	"display_name": "Analytic Thread",
 	"key": "analytic_thread",
 	"categories": ["Analytics"],

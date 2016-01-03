@@ -110,3 +110,36 @@ class FormBuilderController(
 trait FormBuilderScope extends Scope {
   var form_info_html: String = js.native
 }
+
+/** Configures the formly element
+ * @author alex
+ */
+@JSExport
+@injectable("formlyConfig")
+object FormlyConfig extends Config { 
+  @inject
+  var formlyConfigProvider: FormlyConfigProvider = _
+
+  override def initialize() {
+    
+    formlyConfigProvider.setType(js.Dynamic.literal(
+          name = "code_input",
+          template = 
+            """
+            <textarea rows="32" ui-codemirror="options.templateOptions" ng-model="model[options.key]"></textarea>
+            """
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+  }  
+}
+
+@js.native
+@injectable("formlyConfigProvider")
+/** See http://docs.angular-formly.com/docs/custom-templates
+ * @author alex
+ */
+trait FormlyConfigProvider extends js.Object {
+  def setType(options: js.Dictionary[js.Any]): this.type = js.native
+}
+

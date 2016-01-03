@@ -50,6 +50,20 @@ libraryDependencies += "org.webjars.bower" % "bootstrap" % "3.3.6" exclude ("org
 libraryDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" exclude ("org.webjars.bower", "angular")
 jsDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" / "ui-bootstrap-tpls.js" dependsOn "angular.js"
 
+// Code mirror
+
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "codemirror.js" dependsOn "angular.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "javascript.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "xml.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "lua.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "python.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "r.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "yaml.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "properties.js" dependsOn "codemirror.js"
+
+libraryDependencies += "org.webjars.bower" % "angular-ui-codemirror" % "0.3.0" exclude ("org.webjars.bower", "angular")
+jsDependencies += "org.webjars.bower" % "angular-ui-codemirror" % "0.3.0" / "ui-codemirror.js" dependsOn "codemirror.js"
+
 // Components: form
 
 jsDependencies += "org.webjars.bower" % "api-check" % "7.5.0" / "dist/api-check.js" dependsOn "angular.js"

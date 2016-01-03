@@ -40,6 +40,8 @@ object BucketBuilderApp extends JSApp {
 	  		    "gridster"
   			    , 
   			    "formly", "formlyBootstrap"
+  			    ,
+  			    "ui.codemirror"
 			    ));
 			
 			// Legacy property method - move over to the c'tor method
@@ -51,6 +53,7 @@ object BucketBuilderApp extends JSApp {
   			.factory[GlobalInputOutputServiceFactory]
 				.factory[JsonGenerationServiceFactory]
   			.config(BucketBuilderRouter)
+  			.config(FormlyConfig)
 
   		// Preferred c'tor method
 			module
