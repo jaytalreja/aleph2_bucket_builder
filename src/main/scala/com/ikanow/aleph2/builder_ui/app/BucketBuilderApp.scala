@@ -53,12 +53,13 @@ object BucketBuilderApp extends JSApp {
   			.factory[GlobalInputOutputServiceFactory]
 				.factory[JsonGenerationServiceFactory]
   			.config(BucketBuilderRouter)
-  			.config(FormlyConfig)
+  			.config(FormlyConfig) // (code grouped in the form builder controller)
 
   		// Preferred c'tor method
 			module
   			.controller[QuickNavigateController]
   			.controller[FormBuilderController]
+  			.controller[StatusViewerController]
   			
 	}
 }

@@ -280,6 +280,19 @@ object BucketBuilderController extends Controller[Scope] {
 				  )
   }
 
+  @JSExport
+  def openStatusViewer(size: String): Unit = {
+
+		  modal.open(
+				  js.Dynamic.literal(
+						  templateUrl = "templates/status_viewer.html",
+						  controller = "statusViewerCtrl", 
+						  size = size
+						  )
+						  .asInstanceOf[ModalOptions] 
+				  )
+  }
+  
   /**
    * The specific scope data used in this controller
    */
