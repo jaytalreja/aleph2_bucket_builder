@@ -1,10 +1,10 @@
 <classpath>
-  <classpathentry output="target/scala-2.11/classes" kind="src" path="src/main/scala-2.11"/>
-  <classpathentry output="target/scala-2.11/classes" kind="src" path="src/main/scala"/>
-  <classpathentry output="target/scala-2.11/classes" kind="src" path="src/main/java"/>
-  <classpathentry output="target/scala-2.11/test-classes" kind="src" path="src/test/scala-2.11"/>
-  <classpathentry output="target/scala-2.11/test-classes" kind="src" path="src/test/scala"/>
-  <classpathentry output="target/scala-2.11/test-classes" kind="src" path="src/test/java"/>
+  <classpathentry kind="src" path="src/main/scala-2.11"/>
+  <classpathentry kind="src" path="src/main/scala"/>
+  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="src/test/scala-2.11"/>
+  <classpathentry kind="src" path="src/test/scala"/>
+  <classpathentry kind="src" path="src/test/java"/>
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"/>
   <classpathentry kind="lib" path="/home/alex/.ivy2/cache/org.webjars.bower/angular-route/jars/angular-route-1.3.15.jar"/>
   <classpathentry kind="lib" path="/home/alex/.ivy2/cache/org.webjars.bower/angular-sanitize/jars/angular-sanitize-1.3.15.jar"/>

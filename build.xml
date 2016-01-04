@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="aleph2_bucket_builder" default="war" basedir=".">
+	
+	<property name="dir.dist" value="dist"/>
+	
+	<target name="clean" description="Removing the all generated files.">
+			<delete dir="${dir.dist}"/>
+	</target>
+	
+	
+	<target name="war" depends="clean" description="Generates ${ant.project.name}.war file in to the '${dir.dist}' directory.">
+		
+		<war destfile="${dir.dist}/${ant.project.name}.war" needxmlfile="false">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+			</manifest>
+			
+			<zipfileset dir="assets" prefix="assets/">
+				<exclude name="**/index-dev.html"/>
+			</zipfileset>
+			<zipfileset dir="target/scala-2.11" prefix="target/scala-2.11/">
+				<include name="aleph2_bucket_builder-jsdeps.min.js"/>
+				<include name="aleph2_bucket_builder-launcher.js"/>
+				<include name="aleph2_bucket_builder-opt.js"/>
+				<include name="aleph2_bucket_builder-opt.js.map"/>
+			</zipfileset>
+			<zipfileset dir="target/web" prefix="target/web/">
+				<exclude name="**/*.js"/>
+			</zipfileset>
+		</war>
+		
+	</target>
+	
+</project>
