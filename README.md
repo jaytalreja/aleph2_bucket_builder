@@ -8,7 +8,9 @@ Enables buckets (or in fact any complex JSON object) to be built up by adding ca
 * Install the following:
    * node.js
    * sbt
-* TODO
+   * ant
+* Run `sbt fullOptJS` then `ant` from the project root
+* Copy the `dist/aleph2_bucket_builder.war` file onto the web server(s)
 
 For development:
 * Install an eclipse with Scala support, eg "Scala IDE"
