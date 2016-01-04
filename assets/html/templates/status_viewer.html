@@ -10,13 +10,22 @@
      		  <div class="modal-body aleph2_form_modal">
 				<tabset>
     				<tab heading="Errors">
-TODO1
-					</tab>
-    				<tab heading="Build object">
-TODO2
+			            <pre>{{errors}}</pre>
+<!-- (for some reason I can't get these working)
+			            <textarea rows="32" ui-codemirror="errorOptions" ng-model="errors" ui-refresh="refresh"></textarea>
+-->
 					</tab>
     				<tab heading="Result object">
-TODO3
+			            <pre>{{result_json | json}}</pre>
+<!--
+			            <textarea rows="32" ui-codemirror="resultOptions" ng-model="result_json | json" ui-refresh="refresh"></textarea>
+-->
+					</tab>
+    				<tab heading="Build object">
+			            <pre>{{build_json | json}}</pre>
+<!--
+			            <textarea rows="32" ui-codemirror="buildOptions" ng-model="build_json | json" ui-refresh="refresh"></textarea>
+-->
 					</tab>
 				</tabset>
 			  </div>

@@ -21,7 +21,7 @@ import org.scalajs.dom.raw.HTMLElement
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.JSON
 import com.greencatsoft.angularjs._
 import com.greencatsoft.angularjs.extensions._
 
@@ -48,6 +48,31 @@ class StatusViewerController(
   override def initialize(): Unit = {
     super.initialize()
     
+    scope.errors = "No errors"
+    
+    scope.build_json = JSON.parse(global_io_service.config_output_str())
+    
+    scope.result_json = JSON.parse(global_io_service.generated_output_str())
+   
+    scope.buildOptions = js.Dynamic.literal(
+        lineNumbers = true,
+        readOnly = "nocursor",
+        mode = "javascript"
+        )
+        .asInstanceOf[js.Object]
+    
+    scope.resultOptions = js.Dynamic.literal(
+        lineNumbers = true,
+        readOnly = "nocursor",
+        mode = "javascript"
+        )
+        .asInstanceOf[js.Object]
+    
+    scope.errorOptions = js.Dynamic.literal(
+        lineNumbers = true,
+        readOnly = "nocursor"
+        )
+        .asInstanceOf[js.Object]
   }
 
   @JSExport
@@ -61,5 +86,23 @@ class StatusViewerController(
  */
 @js.native
 trait StatusViewerScope extends Scope {
+
+  @js.native
+  var errors: String = js.native
+  
+  @js.native
+  var build_json: js.Any = js.native
+
+  @js.native
+  var result_json: js.Any = js.native
+
+  @js.native
+  var errorOptions: js.Any = js.native
+  
+  @js.native
+  var resultOptions: js.Any = js.native
+  
+  @js.native
+  var buildOptions: js.Any = js.native
 }
 
