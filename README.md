@@ -2,6 +2,8 @@
 
 Enables buckets (or in fact any complex JSON object) to be built up by adding cards to a grid and using automatically-generated forms to configure them to build JSON based on a set of uploaded templates.
 
+![screenshot](https://raw.githubusercontent.com/Alex-Ikanow/aleph2_bucket_builder/master/aleph2_bucket_builder.png)
+
 # Install
 
 * Clone/download this project
