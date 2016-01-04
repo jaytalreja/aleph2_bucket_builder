@@ -38,32 +38,25 @@ trait ElementCardJs extends js.Object {
   val deletable: Boolean = js.native
   
   // Template info
-  val form_info: String = js.native
+  val template: ElementTemplateJs = js.native
   val form_model: js.Dictionary[js.Any] = js.native
-  val template_json:js.Dictionary[js.Any] = js.native
 }
 
 object ElementCardJs {
   def from(copy: ElementCardJs) = {
     js.Dynamic.literal(label = copy.label, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
                         expandable = copy.expandable, configurable = copy.configurable, deletable = copy.deletable,
-                        form_info = copy.form_info, 
                         form_model = JSON.parse(JSON.stringify(copy.form_model)), // extra deep!
-                        template_json = copy.template_json
+                        template = copy.template
                         )
       .asInstanceOf[ElementCardJs]    
   }
   
   def apply(label: String, row: Int, col: Int, expandable: Boolean, template: ElementTemplateJs): ElementCardJs = {
-    val form_info = template.form_info
-    
-    val template_json = JSON.parse(JSON.stringify(template)).asInstanceOf[js.Dictionary[js.Any]]
-    
     js.Dynamic.literal(label = label, row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,
-                        form_info = form_info, 
                         form_model = js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]],
-                        template_json = template_json
+                        template = template
                         )
       .asInstanceOf[ElementCardJs]
   }

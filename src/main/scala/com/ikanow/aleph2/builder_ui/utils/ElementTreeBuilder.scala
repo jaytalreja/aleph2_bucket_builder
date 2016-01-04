@@ -23,6 +23,9 @@ import scala.scalajs.js.JSON
 import com.greencatsoft.angularjs._
 
 import js.JSConverters._
+import scala.collection.mutable.MutableList
+
+import js.JSConverters._
 
 /** Utilities to build the element and element template trees
  * @author alex
@@ -81,28 +84,187 @@ object ElementTreeBuilder {
         })
     }
     
-    def generateOutput(root: ElementNodeJs, mutable_output: js.Dictionary[js.Any], hierarchy: Seq[js.Any]): Unit = {
+    /** Recursive builder method for the final JSON
+     * @param curr_template
+     * @param root_template
+     * @param mutable_curr_output
+     * @param mutable_root_output
+     * @param hierarchy
+     * @param rows
+     * @param cols
+     */
+    def generateOutput(curr_template: ElementNodeJs, root_template: ElementNodeJs, 
+                      mutable_curr_output: js.Any, mutable_root_output: js.Dictionary[js.Any], 
+                      hierarchy: List[ElementNodeJs], rows: Seq[ElementNodeJs], cols: Seq[ElementNodeJs],
+                      mutable_errs: MutableList[Tuple2[String, ElementNodeJs]]
+    ): Unit = {
       // Step 0: apply myself
       
-      hierarchy.take(1).foreach { curr_object => curr_object match {
-      //TODO (example code) .. call fn, add to hierarchy etc
-        case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
-                                    .append(js.Dynamic.literal(name = root.label + "_pre").asInstanceOf[js.Any])
-        }
+      val maybe_new_obj = if (!curr_template.root) {
+        
+        val errs1 = mutable_errs.size
+          
+        callBuilder(true,
+          Option(curr_template.element.template.validation_function)
+            .filter { f => !js.isUndefined(f) }
+            .flatMap { f => f.get("$fn") },
+          mutable_errs,
+          curr_template,
+          mutable_curr_output,
+          root_template,
+          mutable_root_output,
+          hierarchy, rows, cols)
+        
+        //TODO: handle error case
+          
+        val errs2 = mutable_errs.size
+        
+        val maybe_new_obj_int: Option[js.Any] = callBuilder(false,
+          Option(curr_template.element.template.building_function)
+            .filter { f => !js.isUndefined(f) }
+             .flatMap { f => f.get("$fn") },
+          mutable_errs,
+          curr_template,
+          mutable_curr_output,
+          root_template,
+          mutable_root_output,
+          hierarchy, rows, cols)
+        
+        val errs3 = mutable_errs.size
+      
+      //TODO: handle error case
+        
+      //DEBUG
+//        mutable_curr_output match {
+//          case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
+//                                      .append(js.Dynamic.literal(
+//                                          name = curr_template.label + "_pre",
+//                                          hierarchy = hierarchy.map { r => r.label }.toString(),
+//                                          rows = rows.map { r => r.label }.toString(),
+//                                          cols = cols.map { r => r.label }.toString()
+//                                          ).asInstanceOf[js.Any])
+//        }
+        
+        maybe_new_obj_int
       }
+      else Option.empty
+      
+      val new_hierarchy = 
+        if (curr_template.root) 
+          hierarchy 
+        else
+          curr_template :: hierarchy; 
       
       // Step 1: sort the children
       
-      Option(root.children).foreach { children => {
-        var sorted_children = root.children.sortBy { node => (node.element.col, node.element.row) }      
-        sorted_children.foreach { child => generateOutput(child, mutable_output, hierarchy) }
-      }}
+      Option(curr_template.children).foreach { children => {
+        var sorted_children = curr_template.children.sortBy { node => (node.element.col, node.element.row) }      
+        sorted_children.foreach { child => {
+          
+          // Step 2: recurse through
+          
+          val new_rows = getRows(curr_template, child)
+          val new_cols = getCols(curr_template, child)
+          
+          generateOutput(child, root_template, maybe_new_obj.getOrElse(mutable_curr_output), mutable_root_output,
+              new_hierarchy, new_rows, new_cols, mutable_errs) }
+        }}
+      }
       
-      hierarchy.take(1).foreach { curr_object => curr_object match {
-      //TODO (example code) .. call fn, add to hierarchy etc
-        case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
-                                    .append(js.Dynamic.literal(name = root.label + "_post").asInstanceOf[js.Any])
-        }
-      }      
+      // Step 4: post application
+      
+      if (!curr_template.root) {
+        
+      callBuilder(true,
+        Option(curr_template.element.template.post_validation_function)
+          .filter { f => !js.isUndefined(f) }
+          .flatMap { f => f.get("$fn") },
+        mutable_errs,
+        curr_template,
+        mutable_curr_output,
+        root_template,
+        mutable_root_output,
+        hierarchy, rows, cols)
+        
+      callBuilder(false,
+        Option(curr_template.element.template.post_building_function)
+          .filter { f => !js.isUndefined(f) }
+          .flatMap { f => f.get("$fn") },
+        mutable_errs,
+        curr_template,
+        mutable_curr_output,
+        root_template,
+        mutable_root_output,
+        hierarchy, rows, cols)
+        
+        
+      //DEBUG
+//        mutable_curr_output match {
+//          case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
+//                                      .append(js.Dynamic.literal(name = curr_template.label + "_post").asInstanceOf[js.Any])
+//        }
+      }
+    }
+    
+    protected def getRows(parent: ElementNodeJs, child: ElementNodeJs): Seq[ElementNodeJs] = {
+      // starts before or on the same row
+      // after applying the span (-1) then ends after or on the same row
+      parent.children.filter { other => (other.element.row <= child.element.row) && 
+                                       ((other.element.row + (other.element.sizeY-1)) >= child.element.row) }
+                     .filter { other => (other.element.row != child.element.row) ||  (other.element.col != child.element.col) }
+    }
+    protected def getCols(parent: ElementNodeJs, child: ElementNodeJs): Seq[ElementNodeJs] = {
+      // starts before or on the same col
+      // after applying the span (-1) then ends after or on the same col
+      parent.children.filter { other => (other.element.col <= child.element.col) && 
+                                       ((other.element.col + (other.element.sizeX-1)) >= child.element.col) }
+                     .filter { other => (other.element.row != child.element.row) ||  (other.element.col != child.element.col) }
+    }
+
+    // User function will be
+    // mutable_errors
+    // card
+    // object
+    // full_builder
+    // full_json
+    // hierarchy, rows, cols    
+    // ... and returns either null/undef or an object (if the plan is to "Step into" that method)
+    
+    protected def callBuilder(validation_only: Boolean,
+        maybe_function_str: Option[String],
+        errs: MutableList[Tuple2[String, ElementNodeJs]],
+        curr_node: ElementNodeJs,
+        curr_obj: js.Any,
+        full_builder: ElementNodeJs,
+        full_json: js.Dictionary[js.Any],
+        hierarchy: List[ElementNodeJs], rows: Seq[ElementNodeJs], cols: Seq[ElementNodeJs]
+        
+    ): Option[js.Any] = {
+      
+      try { 
+        maybe_function_str.map { fn_str => {
+          
+          val fn: js.Function8[js.Array[String], //errors
+            ElementNodeJs, // card
+            js.Any, // object
+            ElementNodeJs, // full_builder
+            js.Dictionary[js.Any], // root object
+            js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Array[ElementNodeJs], //hierachy, rows, cols
+            js.Any // return val
+          ]          
+          = js.eval(fn_str).asInstanceOf[js.Function8[js.Array[String], ElementNodeJs, js.Any, ElementNodeJs, js.Dictionary[js.Any], 
+            js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Any]]
+            
+          val errs: js.Array[String] = js.Array()
+          
+          fn.apply(errs, curr_node, curr_obj, full_builder, full_json, hierarchy.toJSArray, rows.toJSArray, cols.toJSArray)
+        }}
+        .filter { retval => !js.isUndefined(retval) }
+        .filter { retval => !validation_only }
+      }
+      catch {
+        case e: Exception => errs += Tuple2(e.getMessage, curr_node)
+        Option.empty
+      }
     }
 }

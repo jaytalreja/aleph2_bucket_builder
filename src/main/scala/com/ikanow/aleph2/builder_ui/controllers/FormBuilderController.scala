@@ -57,16 +57,16 @@ class FormBuilderController(
 
     val curr_card_node = element_service.getElementToEdit();
     
-    fields = curr_card_node.element.template_json.get("schema").getOrElse(js.Array()).asInstanceOf[js.Array[js.Any]]
+    fields = Option(curr_card_node.element.template.schema).map { x => x.asInstanceOf[js.Array[js.Any]] }.getOrElse(js.Array())
     
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
     
     scope.form_info_html = {
-      if (curr_card_node.element.form_info.trim().startsWith("<"))
-        curr_card_node.element.form_info
+      if (curr_card_node.element.template.form_info.trim().startsWith("<"))
+        curr_card_node.element.template.form_info
       else
-        p(curr_card_node.element.form_info).toString()
+        p(curr_card_node.element.template.form_info).toString()
     }
   }
 

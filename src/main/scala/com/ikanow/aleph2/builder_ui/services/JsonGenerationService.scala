@@ -31,6 +31,7 @@ import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
 import com.ikanow.aleph2.builder_ui.utils._
+import scala.collection.mutable.MutableList
 
 /** Creates the final outputs
  * @author alex
@@ -52,9 +53,9 @@ class JsonGenerationService(global_io_service: GlobalInputOutputService) {
     
     //TODO: dummy code
     var todo_hierarchy = js.Array();
-    start_obj.put("array", todo_hierarchy)
-    
-    ElementTreeBuilder.generateOutput(root, start_obj, List(todo_hierarchy))
+    start_obj.put("array", todo_hierarchy)    
+    val errs: MutableList[Tuple2[String, ElementNodeJs]] = MutableList()
+    ElementTreeBuilder.generateOutput(root, root, todo_hierarchy, start_obj, List(), List(), List(), errs)
 
     global_io_service.setGeneratedOutputStr(JSON.stringify(start_obj))
   }

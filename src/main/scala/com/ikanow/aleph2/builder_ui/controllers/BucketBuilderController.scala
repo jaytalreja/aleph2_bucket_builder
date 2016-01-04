@@ -259,7 +259,7 @@ object BucketBuilderController extends Controller[Scope] {
           )
       scope.breadcrumb_system.clear()
       scope.breadcrumb_system.appendAll(
-          rebuildBreadcrumb(List(), new_node, n => n.element.template_json.get("key").get.toString()).reverse
+          rebuildBreadcrumb(List(), new_node, n => n.element.template.key).reverse
           )    
   }
   
