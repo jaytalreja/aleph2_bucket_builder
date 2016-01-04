@@ -82,20 +82,31 @@ protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
           curr_element.$parent.children.remove(curr_element.$parent.children.indexOf(curr_element))
           curr_element.$parent.children.push(old_element)
         }
+        case MoveOrResizeElements(parent, old_topology, new_topology) => {
+          parent.children.zip(old_topology).foreach { case (card, old_top) => {
+            card.element.row = old_top._1  
+            card.element.col = old_top._2  
+            card.element.sizeX = old_top._3  
+            card.element.sizeY = old_top._4  
+          }}
+        }
       }    
   }
   
   /** For switching between undo and redo lists
- * @param el
- * @return
- */
-protected def reverseElement(el: UndoRedoElement): UndoRedoElement = {
+	 * @param el
+	 * @return
+ 	*/
+  protected def reverseElement(el: UndoRedoElement): UndoRedoElement = {
       el match {
         case AddElement(added_element) => DeleteElement(added_element)
         case DeleteElement(deleted_element) => AddElement(deleted_element)
         case ModifyElement(old_element, curr_element) => {
           //(if this is here then old_element is now in the global mutable state so just switch them)
           ModifyElement(curr_element, old_element)
+        }
+        case MoveOrResizeElements(parent, old_topology, new_topology) => {
+          MoveOrResizeElements(parent, new_topology, old_topology) 
         }
       }
   }

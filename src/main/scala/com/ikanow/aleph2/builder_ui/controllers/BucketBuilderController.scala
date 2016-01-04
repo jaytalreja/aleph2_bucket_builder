@@ -34,6 +34,8 @@ import com.ikanow.aleph2.builder_ui.data_model._
 import com.ikanow.aleph2.builder_ui.services._
 import com.ikanow.aleph2.builder_ui.utils.ElementTreeBuilder
 
+import scala.collection.mutable._
+
 /**
  * Controller for the main page
  */
@@ -74,13 +76,15 @@ object BucketBuilderController extends Controller[Scope] {
         scope.curr_element = root 
         rebuildBreadcrumbs(root)            
         
-        scope.element_grid.appendAll(scope.curr_element.children.map { node => node.element })
+        buildGrid()
+        
         if (scope.element_grid.isEmpty) {
           scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
+          //(don't watch this)
         }        
       }}
     
-    scope.element_grid_options = GridsterOptionsJs()
+    scope.element_grid_options = GridsterOptionsJs(gridElementMoveOrResize_start _, gridElementMoveOrResize_end _)
         
     scope.element_template_tree = js.Array()
    
@@ -97,6 +101,25 @@ object BucketBuilderController extends Controller[Scope] {
     })
   }
 
+  var grid_mod_starting_topology: List[Tuple4[Int, Int, Int, Int]] = List()
+  
+  @JSExport
+  def gridElementMoveOrResize_start(): Unit = {
+    grid_mod_starting_topology = scope.element_grid.map { card => (card.row, card.col, card.sizeX, card.sizeY) }.toList
+  }
+  
+  @JSExport
+  def gridElementMoveOrResize_end(): Unit = {
+    
+    // Has it actually moved or resized?
+    val new_topology = scope.element_grid.map { card => (card.row, card.col, card.sizeX, card.sizeY) }.toList
+    if (!(grid_mod_starting_topology.equals(new_topology)))
+    {    
+      undo_redo_service.registerState(MoveOrResizeElements(scope.curr_element, grid_mod_starting_topology, new_topology))
+      element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
+    }
+  }    
+  
   @JSExport
   def undo(): Unit = {
     val maybe_change = undo_redo_service.restorePrevState(scope.curr_element)
@@ -120,6 +143,9 @@ object BucketBuilderController extends Controller[Scope] {
       case ModifyElement(original, modded) => {
         navigateTo(original.$parent)
         this.openElementConfig(original.element, "xl")
+      }
+      case MoveOrResizeElements(original, _, _) => {
+        navigateTo(original)
       }
     }}    
     element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
@@ -161,19 +187,23 @@ object BucketBuilderController extends Controller[Scope] {
     // Get current highest row:
     val max_row = 1 + scope.element_grid.map { card => card.row + card.sizeY - 1 }.reduceOption(_ max _).getOrElse(-1)
 
-    // Add new card
+    // Create new card
     val new_card = ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean)
-    scope.element_grid.push(new_card)
 
     // Add to the current element's children
     val new_node = ElementNodeJs(new_card.label, new_card, scope.curr_element)
     scope.curr_element.children.push(new_node)
         
+    // Rebuild grid (also resets all the watches)
+    buildGrid()
+    
     // Register with undo
     undo_redo_service.registerState(AddElement(new_node))
     
     // Recalculate derived json
-    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }        
+    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }   
+    
+    // Add watch
   }
 
   @JSExport
@@ -200,11 +230,19 @@ object BucketBuilderController extends Controller[Scope] {
     }
   }
 
+  /** Rebuilds the grid based on the current element
+   *  Used slightly inefficiently but keeps "all" the logic in one place
+	 *  (originally had lots of complexities related to watching but those have now been removed, I use the gridster callbacks instead)
+ 	*/
+  def buildGrid(): Unit = {
+      scope.element_grid.clear()
+      scope.element_grid.appendAll(scope.curr_element.children.map { node => node.element })
+  }
+  
   def navigateTo(new_node: ElementNodeJs): Unit = {
       scope.curr_element = new_node
       
-      scope.element_grid.clear()
-      scope.element_grid.appendAll(scope.curr_element.children.map { node => node.element })
+      buildGrid()
       
       // Update the breadcrumbs and get the next set of templates
       rebuildBreadcrumbs(new_node)
@@ -256,9 +294,9 @@ object BucketBuilderController extends Controller[Scope] {
     scope.curr_element.children.find(node => node.element == card).foreach { node => {
       scope.curr_element.children.remove(scope.curr_element.children.indexOf(node)) 
       
-      // Remove from grid
-      scope.element_grid.remove(scope.element_grid.indexOf(card))
-    
+      // Rebuild grid (also resets all the watches)
+      buildGrid()
+      
       // Register with undo
       undo_redo_service.registerState(DeleteElement(node))      
       

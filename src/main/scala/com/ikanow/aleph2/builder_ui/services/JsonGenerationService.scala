@@ -21,7 +21,7 @@ import org.scalajs.dom.raw.HTMLElement
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.JSON
 import com.greencatsoft.angularjs._
 import com.greencatsoft.angularjs.extensions._
 
@@ -45,6 +45,18 @@ class JsonGenerationService(global_io_service: GlobalInputOutputService) {
     global_io_service.setConfigOutputStr(ElementTreeBuilder.stringifyTree(root))    
     
     //TODO: generate output
+    val start_obj = JSON.parse(
+        global_io_service.generated_input_object().map { obj => JSON.stringify(obj) }.getOrElse("{}")
+        )
+        .asInstanceOf[js.Dictionary[js.Any]] // (ie deep copy)
+    
+    //TODO: dummy code
+    var todo_hierarchy = js.Array();
+    start_obj.put("array", todo_hierarchy)
+    
+    ElementTreeBuilder.generateOutput(root, start_obj, List(todo_hierarchy))
+
+    global_io_service.setGeneratedOutputStr(JSON.stringify(start_obj))
   }
 }
 

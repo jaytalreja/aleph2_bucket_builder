@@ -74,10 +74,35 @@ object ElementTreeBuilder {
      */
     def stringifyTree(root: ElementNodeJs): String = {
         JSON.stringify(root, (k: String, v: js.Any) => {
-          if ((null == v) || (k.startsWith("$")))
+          if ((null == v) || (k.startsWith("$") && !k.equals("$fn")))
             js.undefined.asInstanceOf[js.Any]
           else
             v
         })
+    }
+    
+    def generateOutput(root: ElementNodeJs, mutable_output: js.Dictionary[js.Any], hierarchy: Seq[js.Any]): Unit = {
+      // Step 0: apply myself
+      
+      hierarchy.take(1).foreach { curr_object => curr_object match {
+      //TODO (example code) .. call fn, add to hierarchy etc
+        case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
+                                    .append(js.Dynamic.literal(name = root.label + "_pre").asInstanceOf[js.Any])
+        }
+      }
+      
+      // Step 1: sort the children
+      
+      Option(root.children).foreach { children => {
+        var sorted_children = root.children.sortBy { node => (node.element.col, node.element.row) }      
+        sorted_children.foreach { child => generateOutput(child, mutable_output, hierarchy) }
+      }}
+      
+      hierarchy.take(1).foreach { curr_object => curr_object match {
+      //TODO (example code) .. call fn, add to hierarchy etc
+        case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
+                                    .append(js.Dynamic.literal(name = root.label + "_post").asInstanceOf[js.Any])
+        }
+      }      
     }
 }

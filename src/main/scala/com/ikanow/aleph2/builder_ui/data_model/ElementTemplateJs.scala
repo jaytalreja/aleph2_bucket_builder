@@ -35,11 +35,11 @@ trait ElementTemplateJs extends js.Object {
     val schema: js.Array[FormConfigJs] = js.native
     val form_info: String = js.native
     
-    // String versions of the functions
-    val validation_function: String = js.native 
-    val building_function: String = js.native
-    val post_building_function: String = js.native // (for expandable cards)
-    val post_validation_function: String = js.native // (for expandable cards)
+    // String versions of the functions (in the format { "$fn": string }
+    val validation_function: js.Dictionary[String] = js.native 
+    val building_function: js.Dictionary[String] = js.native
+    val post_building_function: js.Dictionary[String] = js.native // (for expandable cards)
+    val post_validation_function: js.Dictionary[String] = js.native // (for expandable cards)
 }
 
 object ElementTemplateJs {

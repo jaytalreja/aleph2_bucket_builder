@@ -57,31 +57,40 @@ trait GridsterOptions_DraggableJs extends js.Object {
 }
 
 object GridsterOptionsJs {
-  def apply(): GridsterOptionsJs = 
+  def apply(pre_resize_or_drag: js.Function0[Unit], 
+            post_resize_or_drag: js.Function0[Unit]): GridsterOptionsJs = 
     js.Dynamic.literal(
         minRows = 2,
         maxRows = 100,
         defaultSizeX = 1,
         defaultSizeY = 1,
         floating = false,
-        resizable = GridsterOptions_ResizableJs(true),
-        draggable = GridsterOptions_DraggableJs(true)
+        resizable = GridsterOptions_ResizableJs(true, pre_resize_or_drag, post_resize_or_drag),
+        draggable = GridsterOptions_DraggableJs(true, pre_resize_or_drag, post_resize_or_drag)
         )
         .asInstanceOf[GridsterOptionsJs]
 }
 
 object GridsterOptions_ResizableJs {
-  def apply(enabled: Boolean): GridsterOptions_ResizableJs = 
+  def apply(enabled: Boolean, 
+            pre_resize_or_drag: js.Function0[Unit],
+            post_resize_or_drag: js.Function0[Unit]): GridsterOptions_ResizableJs = 
     js.Dynamic.literal(
-        enabled = enabled
+        enabled = enabled,
+        start = pre_resize_or_drag,
+        stop = post_resize_or_drag
         )
         .asInstanceOf[GridsterOptions_ResizableJs]
 }
 
 object GridsterOptions_DraggableJs {
-  def apply(enabled: Boolean): GridsterOptions_DraggableJs = 
+  def apply(enabled: Boolean, 
+            pre_resize_or_drag: js.Function0[Unit],
+            post_resize_or_drag: js.Function0[Unit]): GridsterOptions_DraggableJs = 
     js.Dynamic.literal(
-        enabled = enabled
+        enabled = enabled,
+        start = pre_resize_or_drag,
+        stop = post_resize_or_drag
         )
         .asInstanceOf[GridsterOptions_DraggableJs]
 }

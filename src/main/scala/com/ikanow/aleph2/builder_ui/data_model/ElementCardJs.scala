@@ -27,10 +27,10 @@ import scala.scalajs.js.JSON
 trait ElementCardJs extends js.Object {  
   // Display params
   val label: String = js.native
-  val sizeX: Int = js.native
-  val sizeY: Int = js.native
-  val row: Int = js.native
-  val col: Int = js.native  
+  var sizeX: Int = js.native
+  var sizeY: Int = js.native
+  var row: Int = js.native
+  var col: Int = js.native  
   
   // Control
   val expandable: Boolean = js.native
