@@ -44,7 +44,6 @@ import com.ikanow.aleph2.builder_ui.services._
 @injectable("formBuilderCtrl")
 class FormBuilderController(
     scope: FormBuilderScope,
-    rootScope: RootScope,
     element_service: ElementService,
     undo_redo_service: UndoRedoService,
     json_gen_service: JsonGenerationService,
@@ -56,6 +55,9 @@ class FormBuilderController(
     super.initialize()
 
     val curr_card_node = element_service.getElementToEdit();
+    
+    scope.element_errors = json_gen_service.getCurrentErrors().filter { case (err, el) => el == curr_card_node }. map { case (err, el) => err }.toJSArray
+    scope.element_has_errors = !scope.element_errors.isEmpty
     
     fields = Option(curr_card_node.element.template.schema).map { x => x.asInstanceOf[js.Array[js.Any]] }.getOrElse(js.Array())
     
@@ -109,6 +111,10 @@ class FormBuilderController(
 @js.native
 trait FormBuilderScope extends Scope {
   var form_info_html: String = js.native
+  
+  var element_has_errors: Boolean = js.native
+  
+  var element_errors: js.Array[String] = js.native
 }
 
 /** Configures the formly element

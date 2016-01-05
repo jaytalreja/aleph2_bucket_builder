@@ -9,11 +9,29 @@
       		  </div>
 
      		  <div class="modal-body aleph2_form_modal">
- 				<formly-form model="controller.model" fields="controller.fields" form="controller.form">
-				<div class="alert alert-info" role="alert">
- 					<div ng-bind-html="form_info_html"></div>
-				</div>
-		        <pre>{{controller.model | json}}</pre>
+					<table class="table" ng-if="element_has_errors">
+						<thead>
+							<tr>
+								<th>Errors</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-class="error.startsWith('INFO:') ? 'info' : (error.startsWith('WARN:') ? 'warning' : 'danger')" ng-repeat="error in element_errors">
+								<td>{{error}}</td>
+							</tr>
+						</tbody>
+					</table>
+				
+					<hr ng-if="element_has_errors"/>
+
+	 				<formly-form model="controller.model" fields="controller.fields" form="controller.form">
+
+					<hr/>
+
+					<div class="alert alert-info" role="alert">
+ 						<div ng-bind-html="form_info_html"></div>
+					</div>
+		    	    <pre>{{controller.model | json}}</pre>
 			  </div>
 
        		 <div class="modal-footer aleph2_form_modal">

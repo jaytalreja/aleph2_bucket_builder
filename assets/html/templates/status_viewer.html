@@ -19,8 +19,7 @@
 							</thead>
 							<tbody>
 								<tr ng-class="error.error.startsWith('INFO:') ? 'info' : (error.error.startsWith('WARN:') ? 'warning' : 'danger')" ng-repeat="error in errors">
-									<td>{{error.element.label}}</td> 
-									<!--TODO: add a link to navigate to the error-->
+									<td><a ng-click="controller.gotoElement(error.element)">{{error.element.label}}<a></td> 
 									<td>{{error.error}}</td>
 								</tr>
 							</tbody>

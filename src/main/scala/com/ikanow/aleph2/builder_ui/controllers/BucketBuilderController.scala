@@ -99,6 +99,10 @@ object BucketBuilderController extends Controller[Scope] {
     scope.$on("quick_navigate", (event: Event, message: ElementNodeJs) => {
       navigateTo(message)
     })
+    scope.$on("quick_navigate_and_open", (event: Event, message: ElementNodeJs) => {
+      navigateTo(message.$parent)
+      openElementConfig(message.element, "xl")
+    })
   }
 
   var grid_mod_starting_topology: List[Tuple4[Int, Int, Int, Int]] = List()

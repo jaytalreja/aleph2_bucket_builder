@@ -40,6 +40,7 @@ import com.ikanow.aleph2.builder_ui.services._
 @injectable("statusViewerCtrl")
 class StatusViewerController(
     scope: StatusViewerScope, 
+    root_scope: RootScope,
     modal: ModalInstance[Unit],
     global_io_service: GlobalInputOutputService,
     json_gen_service: JsonGenerationService
@@ -81,6 +82,12 @@ class StatusViewerController(
     
   }
 
+  @JSExport
+  def gotoElement(node: ElementNodeJs):Unit = {
+    modal.close()
+    root_scope.$broadcast("quick_navigate_and_open", node)
+  }
+  
   @JSExport
   def ok(): Unit = {    
     modal.close()
