@@ -22,6 +22,7 @@ import org.scalajs.dom.raw.HTMLElement
 import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
 import scala.scalajs.js.JSON
+import scala.scalajs.js.JSConverters._
 import com.greencatsoft.angularjs._
 import com.greencatsoft.angularjs.extensions._
 
@@ -40,7 +41,8 @@ import com.ikanow.aleph2.builder_ui.services._
 class StatusViewerController(
     scope: StatusViewerScope, 
     modal: ModalInstance[Unit],
-    global_io_service: GlobalInputOutputService
+    global_io_service: GlobalInputOutputService,
+    json_gen_service: JsonGenerationService
     ) extends AbstractController[Scope](scope) {
 
   import js.JSConverters._
@@ -48,8 +50,17 @@ class StatusViewerController(
   override def initialize(): Unit = {
     super.initialize()
     
-    scope.errors = "No errors"
+    scope.errors = json_gen_service.getCurrentErrors().map { case (err, element) =>
+      js.Dynamic.literal(
+          error = err,
+          element = element
+          )
+          .asInstanceOf[js.Dictionary[String]]
+      }.toJSArray
     
+    scope.start_on_errors = !scope.errors.isEmpty      
+    scope.start_on_results = scope.errors.isEmpty      
+      
     scope.build_json = JSON.parse(global_io_service.config_output_str())
     
     scope.result_json = JSON.parse(global_io_service.generated_output_str())
@@ -68,11 +79,6 @@ class StatusViewerController(
         )
         .asInstanceOf[js.Object]
     
-    scope.errorOptions = js.Dynamic.literal(
-        lineNumbers = true,
-        readOnly = "nocursor"
-        )
-        .asInstanceOf[js.Object]
   }
 
   @JSExport
@@ -88,7 +94,13 @@ class StatusViewerController(
 trait StatusViewerScope extends Scope {
 
   @js.native
-  var errors: String = js.native
+  var errors: js.Array[js.Dictionary[String]] = js.native
+  
+  @js.native
+  var start_on_errors: Boolean = js.native
+  
+  @js.native
+  var start_on_results: Boolean = js.native
   
   @js.native
   var build_json: js.Any = js.native
@@ -96,9 +108,6 @@ trait StatusViewerScope extends Scope {
   @js.native
   var result_json: js.Any = js.native
 
-  @js.native
-  var errorOptions: js.Any = js.native
-  
   @js.native
   var resultOptions: js.Any = js.native
   

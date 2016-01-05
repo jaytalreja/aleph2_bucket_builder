@@ -102,9 +102,7 @@ object ElementTreeBuilder {
       
       val maybe_new_obj = if (!curr_template.root) {
         
-        val errs1 = mutable_errs.size
-          
-        callBuilder(true,
+        val validation_passed = callBuilder(true,
           Option(curr_template.element.template.validation_function)
             .filter { f => !js.isUndefined(f) }
             .flatMap { f => f.get("$fn") },
@@ -114,11 +112,15 @@ object ElementTreeBuilder {
           root_template,
           mutable_root_output,
           hierarchy, rows, cols)
-        
-        //TODO: handle error case
+          .map { any => !any.equals(false) }
+          .getOrElse(true)                  
           
-        val errs2 = mutable_errs.size
-        
+        if (!validation_passed) {
+          return
+        }
+          
+        val errs1 = mutable_errs.size
+          
         val maybe_new_obj_int: Option[js.Any] = callBuilder(false,
           Option(curr_template.element.template.building_function)
             .filter { f => !js.isUndefined(f) }
@@ -130,10 +132,12 @@ object ElementTreeBuilder {
           mutable_root_output,
           hierarchy, rows, cols)
         
-        val errs3 = mutable_errs.size
+        val errs2 = mutable_errs.size
       
-      //TODO: handle error case
-        
+        if (errs1 != errs2) {// emergency bail out
+          return
+        }
+            
       //DEBUG
 //        mutable_curr_output match {
 //          case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
@@ -175,29 +179,32 @@ object ElementTreeBuilder {
       
       if (!curr_template.root) {
         
-      callBuilder(true,
-        Option(curr_template.element.template.post_validation_function)
-          .filter { f => !js.isUndefined(f) }
-          .flatMap { f => f.get("$fn") },
-        mutable_errs,
-        curr_template,
-        mutable_curr_output,
-        root_template,
-        mutable_root_output,
-        hierarchy, rows, cols)
-        
-      callBuilder(false,
-        Option(curr_template.element.template.post_building_function)
-          .filter { f => !js.isUndefined(f) }
-          .flatMap { f => f.get("$fn") },
-        mutable_errs,
-        curr_template,
-        mutable_curr_output,
-        root_template,
-        mutable_root_output,
-        hierarchy, rows, cols)
-        
-        
+        callBuilder(true,
+          Option(curr_template.element.template.post_validation_function)
+            .filter { f => !js.isUndefined(f) }
+            .flatMap { f => f.get("$fn") },
+          mutable_errs,
+          curr_template,
+          mutable_curr_output,
+          root_template,
+          mutable_root_output,
+          hierarchy, rows, cols)
+          
+      // (ignore result)
+          
+        callBuilder(false,
+          Option(curr_template.element.template.post_building_function)
+            .filter { f => !js.isUndefined(f) }
+            .flatMap { f => f.get("$fn") },
+          mutable_errs,
+          curr_template,
+          mutable_curr_output,
+          root_template,
+          mutable_root_output,
+          hierarchy, rows, cols)
+
+      // (ignore result)
+          
       //DEBUG
 //        mutable_curr_output match {
 //          case array: js.Array[_] => array.asInstanceOf[js.Array[js.Any]]
@@ -252,19 +259,29 @@ object ElementTreeBuilder {
             js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Array[ElementNodeJs], //hierachy, rows, cols
             js.Any // return val
           ]          
-          = js.eval(fn_str).asInstanceOf[js.Function8[js.Array[String], ElementNodeJs, js.Any, ElementNodeJs, js.Dictionary[js.Any], 
+          = js.eval("temp = " + fn_str).asInstanceOf[js.Function8[js.Array[String], ElementNodeJs, js.Any, ElementNodeJs, js.Dictionary[js.Any], 
             js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Any]]
             
-          val errs: js.Array[String] = js.Array()
+          val tmp_errs: js.Array[String] = js.Array()
+
+          val retval = fn.apply(tmp_errs, curr_node, curr_obj, full_builder, full_json, hierarchy.toJSArray, rows.toJSArray, cols.toJSArray)
           
-          fn.apply(errs, curr_node, curr_obj, full_builder, full_json, hierarchy.toJSArray, rows.toJSArray, cols.toJSArray)
+          errs ++= tmp_errs.map { err => (err,  curr_node) }
+          
+          retval
         }}
         .filter { retval => !js.isUndefined(retval) }
-        .filter { retval => !validation_only }
       }
       catch {
-        case e: Exception => errs += Tuple2(e.getMessage, curr_node)
-        Option.empty
+        case e: Exception => {
+          //DEBUG
+          e.printStackTrace()          
+          errs += Tuple2("EXCEPTION: " + e.toString() + ": " + e.getStackTrace()(0).toString() , curr_node); 
+        }
+        if (validation_only) 
+          Option(false)
+        else
+          Option.empty          
       }
     }
 }

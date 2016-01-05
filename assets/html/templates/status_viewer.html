@@ -9,15 +9,26 @@
 
      		  <div class="modal-body aleph2_form_modal">
 				<tabset>
-    				<tab heading="Errors">
-			            <pre>{{errors}}</pre>
-<!-- (for some reason I can't get these working)
-			            <textarea rows="32" ui-codemirror="errorOptions" ng-model="errors" ui-refresh="refresh"></textarea>
--->
+    				<tab heading="Errors" active="start_on_errors">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Element</th>
+									<th>Error</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-class="error.error.startsWith('INFO:') ? 'info' : (error.error.startsWith('WARN:') ? 'warning' : 'danger')" ng-repeat="error in errors">
+									<td>{{error.element.label}}</td> 
+									<!--TODO: add a link to navigate to the error-->
+									<td>{{error.error}}</td>
+								</tr>
+							</tbody>
+						</table>
 					</tab>
-    				<tab heading="Result object">
+    				<tab heading="Result object" active="start_on_results">
 			            <pre>{{result_json | json}}</pre>
-<!--
+<!-- (for some reason I can't get these working)
 			            <textarea rows="32" ui-codemirror="resultOptions" ng-model="result_json | json" ui-refresh="refresh"></textarea>
 -->
 					</tab>

@@ -6,6 +6,12 @@
 	"filters": ["Bucket"],
 	"expandable": true,
 	"schema": null,
+	
+	"validation_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { errs.push('INFO: data_schema: ' + template.label); return true; }" },
+	"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema = {}; return curr_obj.data_schema; }" },
+	"post_validation_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { errs.push('WARN: data_schema: ' + JSON.stringify(curr_obj)); return true; }" },
+	"post_building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema.enabled = true; }" },
+	
 	"form_info": "\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired attributes from those available.\n                </p>\n              "
 }, {
 	"display_name": "Global Javascript",
@@ -221,6 +227,9 @@
 			"required": false
 		}
 	}],
+	
+	"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.search_index_schema = { enabled: template.element.form_model.enabled } }" },
+	
 	"form_info": "Defines the searchability attributes of the stored data objects (TODO)"
 }]
 }

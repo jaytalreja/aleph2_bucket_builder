@@ -39,25 +39,27 @@ import scala.collection.mutable.MutableList
 @injectable("jsonGenService")
 class JsonGenerationService(global_io_service: GlobalInputOutputService) {
   
+  protected val curr_errors: MutableList[Tuple2[String, ElementNodeJs]] = MutableList()
+  
+  def getCurrentErrors(): List[Tuple2[String, ElementNodeJs]] = curr_errors.toList
+  
   def generateJson(root: ElementNodeJs) = {
     
     // Output the config
     
     global_io_service.setConfigOutputStr(ElementTreeBuilder.stringifyTree(root))    
     
-    //TODO: generate output
-    val start_obj = JSON.parse(
+    val start_obj_root = JSON.parse(
         global_io_service.generated_input_object().map { obj => JSON.stringify(obj) }.getOrElse("{}")
         )
         .asInstanceOf[js.Dictionary[js.Any]] // (ie deep copy)
-    
-    //TODO: dummy code
-    var todo_hierarchy = js.Array();
-    start_obj.put("array", todo_hierarchy)    
-    val errs: MutableList[Tuple2[String, ElementNodeJs]] = MutableList()
-    ElementTreeBuilder.generateOutput(root, root, todo_hierarchy, start_obj, List(), List(), List(), errs)
 
-    global_io_service.setGeneratedOutputStr(JSON.stringify(start_obj))
+    val start_obj_curr =  global_io_service.get_input_root_fn.map { fn => fn(start_obj_root) }.getOrElse(start_obj_root)    
+    
+    curr_errors.clear()
+    ElementTreeBuilder.generateOutput(root, root, start_obj_curr, start_obj_root, List(), List(), List(), curr_errors)
+
+    global_io_service.setGeneratedOutputStr(JSON.stringify(start_obj_root))
   }
 }
 

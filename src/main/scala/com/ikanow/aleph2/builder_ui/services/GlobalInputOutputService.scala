@@ -45,10 +45,13 @@ class GlobalInputOutputService {
   
   def config_input_object(): Option[ElementNodeJs] = 
     Option(js.Dynamic.global.aleph2_json_builder__config_input_obj).filter { obj => !js.isUndefined(obj) }.map { obj => obj.asInstanceOf[ElementNodeJs] }
-
+    
   def generated_input_object(): Option[js.Dictionary[js.Any]] = 
     Option(js.Dynamic.global.aleph2_json_builder__generated_input_obj).filter { obj => !js.isUndefined(obj) }.map { obj => obj.asInstanceOf[js.Dictionary[js.Any]] }  
-  
+
+  def get_input_root_fn: Option[js.Function1[js.Dictionary[js.Any], js.Any]] = 
+    Option(js.Dynamic.global.aleph2_json_builder__get_input_root_fn).filter { obj => !js.isUndefined(obj) }.map { obj => obj.asInstanceOf[js.Function1[js.Dictionary[js.Any], js.Any]] }
+    
   def config_output_str(): String = js.Dynamic.global.aleph2_json_builder__config_output_str.asInstanceOf[String]
   
   def generated_output_str(): String = js.Dynamic.global.aleph2_json_builder__generated_output_str.asInstanceOf[String]
