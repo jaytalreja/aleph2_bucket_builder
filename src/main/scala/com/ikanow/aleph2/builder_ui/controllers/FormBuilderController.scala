@@ -119,7 +119,7 @@ class FormBuilderController(
     if (!scope.element_expands) return
     
     root_scope.$broadcast("quick_navigate", element_service.getElementToEdit())
-    modal.close()    
+    ok()    
   }
   
   @JSExport
@@ -133,16 +133,11 @@ class FormBuilderController(
     
   @JSExport
   def ok(): Unit = {    
-    //TODO check validation before returning
-    
     val curr_card_node = element_service.getElementToEdit();
     
     // First register with undo service
     
     undo_redo_service.registerState(ModifyElement(curr_card_node, curr_card_node))
-    
-    /**/
-    println("HERE1: " + JSON.stringify(curr_card_node.element.form_model))
     
     // Now mutate the state
     

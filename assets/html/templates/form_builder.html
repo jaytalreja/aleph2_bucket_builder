@@ -7,11 +7,11 @@
 		      <div class="modal-header aleph2_form_modal">
 					<button type="button" class="close" ng-click="controller.cancel()" aria-hidden="true">×</button>
         		    <h3 ng-if="element_expands" class="modal-title">
-						<a tooltip="Cancel editing and view/configure this element's children" tooltip-placement="bottom" ng-click="controller.expandElementConfig()" class="glyphicon glyphicon-fullscreen"></a>
+						<a tooltip="Save changes and view/configure this element's children" tooltip-placement="bottom" ng-disabled="controller.form.$invalid" ng-click="controller.expandElementConfig()" class="glyphicon glyphicon-fullscreen"></a>
 						<sp><sp>
 						Element Configuration <small>(template: {{form_template_name}})</small>
 					</h3>
-        		    <h3 ng-if="element_expands" class="modal-title">
+        		    <h3 ng-if="!element_expands" class="modal-title">
 						Element Configuration <small>(template: {{form_template_name}})</small>
 					</h3>
       		  </div>
