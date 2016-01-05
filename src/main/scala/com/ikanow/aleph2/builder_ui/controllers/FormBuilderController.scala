@@ -44,6 +44,7 @@ import com.ikanow.aleph2.builder_ui.services._
 @injectable("formBuilderCtrl")
 class FormBuilderController(
     scope: FormBuilderScope,
+    root_scope: RootScope,
     element_service: ElementService,
     undo_redo_service: UndoRedoService,
     json_gen_service: JsonGenerationService,
@@ -72,7 +73,7 @@ class FormBuilderController(
 			"type": "text",
 			"label": "Summary",
 			"placeholder": "A Short Summary Of This Element's Function",
-			"required": true
+			"required": false
 		}
 		}
 		"""
@@ -82,15 +83,24 @@ class FormBuilderController(
 
     val curr_card_node = element_service.getElementToEdit();
     
+    scope.element_expands = curr_card_node.element.expandable
+    
     scope.form_template_name = curr_card_node.element.template.display_name
     
     scope.element_errors = json_gen_service.getCurrentErrors().filter { case (err, el) => el == curr_card_node }. map { case (err, el) => err }.toJSArray
     scope.element_has_errors = !scope.element_errors.isEmpty
     
-    fields = Option(curr_card_node.element.template.schema).map { x => x.asInstanceOf[js.Array[js.Any]] }.getOrElse(js.Array())
+   fields.clear()
+   fields.appendAll(
+       Option(curr_card_node.element.template.schema)
+         .map { x => x.asInstanceOf[js.Array[js.Any]] }
+         .getOrElse(js.Array())
+         .map { element => JSON.parse(JSON.stringify(element)) } // (deep copy)
+         .toList
+        )
 
     JSON.parse(short_name_schema) +=: JSON.parse(summary_schema) +=: fields
-    
+
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
     model.put("_short_name",  curr_card_node.element.short_name)
@@ -105,6 +115,14 @@ class FormBuilderController(
   }
 
   @JSExport
+  def expandElementConfig(): Unit = {
+    if (!scope.element_expands) return
+    
+    root_scope.$broadcast("quick_navigate", element_service.getElementToEdit())
+    modal.close()    
+  }
+  
+  @JSExport
   var form_info_html: String = "<p></p>"
   
   @JSExport
@@ -115,11 +133,16 @@ class FormBuilderController(
     
   @JSExport
   def ok(): Unit = {    
+    //TODO check validation before returning
+    
     val curr_card_node = element_service.getElementToEdit();
     
     // First register with undo service
     
     undo_redo_service.registerState(ModifyElement(curr_card_node, curr_card_node))
+    
+    /**/
+    println("HERE1: " + JSON.stringify(curr_card_node.element.form_model))
     
     // Now mutate the state
     
@@ -156,6 +179,8 @@ trait FormBuilderScope extends Scope {
   var element_has_errors: Boolean = js.native
   
   var element_errors: js.Array[String] = js.native
+  
+  var element_expands: Boolean = js.native
 }
 
 /** Configures the formly element

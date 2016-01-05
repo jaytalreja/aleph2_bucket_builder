@@ -131,6 +131,12 @@ object BucketBuilderController extends Controller[Scope] {
   }
 
   @JSExport
+  def hasUndo(): Boolean = undo_redo_service.numUndoElements() > 0 
+
+  @JSExport
+  def hasRedo(): Boolean = undo_redo_service.numRedoElements() > 0 
+  
+  @JSExport
   def redo(): Unit = {    
     val maybe_change = undo_redo_service.redoUndoneState(scope.curr_element)
     handleUndoRedo(maybe_change)

@@ -20,7 +20,7 @@
 					 </span>
 					<input type="text" class="form-control" placeholder="Search" ng-model="element_search">
 					<span class="input-group-btn">
-						<button class="btn btn-default" ng-click="controller.recalculateTemplates(true)" type="button"><span class="glyphicon glyphicon-refresh"></span></button>
+						<button tooltip="Refresh template list" tooltip-placement="bottom" class="btn btn-default" ng-click="controller.recalculateTemplates(true)" type="button"><span class="glyphicon glyphicon-refresh"></span></button>
 					 </span>
 				</div>		
 		
@@ -30,7 +30,7 @@
 					filter-expression="element_search" expanded-nodes="element_template_tree_expanded"
 					options="element_template_tree_opts">
 					{{node.label}}
-					<a ng-click="controller.insertElement(node)" ng-hide="node.category" class="glyphicon glyphicon-plus"></a>
+					<a tooltip="Add element to grid" tooltip-placement="bottom"  tooltip-append-to-body="true" ng-click="controller.insertElement(node)" ng-hide="node.category" class="glyphicon glyphicon-plus"></a>
 				</treecontrol>
 		  </div>
 		</div>
@@ -43,16 +43,16 @@
 		<div class="row">
 			<div class="col-md-9">
 				<ol class="breadcrumb" >
-					<li><a ng-click="controller.navigateBack(-1)" class="glyphicon glyphicon-menu-left"></a></li>
-					<li><a ng-click="controller.openElementNavigator('med')" class="glyphicon glyphicon-list-alt"></a></li>
+					<li><a tooltip="Step up one level" tooltip-placement="bottom" ng-click="controller.navigateBack(-1)" class="glyphicon glyphicon-menu-left"></a></li>
+					<li><a tooltip="Quick navigate" tooltip-placement="bottom" ng-click="controller.openElementNavigator('med')" class="glyphicon glyphicon-list-alt"></a></li>
 		  			<li ng-repeat="bc in breadcrumb"><a ng-click="controller.navigateBack(1 + $index)">{{bc}}</a></li>
 				</ol>		
 			</div>
 			<div class="col-md-2">
 				<div class="btn-group" role="group">
-					<button type="button" ng-click="controller.undo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat icon-flipped"></span></button>
-					<button type="button" ng-click="controller.redo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
-					<button type="button" ng-click="controller.openStatusViewer('xl')" class="btn btn-default"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+					<button ng-disabled="!controller.hasUndo()" tooltip="Undo" tooltip-placement="bottom" type="button" ng-click="controller.undo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat icon-flipped"></span></button>
+					<button ng-disabled="!controller.hasRedo()" tooltip="Redo" tooltip-placement="bottom" type="button" ng-click="controller.redo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
+					<button tooltip="Diagnose" tooltip-placement="bottom" type="button" ng-click="controller.openStatusViewer('xl')" class="btn btn-default"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
 				</div>
 			</div>
 		</div>
@@ -64,13 +64,13 @@
 				        <li gridster-item="item" ng-repeat="item in element_grid" class="truncated_description">
 							<div class="panel panel-default" style="height:100%">
 							  <div class="panel-heading">
-								<a ng-show="item.configurable" ng-click="controller.openElementConfig(item, 'xl')" class="glyphicon glyphicon-cog"></a>
-								<a ng-show="item.expandable" ng-click="controller.expandElementConfig(item)" class="glyphicon glyphicon-fullscreen"></a>
-								<a ng-show="item.deletable" ng-click="controller.deleteElementConfig(item)" class="glyphicon glyphicon-trash"></a>
-								<a ng-show="item.deletable" ng-click="controller.enableOrDisableElement(item)" ng-class="item.enabled ? 'glyphicon-check' : 'glyphicon-unchecked'" class="glyphicon pull-right"></a>
+								<a tooltip="Configure this element" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="item.configurable" ng-click="controller.openElementConfig(item, 'xl')" class="glyphicon glyphicon-cog"></a>
+								<a tooltip="View/configure this element's children" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="item.expandable" ng-click="controller.expandElementConfig(item)" class="glyphicon glyphicon-fullscreen"></a>
+								<a tooltip="Delete this element" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="item.deletable" ng-click="controller.deleteElementConfig(item)" class="glyphicon glyphicon-trash"></a>
+								<a tooltip="Enable/disable this element" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="item.deletable" ng-click="controller.enableOrDisableElement(item)" ng-class="item.enabled ? 'glyphicon-check' : 'glyphicon-unchecked'" class="glyphicon pull-right"></a>
 							  </div>
 							  <div class="panel-body">
-							    <p>{{item.short_name}}</p>
+							    <p><a ng-click="controller.openElementConfig(item, 'xl')">{{item.short_name}}</a></p>
 							    <p><i class="small">{{item.summary}}</i></p>
 							  </div>
 							</div>

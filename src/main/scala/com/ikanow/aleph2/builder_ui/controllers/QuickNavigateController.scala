@@ -39,7 +39,7 @@ import com.ikanow.aleph2.builder_ui.services._
 @injectable("quickNavigateCtrl")
 class QuickNavigateController(
     scope: QuickNavigationScope, 
-    rootScope: RootScope, 
+    root_scope: RootScope, 
     modal: ModalInstance[Unit],
     element_service: ElementService
     ) extends AbstractController[Scope](scope) {
@@ -85,7 +85,7 @@ class QuickNavigateController(
         if ((scope.selected_item.root) || (scope.selected_item.element.expandable)) scope.selected_item
         else scope.selected_item.$parent
     
-    rootScope.$broadcast("quick_navigate", to_navigate)
+    root_scope.$broadcast("quick_navigate", to_navigate)
     
     modal.close()
   }  

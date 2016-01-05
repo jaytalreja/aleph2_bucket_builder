@@ -1,5 +1,6 @@
 
 <script type="text/ng-template" id="templates/quick_navigate.html">
+		<form ng-submit="controller.ok()">
 		<div class="modal-dialog aleph2_form_modal">
 			<div class="modal-content aleph2_form_modal">
 
@@ -16,9 +17,10 @@
 			</treecontrol>
 
        		 <div class="modal-footer aleph2_form_modal">
-     		     <button class="btn btn-primary" ng-click="controller.ok()">Goto</button>
+     		     <button type="submit" ng-disabled="!selected_item" class="btn btn-primary">Goto</button>
      		     <button class="btn btn-warning" ng-click="controller.cancel()">Cancel</button>
        		 </div>
 			</div>
 		</div>
+		</form>
 </script>

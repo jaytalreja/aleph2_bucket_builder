@@ -1,11 +1,19 @@
 
 <script type="text/ng-template" id="templates/form_builder.html">
 		<div class="modal-dialog aleph2_form_modal">
+			<form ng-submit="controller.ok()">
 			<div class="modal-content aleph2_form_modal">
 
 		      <div class="modal-header aleph2_form_modal">
 					<button type="button" class="close" ng-click="controller.cancel()" aria-hidden="true">×</button>
-        		    <h3 class="modal-title">Element Configuration <small>(template: {{form_template_name}})</small></h3>
+        		    <h3 ng-if="element_expands" class="modal-title">
+						<a tooltip="Cancel editing and view/configure this element's children" tooltip-placement="bottom" ng-click="controller.expandElementConfig()" class="glyphicon glyphicon-fullscreen"></a>
+						<sp><sp>
+						Element Configuration <small>(template: {{form_template_name}})</small>
+					</h3>
+        		    <h3 ng-if="element_expands" class="modal-title">
+						Element Configuration <small>(template: {{form_template_name}})</small>
+					</h3>
       		  </div>
 
      		  <div class="modal-body aleph2_form_modal">
@@ -23,7 +31,7 @@
 					</table>
 				
 					<hr ng-if="element_has_errors"/>
-
+	
 	 				<formly-form model="controller.model" fields="controller.fields" form="controller.form">
 
 					<hr/>
@@ -35,9 +43,10 @@
 			  </div>
 
        		 <div class="modal-footer aleph2_form_modal">
-     		     <button class="btn btn-primary" ng-click="controller.ok()">OK</button>
+     		     <button type="submit" class="btn btn-primary" ng-disabled="controller.form.$invalid" >OK</button>
      		     <button class="btn btn-warning" ng-click="controller.cancel()">Cancel</button>
        		 </div>
 			</div>
+			</form>
 		</div>
 </script>

@@ -51,6 +51,10 @@ class UndoRedoService {
     restoreOrUnrestoreState(curr_state, redo_list, undo_list)
   }
 
+  def numUndoElements(): Int = undo_list.size
+
+  def numRedoElements(): Int = redo_list.size
+  
   protected def restoreOrUnrestoreState(curr_state: ElementNodeJs, 
       list1: ListBuffer[UndoRedoElement], list2: ListBuffer[UndoRedoElement]): Option[UndoRedoElement] = {    
     if (list1.isEmpty) {
@@ -61,18 +65,20 @@ class UndoRedoService {
       list1.remove(0)
       reverseElement(head) +=: list2
       mutateState(head, curr_state)
+      
       Option(head)
     }
   }
   
   /** Apply an undo/redo element to the state
- * @param el
- * @param state
- */
-protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
+	 * @param el
+	 * @param state
+ 	*/
+  protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
       el match {
         case AddElement(added_element) => {
-          val index = added_element.$parent.children.prefixLength { el => el != added_element }
+          val index = added_element.$parent.children.indexWhere { node => 
+            node.element.col == added_element.element.col &&  node.element.row == added_element.element.row }
           if (index < added_element.$parent.children.length) {
             added_element.$parent.children.remove(index)
           }
@@ -113,11 +119,11 @@ protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
       }
   }
   
- /** 
- * @param state_change
- * @return
- */
-protected def adjustElement(state_change: UndoRedoElement): UndoRedoElement = {
+   /** 
+   * @param state_change
+   * @return
+   */
+  protected def adjustElement(state_change: UndoRedoElement): UndoRedoElement = {
     state_change match {
       case ModifyElement(curr_element, curr_element_again) => {        
         val copy_of_curr_element = ElementNodeJs(curr_element.label, 
