@@ -260,7 +260,7 @@ object BucketBuilderController extends Controller[Scope] {
   def rebuildBreadcrumbs(new_node: ElementNodeJs):Unit = {
       scope.breadcrumb.clear()
       scope.breadcrumb.appendAll(
-          rebuildBreadcrumb(List(), new_node, n => n.label).reverse
+          rebuildBreadcrumb(List(), new_node, n => n.element.short_name).reverse
           )
       scope.breadcrumb_system.clear()
       scope.breadcrumb_system.appendAll(

@@ -82,6 +82,8 @@ class FormBuilderController(
 
     val curr_card_node = element_service.getElementToEdit();
     
+    scope.form_template_name = curr_card_node.element.template.display_name
+    
     scope.element_errors = json_gen_service.getCurrentErrors().filter { case (err, el) => el == curr_card_node }. map { case (err, el) => err }.toJSArray
     scope.element_has_errors = !scope.element_errors.isEmpty
     
@@ -148,6 +150,8 @@ class FormBuilderController(
 @js.native
 trait FormBuilderScope extends Scope {
   var form_info_html: String = js.native
+  
+  var form_template_name: String = js.native
   
   var element_has_errors: Boolean = js.native
   

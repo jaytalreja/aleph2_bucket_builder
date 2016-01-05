@@ -70,9 +70,8 @@
 								<a ng-show="item.deletable" ng-click="controller.enableOrDisableElement(item)" ng-class="item.enabled ? 'glyphicon-check' : 'glyphicon-unchecked'" class="glyphicon pull-right"></a>
 							  </div>
 							  <div class="panel-body">
-							    {{item.short_name}}
-							    <br/><br/>
-							    <i>{{item.summary}}</i>
+							    <p>{{item.short_name}}</p>
+							    <p><i class="small">{{item.summary}}</i></p>
 							  </div>
 							</div>
 				        </li>
