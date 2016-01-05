@@ -193,10 +193,10 @@ object BucketBuilderController extends Controller[Scope] {
     val max_row = 1 + scope.element_grid.map { card => card.row + card.sizeY - 1 }.reduceOption(_ max _).getOrElse(-1)
 
     // Create new card
-    val new_card = ElementCardJs(bean.display_name, max_row, 0, bean.expandable, bean)
+    val new_card = ElementCardJs(max_row, 0, bean.expandable, bean)
 
     // Add to the current element's children
-    val new_node = ElementNodeJs(new_card.label, new_card, scope.curr_element)
+    val new_node = ElementNodeJs(new_card.short_name, new_card, scope.curr_element)
     scope.curr_element.children.push(new_node)
         
     // Rebuild grid (also resets all the watches)
@@ -260,7 +260,7 @@ object BucketBuilderController extends Controller[Scope] {
   def rebuildBreadcrumbs(new_node: ElementNodeJs):Unit = {
       scope.breadcrumb.clear()
       scope.breadcrumb.appendAll(
-          rebuildBreadcrumb(List(), new_node, n => n.element.label).reverse
+          rebuildBreadcrumb(List(), new_node, n => n.label).reverse
           )
       scope.breadcrumb_system.clear()
       scope.breadcrumb_system.appendAll(

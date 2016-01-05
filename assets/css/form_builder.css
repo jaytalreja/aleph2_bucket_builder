@@ -14,3 +14,8 @@
 	right: 0;
 	margin: auto
 }
+
+.truncated_description {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

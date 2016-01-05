@@ -71,6 +71,14 @@ class QuickNavigateController(
   }
   
   @JSExport
+  def displayLine(node: ElementNodeJs) = {
+    if (node.root)
+      node.label
+    else 
+      node.element.short_name
+  }
+  
+  @JSExport
   def ok(): Unit = {    
     
     val to_navigate:ElementNodeJs = 

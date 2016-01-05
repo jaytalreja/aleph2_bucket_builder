@@ -12,7 +12,7 @@
 				expanded-nodes="element_tree_expanded" selected-node="selected_item"
 				options="element_tree_opts"
 				>
-				{{node.label}}
+				{{controller.displayLine(node)}} {{(!node.root && !node.element.enabled) ? "[DISABLED]" : ""}} 
 			</treecontrol>
 
        		 <div class="modal-footer aleph2_form_modal">

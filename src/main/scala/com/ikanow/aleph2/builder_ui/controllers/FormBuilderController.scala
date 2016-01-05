@@ -51,6 +51,32 @@ class FormBuilderController(
     
   extends AbstractController[Scope](scope) {
 
+  val short_name_schema = """
+  {
+		"key": "_short_name",
+		"type": "input",
+		"templateOptions": {
+			"type": "text",
+			"label": "Short Name",
+			"placeholder": "A Short Name For This Element",
+			"required": true
+		}
+		}
+		"""
+
+  val summary_schema = """
+  {
+		"key": "_summary",
+		"type": "input",
+		"templateOptions": {
+			"type": "text",
+			"label": "Summary",
+			"placeholder": "A Short Summary Of This Element's Function",
+			"required": true
+		}
+		}
+		"""
+  
   override def initialize(): Unit = {
     super.initialize()
 
@@ -60,9 +86,13 @@ class FormBuilderController(
     scope.element_has_errors = !scope.element_errors.isEmpty
     
     fields = Option(curr_card_node.element.template.schema).map { x => x.asInstanceOf[js.Array[js.Any]] }.getOrElse(js.Array())
+
+    JSON.parse(short_name_schema) +=: JSON.parse(summary_schema) +=: fields
     
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
+    model.put("_short_name",  curr_card_node.element.short_name)
+    model.put("_summary",  curr_card_node.element.summary)    
     
     scope.form_info_html = {
       if (curr_card_node.element.template.form_info.trim().startsWith("<"))
@@ -92,7 +122,14 @@ class FormBuilderController(
     // Now mutate the state
     
     curr_card_node.element.form_model.clear()
-    model.map { case (key, value) => curr_card_node.element.form_model.put(key, value) }    
+    model.map { case (key, value) =>
+      if (key.equals("_short_name"))
+          curr_card_node.element.short_name = value.toString()
+      else if (key.equals("_summary"))
+          curr_card_node.element.summary = value.toString()
+      else
+        curr_card_node.element.form_model.put(key, value) 
+    }
     
     element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
     

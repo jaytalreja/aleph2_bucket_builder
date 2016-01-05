@@ -61,7 +61,7 @@
 			<div class="col-md-11">
 				<div gridster="element_grid_options">
 				    <ul>
-				        <li gridster-item="item" ng-repeat="item in element_grid">
+				        <li gridster-item="item" ng-repeat="item in element_grid" class="truncated_description">
 							<div class="panel panel-default" style="height:100%">
 							  <div class="panel-heading">
 								<a ng-show="item.configurable" ng-click="controller.openElementConfig(item, 'xl')" class="glyphicon glyphicon-cog"></a>
@@ -70,7 +70,9 @@
 								<a ng-show="item.deletable" ng-click="controller.enableOrDisableElement(item)" ng-class="item.enabled ? 'glyphicon-check' : 'glyphicon-unchecked'" class="glyphicon pull-right"></a>
 							  </div>
 							  <div class="panel-body">
-							    {{item.label}}
+							    {{item.short_name}}
+							    <br/><br/>
+							    <i>{{item.summary}}</i>
 							  </div>
 							</div>
 				        </li>
