@@ -26,6 +26,7 @@ import scala.scalajs.js.JSON
  */
 trait ElementCardJs extends js.Object {  
   // Display params
+  var enabled: Boolean = js.native 
   val label: String = js.native
   var sizeX: Int = js.native
   var sizeY: Int = js.native
@@ -44,7 +45,7 @@ trait ElementCardJs extends js.Object {
 
 object ElementCardJs {
   def from(copy: ElementCardJs) = {
-    js.Dynamic.literal(label = copy.label, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
+    js.Dynamic.literal(enabled = copy.enabled, label = copy.label, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
                         expandable = copy.expandable, configurable = copy.configurable, deletable = copy.deletable,
                         form_model = JSON.parse(JSON.stringify(copy.form_model)), // extra deep!
                         template = copy.template
@@ -53,7 +54,7 @@ object ElementCardJs {
   }
   
   def apply(label: String, row: Int, col: Int, expandable: Boolean, template: ElementTemplateJs): ElementCardJs = {
-    js.Dynamic.literal(label = label, row = row, col = col, sizeX = 1, sizeY = 1, 
+    js.Dynamic.literal(enabled = true, label = label, row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,
                         form_model = js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]],
                         template = template
@@ -61,7 +62,7 @@ object ElementCardJs {
       .asInstanceOf[ElementCardJs]
   }
   def buildDummy(label: String):ElementCardJs =
-    js.Dynamic.literal(label = label, row = 0, col = 0, sizeX = 1, sizeY = 1, 
+    js.Dynamic.literal(enabled = true, label = label, row = 0, col = 0, sizeX = 1, sizeY = 1, 
                         expandable = false, configurable = false, deletable = false)
       .asInstanceOf[ElementCardJs]
     

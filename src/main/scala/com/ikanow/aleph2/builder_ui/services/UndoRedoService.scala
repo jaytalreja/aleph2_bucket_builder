@@ -78,6 +78,7 @@ protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
           }
         }
         case DeleteElement(deleted_element) => deleted_element.$parent.children.push(deleted_element)
+        case EnableOrDisableElement(to_modify, old_state, new_state) => to_modify.element.enabled = old_state
         case ModifyElement(old_element, curr_element) => {
           curr_element.$parent.children.remove(curr_element.$parent.children.indexOf(curr_element))
           curr_element.$parent.children.push(old_element)
@@ -105,6 +106,7 @@ protected def mutateState(el: UndoRedoElement, state:ElementNodeJs): Unit = {
           //(if this is here then old_element is now in the global mutable state so just switch them)
           ModifyElement(curr_element, old_element)
         }
+        case EnableOrDisableElement(to_modify, old_state, new_state) => EnableOrDisableElement(to_modify, new_state, old_state)
         case MoveOrResizeElements(parent, old_topology, new_topology) => {
           MoveOrResizeElements(parent, new_topology, old_topology) 
         }

@@ -66,7 +66,8 @@
 							  <div class="panel-heading">
 								<a ng-show="item.configurable" ng-click="controller.openElementConfig(item, 'xl')" class="glyphicon glyphicon-cog"></a>
 								<a ng-show="item.expandable" ng-click="controller.expandElementConfig(item)" class="glyphicon glyphicon-fullscreen"></a>
-								<a ng-show="item.deletable" ng-click="controller.deleteElementConfig(item)" class="glyphicon glyphicon-trash"></a>						
+								<a ng-show="item.deletable" ng-click="controller.deleteElementConfig(item)" class="glyphicon glyphicon-trash"></a>
+								<a ng-show="item.deletable" ng-click="controller.enableOrDisableElement(item)" ng-class="item.enabled ? 'glyphicon-check' : 'glyphicon-unchecked'" class="glyphicon pull-right"></a>
 							  </div>
 							  <div class="panel-body">
 							    {{item.label}}

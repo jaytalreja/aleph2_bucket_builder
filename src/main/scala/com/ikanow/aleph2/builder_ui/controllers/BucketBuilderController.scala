@@ -144,6 +144,7 @@ object BucketBuilderController extends Controller[Scope] {
       case DeleteElement(deleted) => {
         navigateTo(deleted.$parent)
       }
+      case EnableOrDisableElement(node, _, _) => navigateTo(node.$parent)
       case ModifyElement(original, modded) => {
         navigateTo(original.$parent)
         this.openElementConfig(original.element, "xl")
@@ -308,6 +309,15 @@ object BucketBuilderController extends Controller[Scope] {
       element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }              
     }}
   }
+  
+  @JSExport
+  def enableOrDisableElement(card: ElementCardJs) = {
+    card.enabled = !card.enabled
+    scope.curr_element.children.find(node => node.element == card).foreach { node => {
+      undo_redo_service.registerState(EnableOrDisableElement(node, !card.enabled, card.enabled))
+    }}
+    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
+  }    
   
   @JSExport
   def openElementNavigator(size: String): Unit = {

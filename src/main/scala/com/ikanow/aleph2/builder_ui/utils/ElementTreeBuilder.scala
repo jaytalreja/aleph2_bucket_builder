@@ -98,6 +98,8 @@ object ElementTreeBuilder {
                       hierarchy: List[ElementNodeJs], rows: Seq[ElementNodeJs], cols: Seq[ElementNodeJs],
                       mutable_errs: MutableList[Tuple2[String, ElementNodeJs]]
     ): Unit = {
+      if (!curr_template.root && !curr_template.element.enabled) return
+      
       // Step 0: apply myself
       
       val maybe_new_obj = if (!curr_template.root) {

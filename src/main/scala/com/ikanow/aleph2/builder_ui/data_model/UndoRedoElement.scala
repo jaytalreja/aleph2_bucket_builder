@@ -26,4 +26,6 @@ case class DeleteElement(old_element: ElementNodeJs) extends UndoRedoElement
  */
 case class ModifyElement(about_to_modify_copy: ElementNodeJs, about_to_modify_ref: ElementNodeJs) extends UndoRedoElement
 
+case class EnableOrDisableElement(about_to_modify: ElementNodeJs, old_state: Boolean, new_state: Boolean) extends UndoRedoElement
+
 case class MoveOrResizeElements(rearranged_parent: ElementNodeJs, old_topology: List[Tuple4[Int, Int, Int, Int]], new_topology: List[Tuple4[Int, Int, Int, Int]]) extends UndoRedoElement
