@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html ng-app="aleph2_bucket_builder">
+<head>
+    <meta charset="UTF-8">
+    <title>Aleph2 Bucket Builder</title>
+    
+	<script>
+		// Global input/output parameters
+		// Input:		
+		var aleph2_json_builder__root_element = "Bucket"
+		
+		var aleph2_json_builder__generated_input_obj = { "processingPipeline": [{ "data_bucket": {} }] } // (the derived output is appended to this)
+		//(^v2 bucket example in v1 source example)
+		
+		// get the root to which to append in aleph2_json_builder__generated_input_obj (if undefined then the root is used)
+		function aleph2_json_builder__get_input_root_fn(input) { return input.processingPipeline[0].data_bucket; }
+		
+		var aleph2_json_builder__config_input_obj = null // (set to null to start from scratch, else starts with the object)
+		
+		//(example input:)
+		//{"root":true,"label":"Bucket","children":[{"root":false,"label":"Flume Harvester","element":{"label":"Flume Harvester","row":0,"col":0,"sizeX":1,"sizeY":1,"expandable":true,"configurable":true,"deletable":true,"form_info":"\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired inputs, outputs, and processing options from those available.\n                </p>\n              ","form_model":{},"template_json":{"display_name":"Flume Harvester","key":"harvest_flume","categories":["Harvesters"],"filters":["Bucket"],"expandable":true,"form_info":"\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired inputs, outputs, and processing options from those available.\n                </p>\n              "}},"children":[]}]}	
+	
+		var aleph2_json_builder__template_url = "../../assets/json/sample_templates.json" // the URL that requests the template list
+		function aleph2_json_builder__template_conversion_fn(input_json) { return input_json.ret_val } // (takes the return from the http service and converts to an array of objects)
+		// Output
+		var aleph2_json_builder__config_output_str = "{}"
+		var aleph2_json_builder__generated_output_str = "{}"
+	</script>
+	
+</head>
+
+<body>
+	<iframe src="./embed_index.html#/home" style="width: 100%; height: 100vh;"></iframe>
+</body>

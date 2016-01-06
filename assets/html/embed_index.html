@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="aleph2_bucket_builder">
+<head>
+    <meta charset="UTF-8">
+    <title>Aleph2 Bucket Builder</title>
+    
+	<!-- Global -->
+	<link rel="stylesheet" href="../css/bucket_builder.css" />
+	
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/bootstrap/dist/css/bootstrap.css" />    
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/angular-bootstrap/ui-bootstrap-csp.css" />    
+
+	<!-- Tree -->
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/angular-tree-control/demo/prettify-style.css" />    
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/angular-tree-control/css/tree-control.css" />    
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/angular-tree-control/css/tree-control-attribute.css" />    
+	
+	<!-- Grid -->
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/angular-gridster/dist/angular-gridster.min.css" />    	
+	<link rel="stylesheet" href="../css/gridster.css" />
+
+	<!-- Form -->
+	<link rel="stylesheet" href="../css/form_builder.css" />
+	
+	<!-- Codemirror -->
+	<link rel="stylesheet" href="../../target/web/web-modules/main/webjars/lib/codemirror/lib/codemirror.css">
+	
+	<script>
+		// Global input/output parameters
+		// Input:		
+		var aleph2_json_builder__root_element = parent.aleph2_json_builder__root_element
+		
+		var aleph2_json_builder__generated_input_obj = parent.aleph2_json_builder__generated_input_obj
+		var aleph2_json_builder__config_input_object = parent.aleph2_json_builder__config_input_object
+	
+		var aleph2_json_builder__template_url = parent.aleph2_json_builder__template_url
+		var aleph2_json_builder__template_conversion_fn = parent.aleph2_json_builder__template_conversion_fn
+		// Output
+		var aleph2_json_builder__config_output_str = parent.aleph2_json_builder__config_output_str.parent
+		var aleph2_json_builder__generated_output_str = parent.aleph2_json_builder__generated_output_str
+	</script>
+	
+</head>
+
+<body>
+	<div ng-view></div>
+	
+	<!-- Include Scala.js compiled code -->
+	<script type="text/javascript" src="../../target/scala-2.11/aleph2_bucket_builder-opt.js"></script>
+	<script type="text/javascript" src="../../target/scala-2.11/aleph2_bucket_builder-jsdeps.min.js"></script>
+	<script type="text/javascript" src="../../target/scala-2.11/aleph2_bucket_builder-launcher.js"></script>
+
+</body>
+
+</html>
