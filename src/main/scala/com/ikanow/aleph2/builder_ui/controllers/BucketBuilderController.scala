@@ -81,7 +81,10 @@ object BucketBuilderController extends Controller[Scope] {
         if (scope.element_grid.isEmpty) {
           scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
           //(don't watch this)
-        }        
+        }      
+        else { // build the generated object immediately
+          json_gen_service.generateJson(root)
+        }
       }}
     
     scope.element_grid_options = GridsterOptionsJs(gridElementMoveOrResize_start _, gridElementMoveOrResize_end _)

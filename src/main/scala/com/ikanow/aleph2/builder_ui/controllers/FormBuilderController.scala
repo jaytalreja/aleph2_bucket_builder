@@ -36,6 +36,7 @@ import scalatags.Text.all._
 
 import com.ikanow.aleph2.builder_ui.data_model._
 import com.ikanow.aleph2.builder_ui.services._
+import com.ikanow.aleph2.builder_ui.utils.JsOption
 
 /**
  * Controller for the main page
@@ -89,10 +90,10 @@ class FormBuilderController(
     
     scope.element_errors = json_gen_service.getCurrentErrors().filter { case (err, el) => el == curr_card_node }. map { case (err, el) => err }.toJSArray
     scope.element_has_errors = !scope.element_errors.isEmpty
-    
+
    fields.clear()
    fields.appendAll(
-       Option(curr_card_node.element.template.schema)
+       JsOption(curr_card_node.element.template.schema)
          .map { x => x.asInstanceOf[js.Array[js.Any]] }
          .getOrElse(js.Array())
          .map { element => JSON.parse(JSON.stringify(element)) } // (deep copy)
@@ -104,8 +105,8 @@ class FormBuilderController(
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
     model.put("_short_name",  curr_card_node.element.short_name)
-    model.put("_summary",  curr_card_node.element.summary)    
-    
+    model.put("_summary",  JsOption(curr_card_node.element.summary).getOrElse("").asInstanceOf[String])    
+
     scope.form_info_html = {
       if (curr_card_node.element.template.form_info.trim().startsWith("<"))
         curr_card_node.element.template.form_info

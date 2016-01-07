@@ -5,7 +5,6 @@
 	"categories": ["Metadata"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	
 	"validation_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { errs.push('INFO: data_schema: ' + template.label); return true; }" },
 	"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema = {}; return curr_obj.data_schema; }" },
@@ -35,7 +34,6 @@
 	"categories": ["Analytics"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	"form_info": "\n                <p>This is a container for the different analytic jobs that can be performed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired attributes (jobs, triggers) from those available.\n                </p>\n              "
 }, {
 	"display_name": "Batch Enrichment Topology",
@@ -43,7 +41,6 @@
 	"categories": ["Enrichment"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	"form_info": "\n                <p>This is a container for the \"single topology\" batch enrichment that can be performed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add and configure the desired topologies from those available.\n                </p>\n              "
 }, {
 	"display_name": "Batch Enrichment Pipeline",
@@ -51,7 +48,6 @@
 	"categories": ["Enrichment"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	"form_info": "\n                <p>This is a container for the batch enrichment pipeline that can be composed and executed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired pipeline elements from those available.\n                </p>\n              "
 }, {
 	"display_name": "Streaming Enrichment Topology",
@@ -59,7 +55,6 @@
 	"categories": ["Enrichment"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	"form_info": "\n                <p>This is a container for the \"single topology\" streaming enrichment that can be performed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add and configure the desired topologies from those available.\n                </p>\n              "
 }, {
 	"display_name": "Streaming Enrichment Pipeline",
@@ -67,7 +62,6 @@
 	"categories": ["Enrichment"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	"form_info": "\n                <p>This is a container for the streaming enrichment pipeline that can be composed and executed by the Aleph2 engine</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired pipeline elements from those available.\n                </p>\n              "
 }, {
 	"display_name": "Flume Harvester",
@@ -75,7 +69,6 @@
 	"categories": ["Harvesters"],
 	"filters": ["Bucket"],
 	"expandable": true,
-	"schema": null,
 	"form_info": "\n                <p>This is a container for the data schema for the different attributes of the stored data</p>\n                <p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n                and then add the desired inputs, outputs, and processing options from those available.\n                </p>\n              "
 }, {
 	"display_name": "CSV Input",
@@ -87,11 +80,7 @@
 		"key": "enabled",
 		"type": "checkbox",
 		"templateOptions": {
-			"type": null,
 			"label": "Enabled?",
-			"placeholder": null,
-			"options": null,
-			"ngOptions": null,
 			"required": false
 		}
 	}, {
@@ -101,8 +90,6 @@
 			"type": "text",
 			"label": "Input Spool Directory",
 			"placeholder": "Input path",
-			"options": null,
-			"ngOptions": null,
 			"required": true
 		}
 	}, {
@@ -112,8 +99,6 @@
 			"type": "textarea",
 			"label": "Columns",
 			"placeholder": "Comma separated list of fields",
-			"options": null,
-			"ngOptions": null,
 			"required": true
 		}
 	}],
@@ -128,33 +113,21 @@
 		"key": "enabled",
 		"type": "checkbox",
 		"templateOptions": {
-			"type": null,
 			"label": "Enabled?",
-			"placeholder": null,
-			"options": null,
-			"ngOptions": null,
 			"required": false
 		}
 	}, {
 		"key": "use_integrated_input",
 		"type": "checkbox",
 		"templateOptions": {
-			"type": null,
 			"label": "Use integrated input elements",
-			"placeholder": null,
-			"options": null,
-			"ngOptions": null,
 			"required": false
 		}
 	}, {
 		"key": "use_integrated_output",
 		"type": "checkbox",
 		"templateOptions": {
-			"type": null,
 			"label": "Use integrated output elements",
-			"placeholder": null,
-			"options": null,
-			"ngOptions": null,
 			"required": false
 		}
 	}, {
@@ -164,8 +137,6 @@
 			"type": "textarea",
 			"label": "Flume Configuration",
 			"placeholder": "Standard Flume configuration",
-			"options": null,
-			"ngOptions": null,
 			"required": true
 		}
 	}],
@@ -180,20 +151,14 @@
 		"key": "enabled",
 		"type": "checkbox",
 		"templateOptions": {
-			"type": null,
 			"label": "Enabled?",
-			"placeholder": null,
-			"options": null,
-			"ngOptions": null,
 			"required": false
 		}
 	}, {
 		"key": "output",
 		"type": "select",
 		"templateOptions": {
-			"type": null,
 			"label": "JSON format",
-			"placeholder": null,
 			"options": [{
 				"name": "Deserialize 'message' field, ignore metadata fields",
 				"value": "message_only"
@@ -204,7 +169,6 @@
 				"name": "Ignore 'message' field, append metadata fields",
 				"value": "metadata_only"
 			}],
-			"ngOptions": null,
 			"required": true
 		}
 	}],
@@ -219,11 +183,7 @@
 		"key": "enabled",
 		"type": "checkbox",
 		"templateOptions": {
-			"type": null,
 			"label": "Enabled?",
-			"placeholder": null,
-			"options": null,
-			"ngOptions": null,
 			"required": false
 		}
 	}],

@@ -31,6 +31,7 @@ import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
 import js.JSConverters._
+import com.ikanow.aleph2.builder_ui.utils.JsOption
 
 /** Retrieves the templates
  * @author alex
@@ -39,10 +40,17 @@ import js.JSConverters._
 class ElementTemplateService(http: HttpService, global_io_service: GlobalInputOutputService) {
   def requestElementTemplates(ideally_from_cache: Boolean): Future[js.Array[ElementTemplateJs]] = {    
     
-    http.get[js.Any](global_io_service.template_url())
-      .map { js => global_io_service.template_conversion_fn(js)
-                    .map { js => js.asInstanceOf[ElementTemplateJs] } }
+    if (!ideally_from_cache || (null == cache)) {
+      cache = global_io_service.template_url().map { url => 
+        http.get[js.Any](url)
+          .map { js => global_io_service.template_conversion_fn(js)
+                        .map { js => js.asInstanceOf[ElementTemplateJs] } }
+        }
+        .getOrElse(Future.successful(js.Array()))
+    }
+    cache
   }
+  var cache: Future[js.Array[ElementTemplateJs]] = null
 }
 
 @injectable("elementTemplateService")

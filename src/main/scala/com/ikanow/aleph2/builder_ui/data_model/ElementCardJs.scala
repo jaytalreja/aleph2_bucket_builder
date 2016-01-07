@@ -39,7 +39,7 @@ trait ElementCardJs extends js.Object {
   
   // Template info
   var short_name: String = js.native
-  var summary: String = js.native
+  var summary: js.UndefOr[String] = js.native
   val template: ElementTemplateJs = js.native
   val form_model: js.Dictionary[js.Any] = js.native
 }

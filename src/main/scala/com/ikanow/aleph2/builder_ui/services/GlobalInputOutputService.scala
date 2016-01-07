@@ -30,6 +30,7 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
+import com.ikanow.aleph2.builder_ui.utils.JsOption
 
 /** Retrieves the templates
  * @author alex
@@ -39,18 +40,18 @@ class GlobalInputOutputService {
 
   def root_element(): String = js.Dynamic.global.aleph2_json_builder__root_element.asInstanceOf[String]
   
-  def template_url(): String = js.Dynamic.global.aleph2_json_builder__template_url.asInstanceOf[String]
+  def template_url(): Option[String] = JsOption(js.Dynamic.global.aleph2_json_builder__template_url).map { el => el.asInstanceOf[String] }
 
   def template_conversion_fn: js.Function1[js.Any, js.Array[js.Any]] = js.Dynamic.global.aleph2_json_builder__template_conversion_fn.asInstanceOf[js.Function1[js.Any, js.Array[js.Any]]]
   
   def config_input_object(): Option[ElementNodeJs] = 
-    Option(js.Dynamic.global.aleph2_json_builder__config_input_obj).filter { obj => !js.isUndefined(obj) }.map { obj => obj.asInstanceOf[ElementNodeJs] }
+    JsOption(js.Dynamic.global.aleph2_json_builder__config_input_obj).map { obj => obj.asInstanceOf[ElementNodeJs] }
     
   def generated_input_object(): Option[js.Dictionary[js.Any]] = 
-    Option(js.Dynamic.global.aleph2_json_builder__generated_input_obj).filter { obj => !js.isUndefined(obj) }.map { obj => obj.asInstanceOf[js.Dictionary[js.Any]] }  
+    JsOption(js.Dynamic.global.aleph2_json_builder__generated_input_obj).map { obj => obj.asInstanceOf[js.Dictionary[js.Any]] }  
 
   def get_input_root_fn: Option[js.Function1[js.Dictionary[js.Any], js.Any]] = 
-    Option(js.Dynamic.global.aleph2_json_builder__get_input_root_fn).filter { obj => !js.isUndefined(obj) }.map { obj => obj.asInstanceOf[js.Function1[js.Dictionary[js.Any], js.Any]] }
+    JsOption(js.Dynamic.global.aleph2_json_builder__get_input_root_fn).map { obj => obj.asInstanceOf[js.Function1[js.Dictionary[js.Any], js.Any]] }
     
   def config_output_str(): String = js.Dynamic.global.aleph2_json_builder__config_output_str.asInstanceOf[String]
   

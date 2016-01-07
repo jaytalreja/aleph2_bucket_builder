@@ -105,8 +105,7 @@ object ElementTreeBuilder {
       val maybe_new_obj = if (!curr_template.root) {
         
         val validation_passed = callBuilder(true,
-          Option(curr_template.element.template.validation_function)
-            .filter { f => !js.isUndefined(f) }
+          JsOption(curr_template.element.template.validation_function)
             .flatMap { f => f.get("$fn") },
           mutable_errs,
           curr_template,
@@ -124,8 +123,7 @@ object ElementTreeBuilder {
         val errs1 = mutable_errs.size
           
         val maybe_new_obj_int: Option[js.Any] = callBuilder(false,
-          Option(curr_template.element.template.building_function)
-            .filter { f => !js.isUndefined(f) }
+          JsOption(curr_template.element.template.building_function)
              .flatMap { f => f.get("$fn") },
           mutable_errs,
           curr_template,
@@ -163,7 +161,7 @@ object ElementTreeBuilder {
       
       // Step 1: sort the children
       
-      Option(curr_template.children).foreach { children => {
+      JsOption(curr_template.children).foreach { children => {
         var sorted_children = curr_template.children.sortBy { node => (node.element.col, node.element.row) }      
         sorted_children.foreach { child => {
           
@@ -182,8 +180,7 @@ object ElementTreeBuilder {
       if (!curr_template.root) {
         
         callBuilder(true,
-          Option(curr_template.element.template.post_validation_function)
-            .filter { f => !js.isUndefined(f) }
+          JsOption(curr_template.element.template.post_validation_function)
             .flatMap { f => f.get("$fn") },
           mutable_errs,
           curr_template,
@@ -195,8 +192,7 @@ object ElementTreeBuilder {
       // (ignore result)
           
         callBuilder(false,
-          Option(curr_template.element.template.post_building_function)
-            .filter { f => !js.isUndefined(f) }
+          JsOption(curr_template.element.template.post_building_function)
             .flatMap { f => f.get("$fn") },
           mutable_errs,
           curr_template,
