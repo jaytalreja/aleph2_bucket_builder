@@ -42,7 +42,12 @@ class ElementTemplateService(http: HttpService, global_io_service: GlobalInputOu
     
     if (!ideally_from_cache || (null == cache)) {
       cache = global_io_service.template_url().map { url => 
-        http.get[js.Any](url)
+        http.get[js.Any](url, js.Dynamic.literal(
+              cache= false,
+              params =  js.Dynamic.literal(nocache = js.Date.now().toString()).asInstanceOf[js.Dictionary[String]]
+              )
+              .asInstanceOf[HttpConfig]
+          )
           .map { js => global_io_service.template_conversion_fn(js)
                         .map { js => js.asInstanceOf[ElementTemplateJs] } }
         }

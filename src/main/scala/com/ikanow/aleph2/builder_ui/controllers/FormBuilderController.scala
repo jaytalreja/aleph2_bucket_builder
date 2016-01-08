@@ -79,6 +79,12 @@ class FormBuilderController(
 		}
 		"""
   
+  val line_separator = """
+    {
+      "template": "<hr/>"
+    }
+  """
+  
   override def initialize(): Unit = {
     super.initialize()
 
@@ -100,7 +106,7 @@ class FormBuilderController(
          .toList
         )
 
-    JSON.parse(short_name_schema) +=: JSON.parse(summary_schema) +=: fields
+    JSON.parse(short_name_schema) +=: JSON.parse(summary_schema) +=: JSON.parse(line_separator) +=: fields
 
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
@@ -190,15 +196,105 @@ object FormlyConfig extends Config {
 
   override def initialize() {
     
+    // Code mirror:
     formlyConfigProvider.setType(js.Dynamic.literal(
           name = "code_input",
           template = 
             """
-            <textarea rows="32" ui-codemirror="options.templateOptions" ng-model="model[options.key]"></textarea>
+            <h4>{{options.templateOptions.label}}</h4>
+            <textarea rows="32" ui-codemirror="options.templateOptions.codemirror" ng-model="model[options.key]"></textarea>
             """
         )
         .asInstanceOf[js.Dictionary[js.Any]]
      )
+    
+    // Simple Multi input: (taken from http://angular-formly.com/#/example/other/multi-input)
+    formlyConfigProvider.setType(js.Dynamic.literal(
+          name = "multiInput",
+          templateUrl = "templates/form_builder_multiInput.html",
+          defaultOptions = 
+            js.Dynamic.literal(
+              noFormControl = true,
+              wrapper = js.Array("bootstrapLabel", "bootstrapHasError"),
+              defaultValue = js.Array(),
+              templateOptions = js.Dynamic.literal(
+                  inputOptions = js.Dynamic.literal(
+                      wrapper = null //(not sure what this is doing, just came from c/p)
+                      )
+                  )
+              )
+          ,
+          controller = 
+            js.eval("""my_controller = /* @ngInject */ function($scope) {
+            $scope.copyItemOptions = copyItemOptions;
+            function copyItemOptions(x) {
+              return angular.copy(x);
+            }            
+          }
+          """) // (currently can't get controller working as a scala method, get horrible $$scope/$$scopeProvider error)
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+     
+     // Complex multi input (taken from http://angular-formly.com/#/example/advanced/repeating-section)
+     
+    formlyConfigProvider.setType(js.Dynamic.literal(
+          name = "repeatSection",
+          templateUrl = "templates/form_builder_repeatSection.html",
+          defaultOptions = 
+            js.Dynamic.literal(
+              defaultValue = js.Array(),
+              templateOptions = js.Dynamic.literal(
+                  addSectionText = "Add",
+                  fields = js.Array()
+                  )
+              )
+          ,
+          controller = 
+            js.eval("""var unique = 1; my_controller = function($scope) {
+                   $scope.formOptions = {formState: $scope.formState};
+                    $scope.addNew = addNew;                    
+                    $scope.copyFields = copyFields;                    
+                    
+                    function copyFields(fields) {
+                      fields = angular.copy(fields);
+                      addRandomIds(fields);
+                      return fields;
+                    }
+                    
+                    function addNew() {
+                      $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
+                      var repeatsection = $scope.model[$scope.options.key];
+                      var lastSection = repeatsection[repeatsection.length - 1];
+                      var newsection = {};
+                      repeatsection.push(newsection);
+                    }
+                    
+                    function addRandomIds(fields) {
+                      unique++;
+                      angular.forEach(fields, function(field, index) {
+                        if (field.fieldGroup) {
+                          addRandomIds(field.fieldGroup);
+                          return; // fieldGroups don't need an ID
+                        }
+                        
+                        if (field.templateOptions && field.templateOptions.fields) {
+                          addRandomIds(field.templateOptions.fields);
+                        }
+                        
+                        field.id = field.id || (field.key + '_' + index + '_' + unique + getRandomInt(0, 9999));
+                      });
+                    }
+                    
+                    function getRandomInt(min, max) {
+                      return Math.floor(Math.random() * (max - min)) + min;
+                    }
+                  }
+          """) // (currently can't get controller working as a scala method, get horrible $$scope/$$scopeProvider error)
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+     
   }  
 }
 

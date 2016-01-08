@@ -32,7 +32,7 @@ trait ElementTemplateJs extends js.Object {
     val categories: js.Array[String] = js.native
     val filters: js.Array[String] = js.native
     val expandable: Boolean = js.native
-    val schema: js.Array[FormConfigJs] = js.native
+    val schema: js.Array[js.Dictionary[js.Any]] = js.native
     val form_info: String = js.native
     
     // String versions of the functions (in the format { "$fn": string }
@@ -49,7 +49,7 @@ object ElementTemplateJs {
     categories: js.Array[String] = null,
     filters: js.Array[String] = null,
     expandable: Boolean = false,
-    schema: js.Array[FormConfigJs] = null,
+    schema: js.Array[js.Dictionary[js.Any]] = null,
     form_info: String = null
     ) =
   js.Dynamic.literal(display_name = display_name, key = key, categories = categories, filters = filters,

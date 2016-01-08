@@ -1,0 +1,117 @@
+{
+	"templates": [
+	{
+		"display_name": "Generic And Hand Configured Harvester",
+		"key": "generic_harvester",
+		"categories": ["Harvester"],
+		"filters": ["Bucket"],
+		"expandable": false,
+		"form_info": "For advanced users: create an empty Harvester Config that users can build by writing raw JSON",
+		"schema": [
+		{
+			"key": "harvest_technology_name_or_id",
+			"type": "input",
+			"templateOptions": {
+				"label": "Technology Library Name",
+				"placeholder": "The path to the technology, eg /app/aleph2/library/harvester.jar",
+				"required": true
+			}			
+		},
+		{
+			"key": "config",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Configuration JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		]
+	},
+	{
+		"display_name": "Generic Harvester",
+		"key": "generic_harvester",
+		"categories": ["Harvester"],
+		"filters": ["Bucket"],
+		"expandable": false,
+		"form_info": "For advanced users: create an empty Harvester Config that users can build with the form; and configure by writing raw JSON",
+		"schema": [
+		{
+			"key": "harvest_technology_name_or_id",
+			"type": "input",
+			"templateOptions": {
+				"label": "Technology Library Name",
+				"placeholder": "The path to the technology, eg /app/aleph2/library/harvester.jar",
+				"required": true
+			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "show_advanced",
+			"type": "checkbox",
+			"templateOptions": {
+				"label": "Show Advanced Options"
+			}
+		},
+		{
+			"key": "module_name_or_id",
+			"type": "input",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Technology Module Name",
+				"placeholder": "For harvesters with pluggable modules, the path to the module, eg /app/aleph2/library/harvester_module.jar",
+				"required": false
+			}
+		},
+		{
+			"key": "entry_point",
+			"type": "input",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Entry Point Override",
+				"placeholder": "For harvest modules with multiple entry points, specifies the JVM class to execute, eg com.ikanow.aleph2.harvest.module.Module1EntryPoint",
+				"required": false
+			}
+		},
+		{
+			"key": "library_names_or_ids",
+			"type": "multiInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Additional Library Modules",
+				"inputOptions": {
+					"type": "input",
+					"templateOptions": {
+						"label": "Technology Module Name",
+						"placeholder": "For harvesters that need additional library modules, the path to the module, eg /app/aleph2/library/harvester_module.jar",
+						"required": false
+					}
+				}
+			}
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "config",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Harvest Configuration JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		]
+	}	
+	]
+}
