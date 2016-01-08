@@ -10,12 +10,27 @@
 		"schema": [
 		{
 			"key": "harvest_technology_name_or_id",
-			"type": "input",
+			"type": "horizontalInput",
 			"templateOptions": {
 				"label": "Technology Library Name",
 				"placeholder": "The path to the technology, eg /app/aleph2/library/harvester.jar",
 				"required": true
 			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "poll_frequency",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Poll Frequency",
+				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
+				"required": false
+			}			
+		},
+		{
+			"template": "<hr/>"
 		},
 		{
 			"key": "config",
@@ -30,7 +45,9 @@
 				}
 			}
 		}
-		]
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var pf = template.element.form_model.poll_frequency; curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; curr_obj.harvest_configs = []; curr_obj.harvest_configs.push(JSON.parse(template.element.form_model.config || '{}')); }" }
 	},
 	{
 		"display_name": "Generic Harvester",
@@ -42,11 +59,23 @@
 		"schema": [
 		{
 			"key": "harvest_technology_name_or_id",
-			"type": "input",
+			"type": "horizontalInput",
 			"templateOptions": {
 				"label": "Technology Library Name",
 				"placeholder": "The path to the technology, eg /app/aleph2/library/harvester.jar",
 				"required": true
+			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "poll_frequency",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Poll Frequency",
+				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
+				"required": false
 			}			
 		},
 		{
@@ -61,7 +90,7 @@
 		},
 		{
 			"key": "module_name_or_id",
-			"type": "input",
+			"type": "horizontalInput",
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
 				"label": "Technology Module Name",
@@ -71,7 +100,7 @@
 		},
 		{
 			"key": "entry_point",
-			"type": "input",
+			"type": "horizontalInput",
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
 				"label": "Entry Point Override",
@@ -111,7 +140,208 @@
 				}
 			}
 		}
-		]
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var pf = template.element.form_model.poll_frequency; curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; curr_obj.harvest_configs = [{ module_name_or_id: template.element.form_model.module_name_or_id, module_name_or_id: template.element.form_model.module_name_or_id, entry_point: template.element.form_model.entry_point, config: JSON.parse(template.element.form_model.config || '{}') }]; }" }						
 	}	
+	,
+	{
+		"display_name": "Analytic Thread Container",
+		"key": "analytic_thread",
+		"categories": ["Metadata"],
+		"filters": ["Bucket"],
+		"expandable": true,
+	
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }" },
+	
+		"form_info": "<p>This is a container for the analytic jobs that fill the bucket with data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
+	},
+	{
+		"display_name": "Hand Crafted Analytic Thread Manual Trigger",
+		"key": "analytic_trigger",
+		"categories": ["Schema"],
+		"filters": ["Bucket/analytic_thread"],
+		"expandable": false,
+	
+		"form_info": "For advanced users: create an empty trigger JSON object that can be hand crafted to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "schedule",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Trigger Check Schedule",
+				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
+				"required": false
+			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "trigger",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Analytic Thread Trigger JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.trigger_config = JSON.parse(template.element.form_model.trigger || '{}'); var pf = template.element.form_model.schedule; curr_obj.trigger_config.schedule = (pf || '').length > 0 ? pf : undefined; }" }
+	}	
+	,
+	{
+		"display_name": "Data Schema Container",
+		"key": "data_schema",
+		"categories": ["Metadata"],
+		"filters": ["Bucket"],
+		"expandable": true,
+	
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema = {}; return curr_obj.data_schema; }" },
+	
+		"form_info": "<p>This is a container for the data schema for the different attributes of the stored data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
+	}
+	,
+	{
+		"display_name": "Hand Crafted Search Index Schema",
+		"key": "search_index_schema",
+		"categories": ["Schema"],
+		"filters": ["Bucket/data_schema"],
+		"expandable": false,
+	
+		"form_info": "For advanced users: create an empty search index schema JSON object that can be hand crafted to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "schema",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Search Index Schema JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.search_index_schema = JSON.parse(template.element.form_model.schema || '{}'); }" }
+	},	
+	{
+		"display_name": "Hand Crafted Temporal Schema",
+		"key": "temporal_schema",
+		"categories": ["Schema"],
+		"filters": ["Bucket/data_schema"],
+		"expandable": false,
+	
+		"form_info": "For advanced users: create an empty temporal schema JSON object that can be hand crafted to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "schema",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Temporal Schema JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.temporal_schema = JSON.parse(template.element.form_model.schema || '{}'); }" }
+	},	
+	{
+		"display_name": "Hand Crafted Columnar Schema",
+		"key": "columnar_schema",
+		"categories": ["Schema"],
+		"filters": ["Bucket/data_schema"],
+		"expandable": false,
+	
+		"form_info": "For advanced users: create an empty columnar schema JSON object that can be hand crafted to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "schema",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Columnar Schema JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.columnar_schema = JSON.parse(template.element.form_model.schema || '{}'); }" }
+	},
+	{
+		"display_name": "Hand Crafted Storage Schema",
+		"key": "storage_schema",
+		"categories": ["Schema"],
+		"filters": ["Bucket/data_schema"],
+		"expandable": true,
+	
+		"form_info": "For advanced users: create an empty storage schema JSON object that can be hand crafted to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "schema",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Storage Schema JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.storage_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.storage_schema; }" }
+	},	
+	{
+		"display_name": "Hand Crafted Document Schema",
+		"key": "document_schema",
+		"categories": ["Schema"],
+		"filters": ["Bucket/data_schema"],
+		"expandable": true,
+	
+		"form_info": "For advanced users: create an empty document schema JSON object that can be hand crafted to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "schema",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Document Schema JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"indentWithTabs": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.document_schema; }" }
+	}		
 	]
 }

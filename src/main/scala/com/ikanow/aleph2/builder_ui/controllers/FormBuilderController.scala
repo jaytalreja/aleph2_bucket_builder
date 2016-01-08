@@ -56,9 +56,8 @@ class FormBuilderController(
   val short_name_schema = """
   {
 		"key": "_short_name",
-		"type": "input",
+		"type": "horizontalInput",
 		"templateOptions": {
-			"type": "text",
 			"label": "Short Name",
 			"placeholder": "A Short Name For This Element",
 			"required": true
@@ -69,9 +68,8 @@ class FormBuilderController(
   val summary_schema = """
   {
 		"key": "_summary",
-		"type": "input",
+		"type": "horizontalTextArea",
 		"templateOptions": {
-			"type": "text",
 			"label": "Summary",
 			"placeholder": "A Short Summary Of This Element's Function",
 			"required": false
@@ -196,7 +194,64 @@ object FormlyConfig extends Config {
 
   override def initialize() {
     
+    // 1) Very simple:
+    
+    formlyConfigProvider.setType(js.Dynamic.literal(
+        name = "horizontalInput",
+        template = """
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="control-label col-sm-3">{{to.required ? "* " : " "}}{{to.label}}</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" ng-model="model[options.key]"/>
+                </div>
+              </div>
+          </div>
+        """,
+        wrapper = js.Array("bootstrapHasError")
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+
+    formlyConfigProvider.setType(js.Dynamic.literal(
+        name = "horizontalTextArea",
+        template = """
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="control-label col-sm-3">{{to.required ? "* " : " "}}{{to.label}}</label>
+                <div class="col-sm-9">
+                  <textarea class="form-control" type="text" ng-model="model[options.key]"/>
+                </div>
+              </div>
+          </div>
+        """,
+        wrapper = js.Array("bootstrapHasError")
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+
+    formlyConfigProvider.setType(js.Dynamic.literal(
+        name = "horizontalCheckbox",
+        template = """
+            <div class="form-horizontal">
+              <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-9">
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="formly-field-checkbox" ng-model="model[options.key]">{{to.label}} {{to.required ? '*' : ''}}</label>
+                  </div>
+                </div>
+              </div>
+          </div>
+        """,
+        wrapper = js.Array("bootstrapHasError")
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+     
+    // 2) Slightly more complex
+    
     // Code mirror:
+    // (currently simple but need to add logic)
     formlyConfigProvider.setType(js.Dynamic.literal(
           name = "code_input",
           template = 
@@ -208,6 +263,8 @@ object FormlyConfig extends Config {
         .asInstanceOf[js.Dictionary[js.Any]]
      )
     
+     // 3) Quite complex!
+     
     // Simple Multi input: (taken from http://angular-formly.com/#/example/other/multi-input)
     formlyConfigProvider.setType(js.Dynamic.literal(
           name = "multiInput",
@@ -305,5 +362,6 @@ object FormlyConfig extends Config {
  */
 trait FormlyConfigProvider extends js.Object {
   def setType(options: js.Dictionary[js.Any]): this.type = js.native
+  def setWrapper(options: js.Dictionary[js.Any]): this.type = js.native
 }
 
