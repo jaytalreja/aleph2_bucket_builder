@@ -123,7 +123,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \n  curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  curr_obj.node_rules = (template.element.form_model.node_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \n  curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  curr_obj.node_rules = (template.element.form_model.node_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n}\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
 	}	
 	,
 	{
@@ -139,7 +139,7 @@
 	},
 	{
 		"display_name": "Generic Analytic Job",
-		"key": "analytic_thread",
+		"key": "analytic_job",
 		"categories": ["Processing"],
 		"filters": ["Bucket/analytic_thread"],
 		"expandable": true,
@@ -261,7 +261,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = {};\n  new_obj.analytic_type = template.element.form_model.analytic_type; \n  new_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Raw JSON Analytic Trigger",
@@ -301,7 +301,89 @@
 		],
 		
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.trigger_config = JSON.parse(template.element.form_model.trigger || '{}'); var pf = template.element.form_model.schedule; curr_obj.trigger_config.schedule = (pf || '').length > 0 ? pf : undefined; }" }
-	}	
+	},	
+	{
+		"display_name": "Raw JSON Global Input Config",
+		"key": "analytic_input",
+		"categories": ["Schema"],
+		"filters": ["Bucket/analytic_thread/analytic_job"],
+		"expandable": false,
+	
+		"form_info": "Empty JSON object used to configure the global default input configuration for all inputs in this analytic job\n",
+		
+		"schema": [
+		{
+			"key": "global_input_config",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Analytic Global Input Configuration JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.global_input_config = JSON.parse(template.element.form_model.global_input_config || '{}'); }" }
+	},		
+	{
+		"display_name": "Raw JSON Analytic Input",
+		"key": "analytic_input",
+		"categories": ["Schema"],
+		"filters": ["Bucket/analytic_thread/analytic_job"],
+		"expandable": false,
+	
+		"form_info": "Empty JSON object used to configure an input for this analytic job\n",
+		
+		"schema": [
+		{
+			"key": "input",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Analytic Input JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.inputs.push(JSON.parse(template.element.form_model.input || '{}')); }" }
+	},		
+	{
+		"display_name": "Raw JSON Analytic Output",
+		"key": "analytic_output",
+		"categories": ["Schema"],
+		"filters": ["Bucket/analytic_thread/analytic_job"],
+		"expandable": false,
+	
+		"form_info": "Empty JSON object used to configure a single output for this analytic job\n",
+		
+		"schema": [
+		{
+			"key": "output",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Analytic Output JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.output = JSON.parse(template.element.form_model.output || '{}'); }" }
+	}		
+	
 	,
 	{
 		"display_name": "Data Schema Container",
