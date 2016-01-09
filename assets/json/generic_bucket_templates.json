@@ -76,6 +76,36 @@
 			}
 		},
 		{
+			"key": "node_rules",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Node rules",
+				"placeholder": "Comma-separated list of rules determining on which nodes this harvester will run",
+				"required": false
+			}
+		},
+		{
+			"key": "multi_node_enabled",
+			"type": "horizontalCheckbox",
+			"defaultValue": false,
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Harvester multi-node enabled",
+				"required": false
+			}
+		},
+		{
+			"key": "lock_to_nodes",
+			"type": "horizontalCheckbox",
+			"defaultValue": true,
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Lock harvester to the same node/set of nodes (recommend leave as true)",
+				"required": false
+			}
+		},
+		{
 			"template": "<hr/>"
 		},
 		{
@@ -93,7 +123,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var pf = template.element.form_model.poll_frequency; curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; curr_obj.harvest_configs = [{ module_name_or_id: template.element.form_model.module_name_or_id, module_name_or_id: template.element.form_model.module_name_or_id, entry_point: template.element.form_model.entry_point, config: JSON.parse(template.element.form_model.config || '{}') }]; }" }						
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \n  curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  curr_obj.node_rules = (template.element.form_model.node_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
 	}	
 	,
 	{
@@ -161,17 +191,77 @@
 			"template": "<hr/>"
 		},
 		{
+			"key": "show_advanced",
+			"type": "checkbox",
+			"templateOptions": {
+				"label": "Show Advanced Options"
+			}
+		},
+		{
 			"key": "module_name_or_id",
 			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
-				"label": "Module Library Name",
-				"placeholder": "The path to the module running within the technology, eg /app/aleph2/library/analytic_technology.jar",
-				"required": true
-			}			
+				"label": "Technology Module Name",
+				"placeholder": "For harvesters with pluggable modules, the path to the module, eg /app/aleph2/library/harvester_module.jar",
+				"required": false
+			}
+		},
+		{
+			"key": "entry_point",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Entry Point Override",
+				"placeholder": "For harvest modules with multiple entry points, specifies the JVM class to execute, eg com.ikanow.aleph2.harvest.module.Module1EntryPoint",
+				"required": false
+			}
+		},
+		{
+			"key": "library_names_or_ids",
+			"type": "multiInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Additional Library Modules",
+				"inputOptions": {
+					"type": "input",
+					"templateOptions": {
+						"label": "Technology Module Name",
+						"placeholder": "For analytics that need additional library modules, the path to the module, eg /app/aleph2/library/analytic_module_lib.jar",
+						"required": false
+					}
+				}
+			}
+		},
+		{
+			"key": "node_rules",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Node rules",
+				"placeholder": "Comma-separated list of rules determining on which nodes this analytic job will run",
+				"required": false
+			}
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "config",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Analytic Job Configuration JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { }" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = {};\n  new_obj.analytic_type = template.element.form_model.analytic_type; \n  new_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Raw JSON Analytic Trigger",
