@@ -1,55 +1,6 @@
 {
 	"templates": [
 	{
-		"display_name": "Generic And Hand Configured Harvester",
-		"key": "generic_harvester",
-		"categories": ["Harvester"],
-		"filters": ["Bucket"],
-		"expandable": false,
-		"form_info": "For advanced users: create an empty Harvester Config that users can build by writing raw JSON",
-		"schema": [
-		{
-			"key": "harvest_technology_name_or_id",
-			"type": "horizontalInput",
-			"templateOptions": {
-				"label": "Technology Library Name",
-				"placeholder": "The path to the technology, eg /app/aleph2/library/harvester.jar",
-				"required": true
-			}			
-		},
-		{
-			"template": "<hr/>"
-		},
-		{
-			"key": "poll_frequency",
-			"type": "horizontalInput",
-			"templateOptions": {
-				"label": "Poll Frequency",
-				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
-				"required": false
-			}			
-		},
-		{
-			"template": "<hr/>"
-		},
-		{
-			"key": "config",
-			"type": "code_input",
-			"defaultValue": "{\n}",
-			"templateOptions": {
-				"label": "Configuration JSON",
-				"codemirror": {
-					"lineNumbers": true,
-					"indentWithTabs": true,
-					"mode": "javascript"
-				}
-			}
-		}
-		],
-		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var pf = template.element.form_model.poll_frequency; curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; curr_obj.harvest_configs = []; curr_obj.harvest_configs.push(JSON.parse(template.element.form_model.config || '{}')); }" }
-	},
-	{
 		"display_name": "Generic Harvester",
 		"key": "generic_harvester",
 		"categories": ["Harvester"],
@@ -135,7 +86,7 @@
 				"label": "Harvest Configuration JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}
@@ -148,7 +99,7 @@
 	{
 		"display_name": "Analytic Thread Container",
 		"key": "analytic_thread",
-		"categories": ["Metadata"],
+		"categories": ["Analytics"],
 		"filters": ["Bucket"],
 		"expandable": true,
 	
@@ -157,13 +108,79 @@
 		"form_info": "<p>This is a container for the analytic jobs that fill the bucket with data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
 	},
 	{
-		"display_name": "Hand Crafted Analytic Thread Manual Trigger",
+		"display_name": "Generic Analytic Job",
+		"key": "analytic_thread",
+		"categories": ["Processing"],
+		"filters": ["Bucket/analytic_thread"],
+		"expandable": true,
+		
+		"form_info": "A streaming or batch analytic job that performs processing on input or stored data. ",
+		
+		"schema": [
+		{
+			"key": "analytic_type",
+			"type": "horizontalSelect",
+			"templateOptions": {
+				"required": true,
+				"label": "Analytic Type",
+				"options": [
+				{
+					"name": "Batch",
+					"value": "batch"
+				},
+				{
+					"name": "Streaming",
+					"value": "streaming"
+				}
+				]
+			}
+		},
+		{
+			"key": "dependencies",
+			"type": "horizontalInput",
+			"hideExpression": "model.analytic_type !== \"batch\"", 
+			"templateOptions": {
+				"label": "Dependencies",
+				"placeholder": "A comma-separated list of dependencies on other analytic jobs",
+				"required": false
+			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "analytic_technology_name_or_id",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Technology Library Name",
+				"placeholder": "The path to the technology, eg /app/aleph2/library/analytic_technology.jar",
+				"required": true
+			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "module_name_or_id",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Module Library Name",
+				"placeholder": "The path to the module running within the technology, eg /app/aleph2/library/analytic_technology.jar",
+				"required": true
+			}			
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { }" }
+	},
+	{
+		"display_name": "Raw JSON Analytic Trigger",
 		"key": "analytic_trigger",
-		"categories": ["Schema"],
+		"categories": ["Scheduling"],
 		"filters": ["Bucket/analytic_thread"],
 		"expandable": false,
 	
-		"form_info": "For advanced users: create an empty trigger JSON object that can be hand crafted to provide the desired functionality\n",
+		"form_info": "For advanced users: create an empty trigger JSON object that can be Raw JSON to provide the desired functionality\n",
 		
 		"schema": [
 		{
@@ -186,7 +203,7 @@
 				"label": "Analytic Thread Trigger JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}
@@ -209,13 +226,13 @@
 	}
 	,
 	{
-		"display_name": "Hand Crafted Search Index Schema",
+		"display_name": "Raw JSON Search Index Schema",
 		"key": "search_index_schema",
 		"categories": ["Schema"],
 		"filters": ["Bucket/data_schema"],
 		"expandable": false,
 	
-		"form_info": "For advanced users: create an empty search index schema JSON object that can be hand crafted to provide the desired functionality\n",
+		"form_info": "For advanced users: create an empty search index schema JSON object that can be Raw JSON to provide the desired functionality\n",
 		
 		"schema": [
 		{
@@ -226,7 +243,7 @@
 				"label": "Search Index Schema JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}
@@ -236,13 +253,13 @@
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.search_index_schema = JSON.parse(template.element.form_model.schema || '{}'); }" }
 	},	
 	{
-		"display_name": "Hand Crafted Temporal Schema",
+		"display_name": "Raw JSON Temporal Schema",
 		"key": "temporal_schema",
 		"categories": ["Schema"],
 		"filters": ["Bucket/data_schema"],
 		"expandable": false,
 	
-		"form_info": "For advanced users: create an empty temporal schema JSON object that can be hand crafted to provide the desired functionality\n",
+		"form_info": "For advanced users: create an empty temporal schema JSON object that can be Raw JSON to provide the desired functionality\n",
 		
 		"schema": [
 		{
@@ -253,7 +270,7 @@
 				"label": "Temporal Schema JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}
@@ -263,13 +280,13 @@
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.temporal_schema = JSON.parse(template.element.form_model.schema || '{}'); }" }
 	},	
 	{
-		"display_name": "Hand Crafted Columnar Schema",
+		"display_name": "Raw JSON Columnar Schema",
 		"key": "columnar_schema",
 		"categories": ["Schema"],
 		"filters": ["Bucket/data_schema"],
 		"expandable": false,
 	
-		"form_info": "For advanced users: create an empty columnar schema JSON object that can be hand crafted to provide the desired functionality\n",
+		"form_info": "For advanced users: create an empty columnar schema JSON object that can be Raw JSON to provide the desired functionality\n",
 		
 		"schema": [
 		{
@@ -280,7 +297,7 @@
 				"label": "Columnar Schema JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}
@@ -290,13 +307,13 @@
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.columnar_schema = JSON.parse(template.element.form_model.schema || '{}'); }" }
 	},
 	{
-		"display_name": "Hand Crafted Storage Schema",
+		"display_name": "Raw JSON Storage Schema",
 		"key": "storage_schema",
 		"categories": ["Schema"],
 		"filters": ["Bucket/data_schema"],
 		"expandable": true,
 	
-		"form_info": "For advanced users: create an empty storage schema JSON object that can be hand crafted to provide the desired functionality\n",
+		"form_info": "For advanced users: create an empty storage schema JSON object that can be Raw JSON to provide the desired functionality\n",
 		
 		"schema": [
 		{
@@ -307,7 +324,7 @@
 				"label": "Storage Schema JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}
@@ -317,13 +334,13 @@
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.storage_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.storage_schema; }" }
 	},	
 	{
-		"display_name": "Hand Crafted Document Schema",
+		"display_name": "Raw JSON Document Schema",
 		"key": "document_schema",
 		"categories": ["Schema"],
 		"filters": ["Bucket/data_schema"],
 		"expandable": true,
 	
-		"form_info": "For advanced users: create an empty document schema JSON object that can be hand crafted to provide the desired functionality\n",
+		"form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
 		
 		"schema": [
 		{
@@ -334,7 +351,7 @@
 				"label": "Document Schema JSON",
 				"codemirror": {
 					"lineNumbers": true,
-					"indentWithTabs": true,
+					"smartIndent": true,
 					"mode": "javascript"
 				}
 			}

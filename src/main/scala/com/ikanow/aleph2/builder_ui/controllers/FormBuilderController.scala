@@ -214,6 +214,24 @@ object FormlyConfig extends Config {
      )
 
     formlyConfigProvider.setType(js.Dynamic.literal(
+        name = "horizontalSelect",
+        `extends` = "select",
+        template = """
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="control-label col-sm-3">{{to.required ? "* " : " "}}{{to.label}}</label>
+                <div class="col-sm-9">
+                  <select class="form-control" ng-model="model[options.key]"></select>
+                </div>
+              </div>
+          </div>
+        """,
+        wrapper = js.Array("bootstrapHasError")
+        )
+        .asInstanceOf[js.Dictionary[js.Any]]
+     )
+
+    formlyConfigProvider.setType(js.Dynamic.literal(
         name = "horizontalTextArea",
         template = """
             <div class="form-horizontal">

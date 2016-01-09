@@ -294,6 +294,7 @@ object BucketBuilderController extends Controller[Scope] {
   				  js.Dynamic.literal(
   						  templateUrl = "templates/form_builder.html",
   						  controller = "formBuilderCtrl", 
+  						  backdrop = "static",
   						  size = size
   						  )
   						  .asInstanceOf[ModalOptions]
