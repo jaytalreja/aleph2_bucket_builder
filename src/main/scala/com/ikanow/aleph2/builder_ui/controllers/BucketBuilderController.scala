@@ -80,10 +80,10 @@ object BucketBuilderController extends Controller[Scope] {
         
         if (scope.element_grid.isEmpty) {
           scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
-          //(don't watch this)
+          scope.has_errors = false    
         }      
         else { // build the generated object immediately
-          json_gen_service.generateJson(root)
+          regenerateJson()
         }
       }}
     
@@ -123,7 +123,7 @@ object BucketBuilderController extends Controller[Scope] {
     if (!(grid_mod_starting_topology.equals(new_topology)))
     {    
       undo_redo_service.registerState(MoveOrResizeElements(scope.curr_element, grid_mod_starting_topology, new_topology))
-      element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
+      regenerateJson()
     }
   }    
   
@@ -161,8 +161,8 @@ object BucketBuilderController extends Controller[Scope] {
       case MoveOrResizeElements(original, _, _) => {
         navigateTo(original)
       }
-    }}    
-    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
+    }}   
+    regenerateJson()
   }
   
   @JSExport
@@ -215,9 +215,7 @@ object BucketBuilderController extends Controller[Scope] {
     undo_redo_service.registerState(AddElement(new_node))
     
     // Recalculate derived json
-    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }   
-    
-    // Add watch
+    regenerateJson()
   }
 
   @JSExport
@@ -300,6 +298,10 @@ object BucketBuilderController extends Controller[Scope] {
   						  )
   						  .asInstanceOf[ModalOptions]
   				  )
+  				  .result.then((x: Unit) => {
+  				    // On modal success, regenerate the JSON
+  				    regenerateJson()
+  				  })
     }}
   }
 
@@ -317,8 +319,15 @@ object BucketBuilderController extends Controller[Scope] {
       undo_redo_service.registerState(DeleteElement(node))      
       
       // Recalculate derived json
-      element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }              
+      regenerateJson()
     }}
+  }
+  
+  protected def regenerateJson() = {
+      element_service.getMutableRoot().foreach { root => {
+        json_gen_service.generateJson(root)                   
+        scope.has_errors = !json_gen_service.getCurrentErrors().isEmpty
+      }}
   }
   
   @JSExport
@@ -327,7 +336,7 @@ object BucketBuilderController extends Controller[Scope] {
     scope.curr_element.children.find(node => node.element == card).foreach { node => {
       undo_redo_service.registerState(EnableOrDisableElement(node, !card.enabled, card.enabled))
     }}
-    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
+    regenerateJson()
   }    
   
   @JSExport
@@ -377,6 +386,8 @@ object BucketBuilderController extends Controller[Scope] {
     
     var element_grid: js.Array[ElementCardJs] = js.native
     var element_grid_options: GridsterOptionsJs = js.native
+    
+    var has_errors: Boolean = js.native
 
   }
 }

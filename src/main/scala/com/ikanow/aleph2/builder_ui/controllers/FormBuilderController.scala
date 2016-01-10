@@ -158,9 +158,7 @@ class FormBuilderController(
         curr_card_node.element.form_model.put(key, value) 
     }
     
-    element_service.getMutableRoot().foreach { root => json_gen_service.generateJson(root) }    
-    
-    modal.close()
+    modal.close() // (this will trigger JSON regen in the form builder)
   }  
   
   @JSExport
