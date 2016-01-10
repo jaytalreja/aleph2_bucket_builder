@@ -286,16 +286,17 @@ object BucketBuilderController extends Controller[Scope] {
   
   @JSExport
   def openElementConfig(item: ElementCardJs, size: String): Unit = {
-      // Can't get resolve working so going via the service:
     scope.curr_element.children.find(node => node.element == item).foreach { node => {
-       element_service.setElementToEdit(node);
-      
   		  modal.open(
   				  js.Dynamic.literal(
   						  templateUrl = "templates/form_builder.html",
   						  controller = "formBuilderCtrl", 
   						  backdrop = "static",
-  						  size = size
+  						  size = size,
+  						  resolve = js.Dynamic.literal(
+  						      node_to_edit = () => node
+  						      )
+  						      .asInstanceOf[js.Dictionary[js.Any]]
   						  )
   						  .asInstanceOf[ModalOptions]
   				  )

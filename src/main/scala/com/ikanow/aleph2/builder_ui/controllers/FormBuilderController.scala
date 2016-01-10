@@ -49,7 +49,9 @@ class FormBuilderController(
     element_service: ElementService,
     undo_redo_service: UndoRedoService,
     json_gen_service: JsonGenerationService,
-    modal: ModalInstance[Unit])
+    modal: ModalInstance[Unit],
+    node_to_edit: ElementNodeJs
+    )
     
   extends AbstractController[Scope](scope) {
 
@@ -86,7 +88,7 @@ class FormBuilderController(
   override def initialize(): Unit = {
     super.initialize()
 
-    val curr_card_node = element_service.getElementToEdit();
+    val curr_card_node = node_to_edit
     
     scope.element_expands = curr_card_node.element.expandable
     
@@ -123,7 +125,7 @@ class FormBuilderController(
   def expandElementConfig(): Unit = {
     if (!scope.element_expands) return
     
-    root_scope.$broadcast("quick_navigate", element_service.getElementToEdit())
+    root_scope.$broadcast("quick_navigate", node_to_edit)
     ok()    
   }
   
@@ -138,7 +140,7 @@ class FormBuilderController(
     
   @JSExport
   def ok(): Unit = {    
-    val curr_card_node = element_service.getElementToEdit();
+    val curr_card_node = node_to_edit;
     
     // First register with undo service
     

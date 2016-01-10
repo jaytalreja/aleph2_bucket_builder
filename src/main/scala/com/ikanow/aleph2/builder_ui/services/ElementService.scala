@@ -46,13 +46,6 @@ class ElementService(global_io_service: GlobalInputOutputService) {
     Future.successful(root)
   }
 
-  def setElementToEdit(new_card_node: ElementNodeJs):Unit = {
-    curr_card_node = new_card_node;
-  }
-  def getElementToEdit():ElementNodeJs = curr_card_node
-  
-  var curr_card_node: ElementNodeJs = null;
-  
   def setElementLevel(new_level: ElementNodeJs):Unit = {
     curr_level = new_level
   }
