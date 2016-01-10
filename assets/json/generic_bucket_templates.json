@@ -1,6 +1,101 @@
 {
 	"templates": [
 	{
+		"display_name": "Bucket Metadata",
+		"key": "bucket_metadata",
+		"categories": ["Metadata"],
+		"filters": ["Bucket"],
+		"expandable": false,
+		"form_info": "General bucket parameters",
+		"schema": [
+		{
+			"key": "full_name",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Bucket Path",
+				"placeholder": "The virtual bucket path, eg /path/to/bucket",
+				"required": true
+			}			
+		},
+		{
+			"key": "poll_frequency",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Poll Frequency",
+				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
+				"required": false
+			}			
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.full_name = template.element.form_model.full_name;\n \tvar pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \n}" }								
+	},
+	{
+		"display_name": "Test Settings",
+		"key": "test_settings",
+		"categories": ["Metadata"],
+		"filters": ["Bucket"],
+		"expandable": false,
+		"form_info": "Settings that are applied when the `test` function is invoked on this bucket",
+		"schema": [
+		{
+			"key": "requested_num_objects",
+			"type": "horizontalInput",
+			"defaultValue": "100",
+			"templateOptions": {
+				"pattern": "[0-9]+",
+				"label": "Requested Data Objects",
+				"placeholder": "The desired number of data objects to be returned by the test",
+				"required": true
+			}			
+		},
+		{
+			"key": "max_startup_time_secs",
+			"type": "horizontalInput",
+			"defaultValue": "60",
+			"templateOptions": {
+				"pattern": "[0-9]+",
+				"label": "Max Startup Time (s)",
+				"placeholder": "The maximum number of seconds to wait for the test to startup",
+				"required": true
+			}			
+		},
+		{
+			"key": "max_run_time_secs",
+			"type": "horizontalInput",
+			"defaultValue": "120",
+			"templateOptions": {
+				"pattern": "[0-9]+",
+				"label": "Max Run Time (s)",
+				"placeholder": "The maximum number of seconds to wait for the test to run, after it has started up",
+				"required": true
+			}			
+		},
+		{
+			"key": "max_storage_time_secs",
+			"type": "horizontalInput",
+			"defaultValue": "86400",
+			"templateOptions": {
+				"pattern": "[0-9]+",
+				"label": "Max Test Storage Time (s)",
+				"placeholder": "The maximum time (secs) to keep the test result data",
+				"required": false
+			}			
+		},
+		{
+			"key": "overwrite_existing_data",
+			"type": "horizontalCheckbox",
+			"defaultValue": true,
+			"templateOptions": {
+				"label": "Overwrite existing data",
+				"required": false
+			}
+		}		
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \t\tcurr_obj.test_settings = {};\n\t\tvar doc = curr_obj.test_settings;\n\t\tdoc.requested_num_objects = parseInt(template.element.form_model.requested_num_objects);\n\t\tdoc.max_startup_time_secs = parseInt(template.element.form_model.max_startup_time_secs);\n\t\tdoc.max_run_time_secs = parseInt(template.element.form_model.max_run_time_secs);\n\t\tif ((template.element.form_model.max_storage_time_secs || '').length > 0) doc.max_storage_time_secs = parseInt(template.element.form_model.max_storage_time_secs);\n\t\tdoc.overwrite_existing_data = template.element.form_model.overwrite_existing_data;\n }" }										
+	},
+	{
 		"display_name": "Generic Harvester",
 		"key": "generic_harvester",
 		"categories": ["Harvester"],
@@ -19,15 +114,6 @@
 		},
 		{
 			"template": "<hr/>"
-		},
-		{
-			"key": "poll_frequency",
-			"type": "horizontalInput",
-			"templateOptions": {
-				"label": "Poll Frequency",
-				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
-				"required": false
-			}			
 		},
 		{
 			"template": "<hr/>"
@@ -123,7 +209,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \n  curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  curr_obj.node_rules = (template.element.form_model.node_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n}\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n   curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  curr_obj.node_rules = (template.element.form_model.node_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n}\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
 	}	
 	,
 	{
