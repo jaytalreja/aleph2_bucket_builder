@@ -18,13 +18,6 @@ The [wiki](https://github.com/Alex-Ikanow/aleph2_bucket_builder/wiki) contains t
 
 For development:
 * Install an eclipse with Scala support, eg "Scala IDE"
-* Install "sbteclipse":
-
-Create/append to a file `~/.sbt/0.13/plugins/plugins.sbt`:
-```
-addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "4.0.0")
-```
-
 * Install a static web server, eg (from the root of the project):
 
 ```
