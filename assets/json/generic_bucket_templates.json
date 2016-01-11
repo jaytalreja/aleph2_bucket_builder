@@ -25,21 +25,20 @@
 				"placeholder": "Human readable frequency (eg '10min', '1 day') for how often this harvester is polled",
 				"required": false
 			}			
-		}
-		],
-		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.full_name = template.element.form_model.full_name;\n \tvar pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \n}" }								
-	},
-	{
-		"display_name": "Test Settings",
-		"key": "test_settings",
-		"categories": ["Metadata"],
-		"filters": ["Bucket"],
-		"expandable": false,
-		"form_info": "Settings that are applied when the `test` function is invoked on this bucket",
-		"schema": [
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "show_test_settings",
+			"type": "checkbox",
+			"templateOptions": {
+				"label": "Show Test Settings"
+			}
+		},
 		{
 			"key": "requested_num_objects",
+			"hideExpression": "!model.show_test_settings", 
 			"type": "horizontalInput",
 			"defaultValue": "100",
 			"templateOptions": {
@@ -51,6 +50,7 @@
 		},
 		{
 			"key": "max_startup_time_secs",
+			"hideExpression": "!model.show_test_settings", 
 			"type": "horizontalInput",
 			"defaultValue": "60",
 			"templateOptions": {
@@ -62,6 +62,7 @@
 		},
 		{
 			"key": "max_run_time_secs",
+			"hideExpression": "!model.show_test_settings", 
 			"type": "horizontalInput",
 			"defaultValue": "120",
 			"templateOptions": {
@@ -73,6 +74,7 @@
 		},
 		{
 			"key": "max_storage_time_secs",
+			"hideExpression": "!model.show_test_settings", 
 			"type": "horizontalInput",
 			"defaultValue": "86400",
 			"templateOptions": {
@@ -84,6 +86,7 @@
 		},
 		{
 			"key": "overwrite_existing_data",
+			"hideExpression": "!model.show_test_settings", 
 			"type": "horizontalCheckbox",
 			"defaultValue": true,
 			"templateOptions": {
@@ -93,8 +96,9 @@
 		}		
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \t\tcurr_obj.test_settings = {};\n\t\tvar doc = curr_obj.test_settings;\n\t\tdoc.requested_num_objects = parseInt(template.element.form_model.requested_num_objects);\n\t\tdoc.max_startup_time_secs = parseInt(template.element.form_model.max_startup_time_secs);\n\t\tdoc.max_run_time_secs = parseInt(template.element.form_model.max_run_time_secs);\n\t\tif ((template.element.form_model.max_storage_time_secs || '').length > 0) doc.max_storage_time_secs = parseInt(template.element.form_model.max_storage_time_secs);\n\t\tdoc.overwrite_existing_data = template.element.form_model.overwrite_existing_data;\n }" }										
-	},
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.full_name = template.element.form_model.full_name;\n \tvar pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \t\tif (template.element.form_model.requested_num_objects) { curr_obj.test_settings = {};\n\t\tvar doc = curr_obj.test_settings;\n\t\tdoc.requested_num_objects = parseInt(template.element.form_model.requested_num_objects);\n\t\tdoc.max_startup_time_secs = parseInt(template.element.form_model.max_startup_time_secs);\n\t\tdoc.max_run_time_secs = parseInt(template.element.form_model.max_run_time_secs);\n\t\tif ((template.element.form_model.max_storage_time_secs || '').length > 0) doc.max_storage_time_secs = parseInt(template.element.form_model.max_storage_time_secs);\n\t\tdoc.overwrite_existing_data = template.element.form_model.overwrite_existing_data; }\n\n}" }								
+	}
+	,
 	{
 		"display_name": "Generic Harvester",
 		"key": "generic_harvester",
@@ -111,9 +115,6 @@
 				"placeholder": "The path to the technology, eg /app/aleph2/library/harvester.jar",
 				"required": true
 			}			
-		},
-		{
-			"template": "<hr/>"
 		},
 		{
 			"template": "<hr/>"
