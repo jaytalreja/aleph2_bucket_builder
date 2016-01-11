@@ -213,6 +213,56 @@
 	}	
 	,
 	{
+		"display_name": "Batch Enrichment Pipeline",
+		"key": "enrichment",
+		"categories": ["Enrichment"],
+		"filters": ["Bucket"],
+		"expandable": true,
+	
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.master_enrichment_type = 'batch'; curr_obj.batch_enrichment_configs = []; return curr_obj.batch_enrichment_configs; }" },
+	
+		"form_info": "<p>This is a container for a batch enrichment pipeline that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
+	},
+	{
+		"display_name": "Streaming Enrichment Topology",
+		"key": "enrichment",
+		"categories": ["Enrichment"],
+		"filters": ["Bucket"],
+		"expandable": true,
+	
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.master_enrichment_type = 'streaming'; curr_obj.streaming_enrichment_topology = {}; return curr_obj.streaming_enrichment_topology; }" },
+	
+		"form_info": "<p>This is a container for a streaming enrichment engine that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
+	},
+	{
+		"display_name": "Raw JSON Enrichment Element",
+		"key": "json_enrich_element",
+		"categories": ["Generic"],
+		"filters": ["Bucket/enrichment", "Bucket/analytic_thread/enrichment_analytic_job"],
+		"expandable": false,
+	
+		"form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
+		
+		"schema": [
+		{
+			"key": "element",
+			"type": "code_input",
+			"defaultValue": "{\n}",
+			"templateOptions": {
+				"label": "Enrichment Element JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = JSON.parse(template.element.form_model.element || '{}'); if (Array.isArray(curr_obj)) curr_obj.push(obj); else if (curr_obj.config) { if (curr_obj.config.enrich_pipeline) curr_obj.config.enrich_pipeline.push(obj); else curr_obj.config = obj; } else for (x in obj) curr_obj[x] = obj[x]; }" }
+	}		
+	,
+	{
 		"display_name": "Analytic Thread Container",
 		"key": "analytic_thread",
 		"categories": ["Analytics"],
@@ -226,7 +276,7 @@
 	{
 		"display_name": "Generic Analytic Job",
 		"key": "analytic_job",
-		"categories": ["Processing"],
+		"categories": ["Generic Processing"],
 		"filters": ["Bucket/analytic_thread"],
 		"expandable": true,
 		
@@ -289,7 +339,7 @@
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
 				"label": "Technology Module Name",
-				"placeholder": "For harvesters with pluggable modules, the path to the module, eg /app/aleph2/library/harvester_module.jar",
+				"placeholder": "For analytic technologies with pluggable modules, the path to the module, eg /app/aleph2/library/harvester_module.jar",
 				"required": false
 			}
 		},
@@ -299,7 +349,7 @@
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
 				"label": "Entry Point Override",
-				"placeholder": "For harvest modules with multiple entry points, specifies the JVM class to execute, eg com.ikanow.aleph2.harvest.module.Module1EntryPoint",
+				"placeholder": "For analytics modules with multiple entry points, specifies the JVM class to execute, eg com.ikanow.aleph2.harvest.module.Module1EntryPoint",
 				"required": false
 			}
 		},
@@ -350,6 +400,142 @@
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
+		"display_name": "Batch Enrichment Pipeline",
+		"key": "enrichment_analytic_job",
+		"categories": ["Generic Processing"],
+		"filters": ["Bucket/analytic_thread"],
+		"expandable": true,
+		
+		"form_info": "A batch analytic job that uses the batch enrichment engine to perform processing on input or stored data. ",
+		
+		"schema": [
+		{
+			"key": "dependencies",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Dependencies",
+				"placeholder": "A comma-separated list of dependencies on other analytic jobs",
+				"required": false
+			}			
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "module_name_or_id",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Technology Module Name",
+				"placeholder": "For enrichment engines with pluggable modules, the path to the module, eg /app/aleph2/library/batch_enrichment_module.jar",
+				"required": false
+			}
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "show_advanced",
+			"type": "checkbox",
+			"templateOptions": {
+				"label": "Show Advanced Options"
+			}
+		},
+		{
+			"key": "library_names_or_ids",
+			"type": "multiInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Additional Library Modules",
+				"inputOptions": {
+					"type": "input",
+					"templateOptions": {
+						"label": "Technology Module Name",
+						"placeholder": "For enrichment engines that need additional library modules, the path to the module, eg /app/aleph2/library/enrichment_module_lib.jar",
+						"required": false
+					}
+				}
+			}
+		},
+		{
+			"key": "node_rules",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Node rules",
+				"placeholder": "Comma-separated list of rules determining on which nodes this analytic job will run",
+				"required": false
+			}
+		},
+		{
+			"template": "<hr/>"
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.analytic_type = 'batch'; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = 'BatchEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { 'enrich_pipeline': [] }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+	},
+	{
+		"display_name": "Streaming Enrichment Topology",
+		"key": "enrichment_analytic_job",
+		"categories": ["Generic Processing"],
+		"filters": ["Bucket/analytic_thread"],
+		"expandable": true,
+		
+		"form_info": "A streaming analytic job that uses the streaming enrichment engine to perform processing on input or stored data. ",
+		
+		"schema": [
+		{
+			"key": "module_name_or_id",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Technology Module Name",
+				"placeholder": "For enrichment engines with pluggable modules, the path to the module, eg /app/aleph2/library/streaming_enrichment_module.jar",
+				"required": false
+			}
+		},
+		{
+			"template": "<hr/>"
+		},
+		{
+			"key": "show_advanced",
+			"type": "checkbox",
+			"templateOptions": {
+				"label": "Show Advanced Options"
+			}
+		},
+		{
+			"key": "library_names_or_ids",
+			"hideExpression": "!model.show_advanced", 
+			"type": "multiInput",
+			"templateOptions": {
+				"label": "Additional Library Modules",
+				"inputOptions": {
+					"type": "input",
+					"templateOptions": {
+						"label": "Technology Module Name",
+						"placeholder": "For analytics that need additional library modules, the path to the module, eg /app/aleph2/library/analytic_module_lib.jar",
+						"required": false
+					}
+				}
+			}
+		},
+		{
+			"key": "node_rules",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Node rules",
+				"placeholder": "Comma-separated list of rules determining on which nodes this analytic job will run",
+				"required": false
+			}
+		},
+		{
+			"template": "<hr/>"
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.analytic_type = 'streaming'; \n  \tnew_obj.analytic_technology_name_or_id = 'StreamingEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+	},
+	{
 		"display_name": "Raw JSON Analytic Trigger",
 		"key": "analytic_trigger",
 		"categories": ["Scheduling"],
@@ -391,8 +577,8 @@
 	{
 		"display_name": "Raw JSON Global Input Config",
 		"key": "analytic_input",
-		"categories": ["Schema"],
-		"filters": ["Bucket/analytic_thread/analytic_job"],
+		"categories": ["Input"],
+		"filters": ["Bucket/analytic_thread/analytic_job", "Bucket/analytic_thread/enrichment_analytic_job"],
 		"expandable": false,
 	
 		"form_info": "Empty JSON object used to configure the global default input configuration for all inputs in this analytic job\n",
@@ -418,8 +604,8 @@
 	{
 		"display_name": "Raw JSON Analytic Input",
 		"key": "analytic_input",
-		"categories": ["Schema"],
-		"filters": ["Bucket/analytic_thread/analytic_job"],
+		"categories": ["Input"],
+		"filters": ["Bucket/analytic_thread/analytic_job", "Bucket/analytic_thread/enrichment_analytic_job"],
 		"expandable": false,
 	
 		"form_info": "Empty JSON object used to configure an input for this analytic job\n",
@@ -445,8 +631,8 @@
 	{
 		"display_name": "Raw JSON Analytic Output",
 		"key": "analytic_output",
-		"categories": ["Schema"],
-		"filters": ["Bucket/analytic_thread/analytic_job"],
+		"categories": ["Output"],
+		"filters": ["Bucket/analytic_thread/analytic_job", "Bucket/analytic_thread/enrichment_analytic_job"],
 		"expandable": false,
 	
 		"form_info": "Empty JSON object used to configure a single output for this analytic job\n",
