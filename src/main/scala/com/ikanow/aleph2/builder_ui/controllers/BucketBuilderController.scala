@@ -68,25 +68,14 @@ object BucketBuilderController extends Controller[Scope] {
   override def initialize(): Unit = {
     super.initialize()
 
+    // Basic initialization
+    
     scope.breadcrumb = js.Array()
     scope.breadcrumb_system = js.Array()
+
     scope.element_grid = js.Array()        
-    
-    element_service.getMutableRoot().foreach { root => {
-        scope.curr_element = root 
-        rebuildBreadcrumbs(root)            
-        
-        buildGrid()
-        
-        if (scope.element_grid.isEmpty) {
-          scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
-          scope.has_errors = false    
-        }      
-        else { // build the generated object immediately
-          regenerateJson()
-        }
-      }}
-    
+    scope.has_errors = false            
+
     scope.element_grid_options = GridsterOptionsJs(gridElementMoveOrResize_start _, gridElementMoveOrResize_end _)
         
     scope.element_template_tree = js.Array()
@@ -97,7 +86,31 @@ object BucketBuilderController extends Controller[Scope] {
         dirSelectable = false
         )    
     
-    recalculateTemplates()
+    // Async code called immediately:
+        
+    element_service.getMutableRoot().flatMap { root => {
+      // Get breadcrumbs
+      scope.curr_element = root 
+      rebuildBreadcrumbs(root)
+      
+      // Get the templates (requires the breadcrumbs to filter)
+      recalculateTemplates(scope.breadcrumb_system).map { unit => root }      
+    }}
+    .foreach { root => { // Now build the grid since we have the templates (needed the global JS from there, see below)
+        buildGrid()
+        
+        if (scope.element_grid.isEmpty) {
+          scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
+        }
+        else { // build the generated object immediately
+          
+          // (Note this requires globals to have been registered hence after recalculateTemplates)
+          //  TODO: make this more stable to eg the templates changing and removing a global used in the builder)
+          regenerateJson()
+        }
+    }}
+
+    // Register some callbacksx
     
     scope.$on("quick_navigate", (event: Event, message: ElementNodeJs) => {
       navigateTo(message)
@@ -166,17 +179,19 @@ object BucketBuilderController extends Controller[Scope] {
   }
   
   @JSExport
-  def recalculateTemplates(reload: Boolean = false):Unit = {
+  def recalculateTemplates(breadcrumb_system: js.Array[String], reload: Boolean = false):Future[Unit] = {
     
-    element_template_service.requestElementTemplates(!reload).foreach { beans => 
+    val future = element_template_service.requestElementTemplates(!reload)
+    
+    future.foreach { beans => 
       {
           scope.element_template_array = beans
         
           scope.element_template_tree.clear()
           scope.element_template_tree.appendAll(
-            ElementTreeBuilder.getTemplateTree(scope.breadcrumb_system, beans)
+            ElementTreeBuilder.getTemplateTree(breadcrumb_system, beans)
           )
-          
+
           scope.element_template_tree_expanded.clear()
           scope.element_template_tree_expanded.appendAll(
             scope.element_template_tree.filter { node => node.category }.toJSArray
@@ -187,6 +202,7 @@ object BucketBuilderController extends Controller[Scope] {
           scope.$apply("")
       }
     }    
+    future.map { x => Unit }
   }
   
   @JSExport
@@ -261,7 +277,7 @@ object BucketBuilderController extends Controller[Scope] {
 
       element_service.setElementLevel(new_node)
       
-      recalculateTemplates()
+      recalculateTemplates(scope.breadcrumb_system)
   }
   
   def rebuildBreadcrumbs(new_node: ElementNodeJs):Unit = {
