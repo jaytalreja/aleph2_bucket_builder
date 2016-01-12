@@ -64,8 +64,7 @@ object ElementTreeBuilder {
     def fillInImportedTree(root: ElementNodeJs): ElementNodeJs = {
       def recursive(root: ElementNodeJs, parent: ElementNodeJs):Unit = {
         root.$parent = parent
-        if (null != root.children)
-          root.children.foreach { child => recursive(child, root) }        
+        JsOption(root.children).foreach { array => array.foreach { child => recursive(child, root) } }
       }
       recursive(root, null)
       root
