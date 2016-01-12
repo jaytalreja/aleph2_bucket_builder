@@ -97,16 +97,22 @@ class FormBuilderController(
     scope.element_errors = json_gen_service.getCurrentErrors().filter { case (err, el) => el == curr_card_node }. map { case (err, el) => err }.toJSArray
     scope.element_has_errors = !scope.element_errors.isEmpty
 
-   fields.clear()
-   fields.appendAll(
+    // Pull out _short_name override
+   val grouped_fields =  
        JsOption(curr_card_node.element.template.schema)
          .map { x => x.asInstanceOf[js.Array[js.Any]] }
          .getOrElse(js.Array())
-         .map { element => JSON.parse(JSON.stringify(element)) } // (deep copy)
-         .toList
+         .map { element => JSON.parse(JSON.stringify(element)).asInstanceOf[js.Dictionary[js.Any]] } // (deep copy)
+         .groupBy { x => x.get("key").map { name => !name.equals("_short_name") }.getOrElse(true) }
+    
+   fields.clear()
+   fields.appendAll(
+       grouped_fields.getOrElse(true, js.Array()).toList
         )
 
-    JSON.parse(short_name_schema) +=: JSON.parse(summary_schema) +=: JSON.parse(line_separator) +=: fields
+    val this_short_name_schema = grouped_fields.get(false).filter { short_name => !short_name.isEmpty }.map { short_name => short_name.pop }.getOrElse(JSON.parse(short_name_schema))
+      
+    this_short_name_schema +=: JSON.parse(summary_schema) +=: JSON.parse(line_separator) +=: fields
 
     // deep copy:
     model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]

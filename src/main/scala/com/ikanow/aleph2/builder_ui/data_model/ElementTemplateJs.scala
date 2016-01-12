@@ -40,6 +40,9 @@ trait ElementTemplateJs extends js.Object {
     val building_function: js.Dictionary[String] = js.native
     val post_building_function: js.Dictionary[String] = js.native // (for expandable cards)
     val post_validation_function: js.Dictionary[String] = js.native // (for expandable cards)
+    
+    // Global function invocation - in this case only this field + key should be populated
+    val global_function: js.Dictionary[String] = js.native
 }
 
 object ElementTemplateJs {

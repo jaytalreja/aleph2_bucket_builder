@@ -49,11 +49,13 @@ class ElementTemplateService(http: HttpService, global_io_service: GlobalInputOu
               .asInstanceOf[HttpConfig]
           )
           .map { js => global_io_service.template_conversion_fn(js)
-                        .map { js => js.asInstanceOf[ElementTemplateJs] } }
+                        .map { js => js.asInstanceOf[ElementTemplateJs] } }          
         }
         .getOrElse(Future.successful(js.Array()))
     }
-    cache
+    cache.map( templates => templates.foreach { x => JsOption(x.global_function).flatMap { f => f.get("$fn") }.foreach { fn => js.eval(fn.replaceFirst("function", "function " + x.key)) } })
+    
+    cache.map { templates => templates.filter { x => !js.isUndefined(x.filters) } } // (filter out anything without a filters field)
   }
   var cache: Future[js.Array[ElementTemplateJs]] = null
 }
