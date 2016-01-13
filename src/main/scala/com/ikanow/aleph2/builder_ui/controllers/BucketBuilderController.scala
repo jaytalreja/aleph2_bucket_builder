@@ -179,6 +179,10 @@ object BucketBuilderController extends Controller[Scope] {
   }
   
   @JSExport
+  def refreshTemplates(reload: Boolean = false):Future[Unit] = {
+    recalculateTemplates(scope.curr_element, scope.breadcrumb_system, reload)
+  }
+  
   def recalculateTemplates(root: ElementNodeJs, breadcrumb_system: js.Array[String], reload: Boolean = false):Future[Unit] = {
     
     val future = element_template_service.requestElementTemplates(!reload)

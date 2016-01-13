@@ -48,7 +48,6 @@ object ElementTreeBuilder {
         .zipWithIndex
         // Step 1, build a map of beans against their categories
         .filter { case (bean, index) => !JsOption(bean.filters).getOrElse(pass_all)
-                                            .filter { x => { println(simpleGlobToRegex(x)); true } } /**/
                                             .filter { path => breadcrumb_str.matches(simpleGlobToRegex(path)) } // 1) child filter matches parent path                               
                                             .isEmpty 
          }

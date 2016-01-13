@@ -6,7 +6,7 @@
 	},
 	{
 		"display_name": "Bucket Metadata",
-		"key": "bucket_metadata",
+		"key": "data_bucket",
 		"categories": ["Metadata"],
 		"filters": ["Bucket"],
 		"expandable": false,
@@ -105,7 +105,7 @@
 	,
 	{
 		"display_name": "Generic Harvester",
-		"key": "generic_harvester",
+		"key": "harvest_engine",
 		"categories": ["Harvester"],
 		"filters": ["Bucket"],
 		"expandable": false,
@@ -219,9 +219,10 @@
 	,
 	{
 		"display_name": "Batch Enrichment Pipeline",
-		"key": "enrichment",
+		"key": "enrichment_engine",
 		"categories": ["Enrichment"],
 		"filters": ["Bucket"],
+		"child_filters": [ "batch_enrichment_meta", "enrichment_meta" ],
 		"expandable": true,
 	
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.master_enrichment_type = 'batch'; curr_obj.batch_enrichment_configs = []; return curr_obj.batch_enrichment_configs; }" },
@@ -230,9 +231,10 @@
 	},
 	{
 		"display_name": "Streaming Enrichment Topology",
-		"key": "enrichment",
+		"key": "enrichment_engine",
 		"categories": ["Enrichment"],
 		"filters": ["Bucket"],
+		"child_filters": [ "stream_enrichment_meta", "enrichment_meta" ],
 		"expandable": true,
 	
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.master_enrichment_type = 'streaming'; curr_obj.streaming_enrichment_topology = {}; return curr_obj.streaming_enrichment_topology; }" },
@@ -241,9 +243,9 @@
 	},
 	{
 		"display_name": "Raw JSON Enrichment Element",
-		"key": "json_enrich_element",
+		"key": "enrichment_meta",
 		"categories": ["Generic"],
-		"filters": ["Bucket/enrichment", "Bucket/analytic_thread/enrichment_analytic_job"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
@@ -272,6 +274,7 @@
 		"key": "analytic_thread",
 		"categories": ["Analytics"],
 		"filters": ["Bucket"],
+		"child_filters": [ "analytic_job", "analytic_trigger" ],
 		"expandable": true,
 	
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }" },
@@ -282,7 +285,8 @@
 		"display_name": "Generic Analytic Job",
 		"key": "analytic_job",
 		"categories": ["Generic Processing"],
-		"filters": ["Bucket/analytic_thread"],
+		"filters": ["Bucket/**"],
+		"child_filters": [ "analytic_input", "analytic_output" ],
 		"expandable": true,
 		
 		"form_info": "A streaming or batch analytic job that performs processing on input or stored data. ",
@@ -416,9 +420,10 @@
 	},
 	{
 		"display_name": "Batch Enrichment Pipeline",
-		"key": "enrichment_analytic_job",
+		"key": "analytic_job",
 		"categories": ["Generic Processing"],
-		"filters": ["Bucket/analytic_thread"],
+		"filters": ["Bucket/**"],
+		"child_filters": [ "analytic_input", "analytic_output", "enrichment_meta", "batch_enrichment_meta" ],
 		"expandable": true,
 		
 		"form_info": "A batch analytic job that uses the batch enrichment engine to perform processing on input or stored data. ",
@@ -500,9 +505,10 @@
 	},
 	{
 		"display_name": "Streaming Enrichment Topology",
-		"key": "enrichment_analytic_job",
+		"key": "analytic_job",
 		"categories": ["Generic Processing"],
 		"filters": ["Bucket/analytic_thread"],
+		"child_filters": [ "analytic_input", "analytic_output", "enrichment_meta", "stream_enrichment_meta" ],
 		"expandable": true,
 		
 		"form_info": "A streaming analytic job that uses the streaming enrichment engine to perform processing on input or stored data. ",
@@ -613,7 +619,7 @@
 		"display_name": "Raw JSON Global Input Config",
 		"key": "analytic_input",
 		"categories": ["Input"],
-		"filters": ["Bucket/analytic_thread/analytic_job", "Bucket/analytic_thread/enrichment_analytic_job"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "Empty JSON object used to configure the global default input configuration for all inputs in this analytic job\n",
@@ -640,7 +646,7 @@
 		"display_name": "Raw JSON Analytic Input",
 		"key": "analytic_input",
 		"categories": ["Input"],
-		"filters": ["Bucket/analytic_thread/analytic_job", "Bucket/analytic_thread/enrichment_analytic_job"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "Empty JSON object used to configure an input for this analytic job\n",
@@ -667,7 +673,7 @@
 		"display_name": "Raw JSON Analytic Output",
 		"key": "analytic_output",
 		"categories": ["Output"],
-		"filters": ["Bucket/analytic_thread/analytic_job", "Bucket/analytic_thread/enrichment_analytic_job"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "Empty JSON object used to configure a single output for this analytic job\n",
@@ -697,6 +703,7 @@
 		"key": "data_schema",
 		"categories": ["Metadata"],
 		"filters": ["Bucket"],
+		"child_filters": [ "data_service_schema" ],
 		"expandable": true,
 	
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema = {}; return curr_obj.data_schema; }" },
@@ -706,9 +713,9 @@
 	,
 	{
 		"display_name": "Raw JSON Search Index Schema",
-		"key": "search_index_schema",
+		"key": "data_service_schema",
 		"categories": ["Schema"],
-		"filters": ["Bucket/data_schema"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "For advanced users: create an empty search index schema JSON object that can be Raw JSON to provide the desired functionality\n",
@@ -733,9 +740,9 @@
 	},	
 	{
 		"display_name": "Raw JSON Temporal Schema",
-		"key": "temporal_schema",
+		"key": "data_service_schema",
 		"categories": ["Schema"],
-		"filters": ["Bucket/data_schema"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "For advanced users: create an empty temporal schema JSON object that can be Raw JSON to provide the desired functionality\n",
@@ -760,9 +767,9 @@
 	},	
 	{
 		"display_name": "Raw JSON Columnar Schema",
-		"key": "columnar_schema",
+		"key": "data_service_schema",
 		"categories": ["Schema"],
-		"filters": ["Bucket/data_schema"],
+		"filters": ["Bucket/**"],
 		"expandable": false,
 	
 		"form_info": "For advanced users: create an empty columnar schema JSON object that can be Raw JSON to provide the desired functionality\n",
@@ -787,9 +794,9 @@
 	},
 	{
 		"display_name": "Raw JSON Storage Schema",
-		"key": "storage_schema",
+		"key": "data_service_schema",
 		"categories": ["Schema"],
-		"filters": ["Bucket/data_schema"],
+		"filters": ["Bucket/**"],
 		"expandable": true,
 	
 		"form_info": "For advanced users: create an empty storage schema JSON object that can be Raw JSON to provide the desired functionality\n",
@@ -814,9 +821,9 @@
 	},	
 	{
 		"display_name": "Raw JSON Document Schema",
-		"key": "document_schema",
+		"key": "data_service_schema",
 		"categories": ["Schema"],
-		"filters": ["Bucket/data_schema"],
+		"filters": ["Bucket/**"],
 		"expandable": true,
 	
 		"form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
