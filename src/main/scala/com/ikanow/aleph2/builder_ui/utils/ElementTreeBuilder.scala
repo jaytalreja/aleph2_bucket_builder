@@ -23,9 +23,11 @@ import scala.scalajs.js.JSON
 import com.greencatsoft.angularjs._
 
 import js.JSConverters._
+import js.RegExp
 import scala.collection.mutable.MutableList
 
 import js.JSConverters._
+
 
 /** Utilities to build the element and element template trees
  * @author alex
@@ -37,15 +39,25 @@ object ElementTreeBuilder {
      * @param templates
      * @return
      */
-    def getTemplateTree(breadcrumb: js.Array[String], templates: js.Array[ElementTemplateJs]): js.Array[ElementTemplateNodeJs] = {
+    def getTemplateTree(breadcrumb: js.Array[String], curr_node: ElementNodeJs, templates: js.Array[ElementTemplateJs]): js.Array[ElementTemplateNodeJs] = {
       val breadcrumb_str = breadcrumb.mkString("/")
+      
+      val pass_all = js.Array("**")
       
       templates
         .zipWithIndex
         // Step 1, build a map of beans against their categories
-        .filter { case (bean, index) => !bean.filters
-                            .filter { path => path.equals(breadcrumb_str) }.isEmpty 
+        .filter { case (bean, index) => !JsOption(bean.filters).getOrElse(pass_all)
+                                            .filter { x => { println(simpleGlobToRegex(x)); true } } /**/
+                                            .filter { path => breadcrumb_str.matches(simpleGlobToRegex(path)) } // 1) child filter matches parent path                               
+                                            .isEmpty 
          }
+        .filter { case (bean, index) => JsOption(curr_node.element)
+                                            .map { el => el.template }
+                                            .flatMap { t => JsOption(t.child_filters) }
+                                            .map { cf => cf.toSet.contains(bean.key) } // 2) child matches parent filter
+                                         .getOrElse(true) 
+        }  
         .flatMap { case (bean, index) => bean.categories.map { cat => (cat, (bean, index)) } }
         .groupBy(_._1)
         .mapValues(_.map(_._2).sortBy { case (bean, index) => bean.display_name })
@@ -280,5 +292,13 @@ object ElementTreeBuilder {
         else
           Option.empty          
       }
+    }
+    
+    /** Converts a simple glob (* and ** only) to a regex
+     * @param to_escape
+     * @return
+     */
+    protected def simpleGlobToRegex(to_escape: String): String = {
+      java.util.regex.Pattern.quote(to_escape).replace("\\*\\*", ".*").replace("\\*", "[^/]*")
     }
 }

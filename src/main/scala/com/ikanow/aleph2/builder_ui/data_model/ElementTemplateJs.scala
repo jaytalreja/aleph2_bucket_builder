@@ -31,6 +31,7 @@ trait ElementTemplateJs extends js.Object {
     val key: String = js.native
     val categories: js.Array[String] = js.native
     val filters: js.Array[String] = js.native
+    val child_filters: js.Array[String] = js.native
     val expandable: Boolean = js.native
     val schema: js.Array[js.Dictionary[js.Any]] = js.native
     val form_info: String = js.native

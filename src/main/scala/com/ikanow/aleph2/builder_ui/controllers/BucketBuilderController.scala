@@ -94,7 +94,7 @@ object BucketBuilderController extends Controller[Scope] {
       rebuildBreadcrumbs(root)
       
       // Get the templates (requires the breadcrumbs to filter)
-      recalculateTemplates(scope.breadcrumb_system).map { unit => root }      
+      recalculateTemplates(root, scope.breadcrumb_system).map { unit => root }      
     }}
     .foreach { root => { // Now build the grid since we have the templates (needed the global JS from there, see below)
         buildGrid()
@@ -179,7 +179,7 @@ object BucketBuilderController extends Controller[Scope] {
   }
   
   @JSExport
-  def recalculateTemplates(breadcrumb_system: js.Array[String], reload: Boolean = false):Future[Unit] = {
+  def recalculateTemplates(root: ElementNodeJs, breadcrumb_system: js.Array[String], reload: Boolean = false):Future[Unit] = {
     
     val future = element_template_service.requestElementTemplates(!reload)
     
@@ -189,7 +189,7 @@ object BucketBuilderController extends Controller[Scope] {
         
           scope.element_template_tree.clear()
           scope.element_template_tree.appendAll(
-            ElementTreeBuilder.getTemplateTree(breadcrumb_system, beans)
+            ElementTreeBuilder.getTemplateTree(breadcrumb_system, root, beans)
           )
 
           scope.element_template_tree_expanded.clear()
@@ -277,7 +277,7 @@ object BucketBuilderController extends Controller[Scope] {
 
       element_service.setElementLevel(new_node)
       
-      recalculateTemplates(scope.breadcrumb_system)
+      recalculateTemplates(new_node, scope.breadcrumb_system)
   }
   
   def rebuildBreadcrumbs(new_node: ElementNodeJs):Unit = {
