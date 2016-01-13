@@ -53,7 +53,7 @@ class ElementTemplateService(http: HttpService, global_io_service: GlobalInputOu
         }
         .getOrElse(Future.successful(js.Array()))
     }
-    cache.map( templates => templates.foreach { x => JsOption(x.global_function).flatMap { f => f.get("$fn") }.foreach { fn => js.eval(fn.replaceFirst("function", "function " + x.key)) } })
+    cache.map( templates => templates.foreach { x => JsOption(x.global_function).flatMap { f => f.get("_$fn") }.foreach { fn => js.eval(fn.replaceFirst("function", "function " + x.key)) } })
     
     cache.map { templates => templates.filter { x => !js.isUndefined(x.filters) } } // (filter out anything without a filters field)
   }

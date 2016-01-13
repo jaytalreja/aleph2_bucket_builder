@@ -87,7 +87,7 @@ object ElementTreeBuilder {
      */
     def stringifyTree(root: ElementNodeJs): String = {
         JSON.stringify(root, (k: String, v: js.Any) => {
-          if ((null == v) || (k.startsWith("$") && !k.equals("$fn")))
+          if ((null == v) || k.startsWith("$"))
             js.undefined.asInstanceOf[js.Any]
           else
             v
@@ -116,7 +116,7 @@ object ElementTreeBuilder {
         
         val validation_passed = callBuilder(true,
           JsOption(curr_template.element.template.validation_function)
-            .flatMap { f => f.get("$fn") },
+            .flatMap { f => f.get("_$fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
@@ -134,7 +134,7 @@ object ElementTreeBuilder {
           
         val maybe_new_obj_int: Option[js.Any] = callBuilder(false,
           JsOption(curr_template.element.template.building_function)
-             .flatMap { f => f.get("$fn") },
+             .flatMap { f => f.get("_$fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
@@ -191,7 +191,7 @@ object ElementTreeBuilder {
         
         callBuilder(true,
           JsOption(curr_template.element.template.post_validation_function)
-            .flatMap { f => f.get("$fn") },
+            .flatMap { f => f.get("_$fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
@@ -203,7 +203,7 @@ object ElementTreeBuilder {
           
         callBuilder(false,
           JsOption(curr_template.element.template.post_building_function)
-            .flatMap { f => f.get("$fn") },
+            .flatMap { f => f.get("_$fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,

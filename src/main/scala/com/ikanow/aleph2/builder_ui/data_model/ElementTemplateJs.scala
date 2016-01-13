@@ -36,7 +36,7 @@ trait ElementTemplateJs extends js.Object {
     val schema: js.Array[js.Dictionary[js.Any]] = js.native
     val form_info: String = js.native
     
-    // String versions of the functions (in the format { "$fn": string }
+    // String versions of the functions (in the format { "_$fn": string }
     val validation_function: js.Dictionary[String] = js.native 
     val building_function: js.Dictionary[String] = js.native
     val post_building_function: js.Dictionary[String] = js.native // (for expandable cards)
