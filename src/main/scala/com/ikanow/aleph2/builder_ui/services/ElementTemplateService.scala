@@ -30,6 +30,7 @@ import scala.scalajs.js.annotation.JSExportAll
 import scala.scalajs.js.annotation.JSExport
 
 import com.ikanow.aleph2.builder_ui.data_model._
+import com.ikanow.aleph2.builder_ui.utils._
 import js.JSConverters._
 import com.ikanow.aleph2.builder_ui.utils.JsOption
 
@@ -49,11 +50,13 @@ class ElementTemplateService(http: HttpService, global_io_service: GlobalInputOu
               .asInstanceOf[HttpConfig]
           )
           .map { js => global_io_service.template_conversion_fn(js)
-                        .map { js => js.asInstanceOf[ElementTemplateJs] } }          
+                        .map { js => js.asInstanceOf[ElementTemplateJs] } 
+                        .map { el => ElementTreeBuilder.renameFunctionObjects(el) }
+           }          
         }
         .getOrElse(Future.successful(js.Array()))
     }
-    cache.map( templates => templates.foreach { x => JsOption(x.global_function).flatMap { f => f.get("_$fn") }.foreach { fn => js.eval(fn.replaceFirst("function", "function " + x.key)) } })
+    cache.map( templates => templates.foreach { x => JsOption(x.global_function).flatMap { f => f.get("$fn") }.foreach { fn => js.eval(fn.replaceFirst("function", "function " + x.key)) } })
     
     cache.map { templates => templates.filter { x => !js.isUndefined(x.filters) } } // (filter out anything without a filters field)
   }

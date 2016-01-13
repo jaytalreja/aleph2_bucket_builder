@@ -94,6 +94,23 @@ object ElementTreeBuilder {
         })
     }
     
+    /** Mutates the template to add a "_fn" version of $fn (avoid storing objects with $ in them)
+     * @param template
+     * @return
+     */
+    def renameFunctionObjects(template: ElementTemplateJs): ElementTemplateJs = {
+      val to_mutate = 
+          template.building_function :: 
+          template.validation_function :: 
+          template.post_building_function :: 
+          template.post_validation_function :: 
+          template.global_function :: 
+          Nil
+            
+      to_mutate.foreach { fn => JsOption(fn).flatMap { f => f.get("$fn") }.foreach { x => fn.put("_fn", x) } }
+      template
+    }
+    
     /** Recursive builder method for the final JSON
      * @param curr_template
      * @param root_template
@@ -116,7 +133,7 @@ object ElementTreeBuilder {
         
         val validation_passed = callBuilder(true,
           JsOption(curr_template.element.template.validation_function)
-            .flatMap { f => f.get("_$fn") },
+            .flatMap { f => f.get("_fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
@@ -134,7 +151,7 @@ object ElementTreeBuilder {
           
         val maybe_new_obj_int: Option[js.Any] = callBuilder(false,
           JsOption(curr_template.element.template.building_function)
-             .flatMap { f => f.get("_$fn") },
+             .flatMap { f => f.get("_fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
@@ -191,7 +208,7 @@ object ElementTreeBuilder {
         
         callBuilder(true,
           JsOption(curr_template.element.template.post_validation_function)
-            .flatMap { f => f.get("_$fn") },
+            .flatMap { f => f.get("_fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
@@ -203,7 +220,7 @@ object ElementTreeBuilder {
           
         callBuilder(false,
           JsOption(curr_template.element.template.post_building_function)
-            .flatMap { f => f.get("_$fn") },
+            .flatMap { f => f.get("_fn") },
           mutable_errs,
           curr_template,
           mutable_curr_output,
