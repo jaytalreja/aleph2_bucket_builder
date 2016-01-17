@@ -71,7 +71,20 @@ class QuickNavigateController(
   }
   
   @JSExport
-  def displayLine(node: ElementNodeJs) = {
+  def navigateMaybeEdit(node: ElementNodeJs, maybe_edit: js.UndefOr[Boolean]): Unit = {
+
+    val open_editor = maybe_edit.getOrElse(!node.element.expandable)        
+    
+    open_editor match {
+      case true => root_scope.$broadcast("quick_navigate_and_open", node)
+      case false => root_scope.$broadcast("quick_navigate", node)
+    }
+    
+    modal.close()
+  }
+  
+  @JSExport
+  def displayLine(node: ElementNodeJs): String = {
     if (node.root)
       node.label
     else 
@@ -81,13 +94,7 @@ class QuickNavigateController(
   @JSExport
   def ok(): Unit = {    
     
-    val to_navigate:ElementNodeJs = 
-        if ((scope.selected_item.root) || (scope.selected_item.element.expandable)) scope.selected_item
-        else scope.selected_item.$parent
-    
-    root_scope.$broadcast("quick_navigate", to_navigate)
-    
-    modal.close()
+    navigateMaybeEdit(scope.selected_item, js.undefined)
   }  
   
   @JSExport

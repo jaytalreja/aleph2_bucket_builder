@@ -12,8 +12,11 @@
 			<treecontrol class="tree-light" tree-model="element_tree" 
 				expanded-nodes="element_tree_expanded" selected-node="selected_item"
 				options="element_tree_opts"
+				order-by="[element.row,element.col]"
 				>
 				{{controller.displayLine(node)}} {{(!node.root && !node.element.enabled) ? "[DISABLED]" : ""}} 
+				<a tooltip="Configure this element" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="node.element.configurable" ng-click="controller.navigateMaybeEdit(node, true)" class="glyphicon glyphicon-cog"></a>
+				<a tooltip="View/configure this element's children" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="node.root || node.element.expandable" ng-click="controller.navigateMaybeEdit(node, false)" class="glyphicon glyphicon-fullscreen"></a>
 			</treecontrol>
 
        		 <div class="modal-footer aleph2_form_modal">
