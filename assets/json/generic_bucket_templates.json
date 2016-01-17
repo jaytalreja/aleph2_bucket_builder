@@ -1,5 +1,4 @@
-{
-	"templates": [
+[
 	{
 		"key": "a2_inject_enrichment",
 		"global_function": { "$fn": "function(curr_obj, obj) { if (Array.isArray(curr_obj)) curr_obj.push(obj); else if (curr_obj.config) { if (curr_obj.config.enrich_pipeline) curr_obj.config.enrich_pipeline.push(obj); else curr_obj.config = obj; } else for (x in obj) curr_obj[x] = obj[x]; }" }
@@ -846,5 +845,4 @@
 		
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.document_schema; }" }
 	}		
-	]
-}
+]

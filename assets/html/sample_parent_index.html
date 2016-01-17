@@ -13,7 +13,7 @@
 	var aleph2_json_builder__config_input_object = null // (set to null to start from scratch, else starts with the object)
 
 	var aleph2_json_builder__template_url = "../../assets/json/generic_bucket_templates.json" // the URL that requests the template list
-	function aleph2_json_builder__template_conversion_fn(input_json) { return input_json.templates } // (takes the return from the http service and converts to an array of objects)
+	function aleph2_json_builder__template_conversion_fn(input_json) { return input_json.templates || input_json } // (takes the return from the http service and converts to an array of objects)
 	// Output
 	var aleph2_json_builder__config_output_str = "{}"
 	var aleph2_json_builder__generated_output_str = "{}"
