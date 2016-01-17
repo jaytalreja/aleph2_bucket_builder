@@ -63,6 +63,9 @@ class GlobalInputOutputService {
   def setGeneratedOutputStr(str: String): Unit = {
     js.Dynamic.global.aleph2_json_builder__generated_output_str = str
   }
+  def setErrors(errs: js.Array[String]) {
+    js.Dynamic.global.aleph2_json_builder__output_errs = js.Array(errs)
+  }
 }
 
 @injectable("globalIoService")
