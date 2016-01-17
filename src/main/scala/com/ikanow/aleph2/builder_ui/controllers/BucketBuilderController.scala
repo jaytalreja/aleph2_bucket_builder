@@ -219,10 +219,17 @@ object BucketBuilderController extends Controller[Scope] {
     val bean = scope.element_template_array(template.templateIndex)
     
     // Get current highest row:
-    val max_row = 1 + scope.element_grid.map { card => card.row + card.sizeY - 1 }.reduceOption(_ max _).getOrElse(-1)
+    val tmp_max_row = scope.element_grid.map { card => card.row + card.sizeY - 1 }.reduceOption(_ max _).getOrElse(0)
+    // Get current highest col:
+    val tmp_max_col = scope.element_grid.filter { card => card.row == tmp_max_row }.map { card => card.col + card.sizeX - 1 }.reduceOption(_ max _).getOrElse(-1)
 
+    val col_row = (tmp_max_col, tmp_max_row) match {
+      case (c, r) if (c > 2) => (0, 1 + r)
+      case (c, r) => (c + 1, r)
+    }
+         
     // Create new card
-    val new_card = ElementCardJs(max_row, 0, bean.expandable, bean)
+    val new_card = ElementCardJs(col_row._2, col_row._1, bean.expandable, bean)
 
     // Add to the current element's children
     val new_node = ElementNodeJs(new_card.short_name, new_card, scope.curr_element)
