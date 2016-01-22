@@ -398,6 +398,16 @@
 			}
 		},
 		{
+			"key": "lock_to_nodes",
+			"type": "horizontalCheckbox",
+			"defaultValue": false,
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Lock analytic job to the same node/set of nodes (recommend leave as false)",
+				"required": false
+			}
+		},
+		{
 			"template": "<hr/>"
 		},
 		{
@@ -415,7 +425,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.lock_to_nodes = template.element.form_model.lock_to_nodes; new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Batch Enrichment Pipeline",
