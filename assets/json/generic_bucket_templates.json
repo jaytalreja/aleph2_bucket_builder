@@ -1,5 +1,3 @@
-{
-"templates":[
 [
 	{
 		"key": "a2_inject_enrichment",
@@ -981,4 +979,4 @@
       "building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var schema = {}; if ( template.element.form_model.schema == undefined || template.element.form_model.schema == true){ schema.enabled = true; schema.technology_override_schema = {}; } curr_obj.temporal_schema = schema; return curr_obj.temporal_schema; }" }
 	}			
 ]
-]}
+

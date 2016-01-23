@@ -103,19 +103,23 @@ class FormBuilderController(
          .map { x => x.asInstanceOf[js.Array[js.Any]] }
          .getOrElse(js.Array())
          .map { element => JSON.parse(JSON.stringify(element)).asInstanceOf[js.Dictionary[js.Any]] } // (deep copy)
-         .groupBy { x => x.get("key").map { name => !name.equals("_short_name") }.getOrElse(true) }
+         .groupBy { x => x.get("key").filter { name => name.equals("_short_name") || name.equals("_summary") }.getOrElse("") }
     
    fields.clear()
    fields.appendAll(
-       grouped_fields.getOrElse(true, js.Array()).toList
+       grouped_fields.getOrElse("", js.Array()).toList
         )
 
-    val this_short_name_schema = grouped_fields.get(false).filter { short_name => !short_name.isEmpty }.map { short_name => short_name.pop }.getOrElse(JSON.parse(short_name_schema))
-      
-    this_short_name_schema +=: JSON.parse(summary_schema) +=: JSON.parse(line_separator) +=: fields
-
+    val this_short_name_schema = grouped_fields.get("_short_name").filter { short_name => !short_name.isEmpty }.map { short_name => short_name.pop }.getOrElse(JSON.parse(short_name_schema))      
+    val this_summary_schema = grouped_fields.get("_summary").filter { summary => !summary.isEmpty }.map { summary => summary.pop }.getOrElse(JSON.parse(summary_schema))      
+    this_short_name_schema +=: this_summary_schema +=: JSON.parse(line_separator) +=: fields    
+    
     // deep copy:
-    model = JSON.parse(JSON.stringify(curr_card_node.element.form_model)).asInstanceOf[js.Dictionary[js.Any]]
+    model = JsOption(curr_card_node.element.form_model)
+              .map { j => JSON.parse(JSON.stringify(j)) }
+              .getOrElse(js.Dynamic.literal())
+              .asInstanceOf[js.Dictionary[js.Any]]            
+    
     model.put("_short_name",  curr_card_node.element.short_name)
     model.put("_summary",  JsOption(curr_card_node.element.summary).getOrElse("").asInstanceOf[String])    
 

@@ -1,0 +1,239 @@
+[
+{
+	"key": "a2_copy",
+	"global_function": { "$fn": "function(from, to) { for (x in from) to[x] = from[x]; }" }
+},
+{
+	"key": "a2_csv_to_array",
+	"global_function": { "$fn": "function(csv) { var x = (csv || '').replace(/\\s*,\\s*/g, \",\").split(\",\"); var r = []; for (i in x) if (x[i].length > 0) r.push(x[i]) ; return (r.length > 0) ? r : undefined; }" }
+},
+{
+	"display_name": "Template Builder",
+	"key": "template_builder",
+	"categories": ["Template"],
+	"filters": ["Template"],
+	"expandable": true,
+	"form_info": "Create a new template element",
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;a2_copy(template.element.form_model, curr_obj);curr_obj.categories = a2_csv_to_array(curr_obj.categories);curr_obj.filters = a2_csv_to_array(curr_obj.filters);curr_obj.child_filters = a2_csv_to_array(curr_obj.child_filters);curr_obj.schema = []; return curr_obj;}",
+		"expr0": "curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;",
+		"expr1": "a2_copy(template.element.form_model, curr_obj);",
+		"expr2": "curr_obj.categories = a2_csv_to_array(curr_obj.categories);",
+		"expr3": "curr_obj.categories = a2_csv_to_array(curr_obj.filters);",
+		"expr4": "curr_obj.categories = a2_csv_to_array(curr_obj.child_filters);",
+		"expr5": "curr_obj.schema = []; return curr_obj.schema;"		
+	},	
+	"schema": [
+		{
+			"key": "_short_name",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Template Name",
+				"placeholder": "The template name",
+				"required": true
+			}			
+		},
+		{
+			"key": "_summary",
+			"type": "horizontalTextArea",
+			"defaultValue": "<p>Help here</p>",
+			"templateOptions": {
+				"label": "Form Info",
+				"placeholder": "Text or HTML providing help for the user",
+				"required": true
+			}			
+		},
+		{
+			"key": "key",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Role/Key",
+				"placeholder": "The role name of the template (used in parent and child filters)",
+				"required": true
+			}			
+		},
+		{
+			"key": "categories",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Categories",
+				"placeholder": "Comma-separated list of categories (determines folder name)",
+				"required": true
+			}			
+		},
+		{
+			"key": "filters",
+			"type": "horizontalInput",
+			"defaultValue": "Template/template_builder/**",
+			"templateOptions": {
+				"label": "Parent Filters",
+				"placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
+				"required": false
+			}			
+		},
+		{
+			"key": "expandable",
+			"type": "horizontalCheckbox",
+			"defaultValue": false,
+			"templateOptions": {
+				"label": "Allow child elements",
+				"required": false
+			}
+		},
+		{
+			"key": "child_filters",
+			"type": "horizontalInput",
+			"hideExpression": "!model.expandable", 
+			"templateOptions": {
+				"label": "Child Filters",
+				"placeholder": "Comma-separated list of filters determining which child elements should be displayed",
+				"required": false
+			}			
+		}
+	]	
+},
+{
+	"display_name": "Raw Default Values",
+	"key": "template_element",
+	"categories": ["Generic"],
+	"filters": ["Template/template_builder"],
+	"expandable": false,
+	"form_info": "Type raw JSON into here to create default values for the different schemas (referenced by key)",
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); }"
+	},	
+	"default_model": {
+		"json": "{\n\n}"
+	},
+	"schema": [
+		{
+			"key": "json",
+			"type": "code_input",
+			"templateOptions": {
+				"label": "Model JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
+		}
+	]
+},
+{
+	"display_name": "Raw Form JSON",
+	"key": "template_element",
+	"categories": ["Generic"],
+	"filters": ["Template/template_builder", "Template/**/template_builder"],
+	"expandable": false,
+	"form_info": "Type raw JSON objects into here to insert them into the schema",
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = eval('(' + template.element.form_model.json + ')'); for (i in obj) curr_obj.schema.push(obj[i]); }"
+	},	
+	"default_model": {
+		"json": "[\n  {\n    \n  }\n]"
+	},
+	"schema": [
+		{
+			"key": "json",
+			"type": "code_input",
+			"templateOptions": {
+				"label": "Raw Form JSON",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "javascript"
+				}
+			}
+		}
+	]
+},
+{
+	"display_name": "Raw HTML template",
+	"key": "template_element",
+	"categories": ["Layout"],
+	"filters": ["Template/template_builder", "Template/**/template_builder"],
+	"expandable": false,
+	"form_info": "Type Raw HTML into here to insert them into the schema",
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.schema.push({template: template.element.form_model.html}); }"
+	},	
+	"default_model": {
+		"html": ""
+	},
+	"schema": [
+		{
+			"key": "html",
+			"type": "code_input",
+			"templateOptions": {
+				"label": "HTML template",
+				"codemirror": {
+					"lineNumbers": true,
+					"smartIndent": true,
+					"mode": "htmlembedded"
+				}
+			}
+		}
+	]
+},
+{
+	"display_name": "Horizontal line",
+	"key": "template_element",
+	"categories": ["Layout"],
+	"filters": ["Template/template_builder", "Template/**/template_builder"],
+	"expandable": false,
+	"form_info": "Inserts a horizontal line",
+	"default_model": {
+		"html": "<hr/>"
+	},
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.schema.push({template: template.element.form_model.html}); }"
+	},	
+	"schema": [
+	]
+},
+{
+	"display_name": "Repeating Section",
+	"key": "template_builder",
+	"categories": ["Layout"],
+	"filters": ["Template/template_builder", "Template/**/template_builder"],
+	"expandable": true,
+	"form_info": "Create a sub-form under here",
+	"default_model": {
+		"key": "repeaterKey",
+		"type": "repeatSection",
+		"btnText": "Add"
+	},
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var m = template.element.form_model;var obj = { templateOptions: { schema: [] } }; curr_obj.schema.push(obj); obj.type = m.type; obj.key = m.key; obj.templateOptions.btnText = m.btnText;return obj.templateOptions; }",
+		"expr1": "var obj = { templateOptions: { schema:[] } }; curr_obj.schema.push(obj); ",
+		"expr2": " obj.type = m.type; obj.key = m.key; obj.templateOptions.btnText = m.btnText;",
+		"expr3": "return obj.templateOptions;"
+	},	
+	"post_building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var me = curr_obj.schema[curr_obj.schema.length-1]; me.templateOptions.fields = me.templateOptions.schema;me.templateOptions.schema = undefined; }"
+	},
+	"schema": [
+		{
+			"key": "key",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Key",
+				"placeholder": "Enter a key for this repeater",
+				"required": true
+			}			
+		},
+		{
+			"key": "btnText",
+			"type": "horizontalInput",
+			"defaultValue": "Add",
+			"templateOptions": {
+				"label": "Add Button Name",
+				"placeholder": "Enter the name for this button",
+				"required": true
+			}			
+		}		
+	]
+}
+
+]

@@ -53,7 +53,12 @@ jsDependencies += "org.webjars.bower" % "angular-bootstrap" % "0.13.0" / "ui-boo
 // Code mirror
 
 jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "codemirror.js" dependsOn "angular.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "foldcode.js" dependsOn "angular.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "multiplex.js" dependsOn "angular.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "clike.js" dependsOn "angular.js"
 jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "javascript.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "htmlembedded.js" dependsOn "codemirror.js"
+jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "htmlmixed.js" dependsOn "codemirror.js"
 jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "xml.js" dependsOn "codemirror.js"
 jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "lua.js" dependsOn "codemirror.js"
 jsDependencies += "org.webjars.bower" % "codemirror" % "5.9.0" / "python.js" dependsOn "codemirror.js"
