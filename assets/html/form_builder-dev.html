@@ -34,7 +34,7 @@
 		// Input:		
 		var aleph2_json_builder__root_element = "Template"
 		
-		var aleph2_json_builder__generated_input_obj = { } // (the derived output is appended to this)
+		var aleph2_json_builder__generated_input_obj = [ ] // (the derived output is appended to this)
 		//(^v2 bucket example in v1 source example)
 		
 		// get the root to which to append in aleph2_json_builder__generated_input_obj (if undefined then the root is used)
@@ -47,7 +47,7 @@
 		var aleph2_json_builder__template_url = "../../assets/json/form_building_templates.json" // the URL that requests the template list
 		function aleph2_json_builder__template_conversion_fn(input_json) { return input_json.templates || input_json } // (takes the return from the http service and converts to an array of objects)
 		// Output
-		var aleph2_json_builder__config_output_str = "{}"
+		var aleph2_json_builder__config_output_str = "[]"
 		var aleph2_json_builder__generated_output_str = "{}"
 	</script>
 	

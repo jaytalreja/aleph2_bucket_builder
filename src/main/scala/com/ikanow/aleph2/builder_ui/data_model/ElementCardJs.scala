@@ -19,6 +19,7 @@ import com.greencatsoft.angularjs.core._
 import scala.scalajs.js
 import com.greencatsoft.angularjs._
 import scala.scalajs.js.JSON
+import com.ikanow.aleph2.builder_ui.utils.JsOption
 
 @js.native
 /** Represents a grid element
@@ -46,6 +47,7 @@ trait ElementCardJs extends js.Object {
 
 object ElementCardJs {
   def from(copy: ElementCardJs) = {
+    
     js.Dynamic.literal(enabled = copy.enabled, short_name = copy.short_name, summary = copy.summary, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
                         expandable = copy.expandable, configurable = copy.configurable, deletable = copy.deletable,
                         form_model = JSON.parse(JSON.stringify(copy.form_model)), // extra deep!
@@ -57,7 +59,7 @@ object ElementCardJs {
   def apply(row: Int, col: Int, expandable: Boolean, template: ElementTemplateJs): ElementCardJs = {
     js.Dynamic.literal(enabled = true, short_name = template.display_name, summary = "", row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,
-                        form_model = template.default_model,
+                        form_model = JsOption(template.default_model).getOrElse(js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]]),
                         template = template
                         )
       .asInstanceOf[ElementCardJs]

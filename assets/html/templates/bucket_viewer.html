@@ -44,18 +44,19 @@
 	<div class="col-md-9">
 		
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-md-8">
 				<ol class="breadcrumb" >
 					<li><a tooltip="Step up one level" tooltip-placement="bottom" ng-click="controller.navigateBack(-1)" class="glyphicon glyphicon-menu-left"></a></li>
 					<li><a tooltip="Quick navigate" tooltip-placement="bottom" ng-click="controller.openElementNavigator('med')" class="glyphicon glyphicon-list-alt"></a></li>
 		  			<li ng-repeat="bc in breadcrumb"><a ng-click="controller.navigateBack(1 + $index)">{{bc}}</a></li>
 				</ol>		
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-3">
 				<div class="btn-group" role="group">
 					<button ng-disabled="!controller.hasUndo()" tooltip="Undo" tooltip-placement="bottom" type="button" ng-click="controller.undo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat icon-flipped"></span></button>
 					<button ng-disabled="!controller.hasRedo()" tooltip="Redo" tooltip-placement="bottom" type="button" ng-click="controller.redo()" class="btn btn-default"><span class="glyphicon glyphicon-repeat"></span></button>
 					<button tooltip="Diagnose" tooltip-placement="bottom" type="button" ng-click="controller.openStatusViewer('xl')" class="btn" ng-class="has_errors ? 'btn-danger' : 'btn-default'"><span class="glyphicon glyphicon-exclamation-sign"></span></button>
+					<button ng-if="formception_mode" tooltip="Render Form" tooltip-placement="bottom" type="button" ng-click="controller.renderForm()" class="btn btn-default"><span class="glyphicon glyphicon-question-sign"></span></button>
 				</div>
 			</div>
 		</div>

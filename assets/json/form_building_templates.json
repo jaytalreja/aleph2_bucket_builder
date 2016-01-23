@@ -15,13 +15,13 @@
 	"expandable": true,
 	"form_info": "Create a new template element",
 	"building_function": { 
-		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;a2_copy(template.element.form_model, curr_obj);curr_obj.categories = a2_csv_to_array(curr_obj.categories);curr_obj.filters = a2_csv_to_array(curr_obj.filters);curr_obj.child_filters = a2_csv_to_array(curr_obj.child_filters);curr_obj.schema = []; return curr_obj;}",
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.display_name = template.element.short_name; obj.form_info = template.element.summary;a2_copy(template.element.form_model, obj);obj.categories = a2_csv_to_array(obj.categories);obj.filters = a2_csv_to_array(obj.filters);obj.child_filters = a2_csv_to_array(obj.child_filters);obj.schema = []; curr_obj.push(obj); return obj;}",
 		"expr0": "curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;",
-		"expr1": "a2_copy(template.element.form_model, curr_obj);",
-		"expr2": "curr_obj.categories = a2_csv_to_array(curr_obj.categories);",
-		"expr3": "curr_obj.categories = a2_csv_to_array(curr_obj.filters);",
-		"expr4": "curr_obj.categories = a2_csv_to_array(curr_obj.child_filters);",
-		"expr5": "curr_obj.schema = []; return curr_obj.schema;"		
+		"expr1": "a2_copy(template.element.form_model, obj);",
+		"expr2": "obj.categories = a2_csv_to_array(obj.categories);",
+		"expr3": "obj.categories = a2_csv_to_array(obj.filters);",
+		"expr4": "obj.categories = a2_csv_to_array(obj.child_filters);",
+		"expr5": "obj.schema = []; curr_obj.push(obj); return obj.schema;"		
 	},	
 	"schema": [
 		{
@@ -200,7 +200,7 @@
 	"expandable": true,
 	"form_info": "Create a sub-form under here",
 	"default_model": {
-		"key": "repeaterKey",
+		"key": "ADD_KEY_HERE",
 		"type": "repeatSection",
 		"btnText": "Add"
 	},
@@ -234,6 +234,27 @@
 			}			
 		}		
 	]
+},
+{
+	"display_name": "Row/Column Layout",
+	"key": "template_builder",
+	"categories": ["Layout"],
+	"filters": ["Template/template_builder", "Template/**/template_builder"],
+	"expandable": true,
+	"form_info": "Add ",
+	"default_model": {
+		"class": "row"
+	},
+	"building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var m = template.element.form_model;var obj = { schema: [] }; curr_obj.schema.push(obj); obj.className = m.class; return obj; }",
+		"expr1": "var obj = { schema:[] }; curr_obj.schema.push(obj); ",
+		"expr2": "obj.className = m.class;",
+		"expr3": "return obj;"
+	},	
+	"post_building_function": { 
+		"$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var me = curr_obj.schema[curr_obj.schema.length-1]; me.fieldGroup = me.schema;me.schema = undefined; }"
+	},
+	"schema": [
+	]
 }
-
 ]

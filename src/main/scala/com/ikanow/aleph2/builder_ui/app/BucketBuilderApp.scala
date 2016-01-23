@@ -46,7 +46,6 @@ object BucketBuilderApp extends JSApp {
 			
 			// Legacy property method - move over to the c'tor method
 			module
-  			.controller(BucketBuilderController)
   			.factory[ElementServiceFactory]
   			.factory[ElementTemplateServiceFactory]
   			.factory[UndoRedoServiceFactory]
@@ -57,6 +56,7 @@ object BucketBuilderApp extends JSApp {
 
   		// Preferred c'tor method
 			module
+  			.controller[BucketBuilderController]
   			.controller[QuickNavigateController]
   			.controller[FormBuilderController]
   			.controller[StatusViewerController]

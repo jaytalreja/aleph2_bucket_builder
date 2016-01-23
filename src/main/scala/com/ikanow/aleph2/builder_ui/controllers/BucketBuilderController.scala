@@ -41,30 +41,20 @@ import scala.collection.mutable._
  */
 @JSExport
 @injectable("bucketBuilderCtrl")
-object BucketBuilderController extends Controller[Scope] {
+class BucketBuilderController(
+    scope: BucketBuilderScope,
+    modal: ModalService,
+    element_service: ElementService,
+    element_template_service: ElementTemplateService,
+    undo_redo_service: UndoRedoService,
+    json_gen_service: JsonGenerationService,
+    global_io_service: GlobalInputOutputService
+    )
+    
+  extends AbstractController[Scope](scope) {
 
   import js.JSConverters._
 
-  val templateUrl = "templates/bucket_viewer.html"
-
-  @inject
-  var scope: ControllerData = _  
-  
-  @inject
-  var modal: ModalService = _
-  
-  @inject
-  var element_template_service: ElementTemplateService = _
-
-  @inject
-  var element_service: ElementService = _
-    
-  @inject
-  var undo_redo_service: UndoRedoService = _
-  
-  @inject
-  var json_gen_service: JsonGenerationService = _
-  
   override def initialize(): Unit = {
     super.initialize()
 
@@ -92,6 +82,7 @@ object BucketBuilderController extends Controller[Scope] {
       // Get breadcrumbs
       scope.curr_element = root 
       rebuildBreadcrumbs(root)
+      scope.formception_mode = scope.breadcrumb(0) == "Template"
       
       // Get the templates (requires the breadcrumbs to filter)
       recalculateTemplates(root, scope.breadcrumb_system).map { unit => root }      
@@ -122,7 +113,7 @@ object BucketBuilderController extends Controller[Scope] {
   }
 
   var grid_mod_starting_topology: List[Tuple4[Int, Int, Int, Int]] = List()
-  
+
   @JSExport
   def gridElementMoveOrResize_start(): Unit = {
     grid_mod_starting_topology = scope.element_grid.map { card => (card.row, card.col, card.sizeX, card.sizeY) }.toList
@@ -139,6 +130,40 @@ object BucketBuilderController extends Controller[Scope] {
       regenerateJson()
     }
   }    
+  
+  @JSExport
+  def renderForm(): Unit = {
+    // Special formception mode, render the form being built
+    element_service.getMutableRoot().foreach { root => {
+
+      var result_json = JSON.parse(global_io_service.generated_output_str()).asInstanceOf[js.Array[ElementTemplateJs]]
+
+      //TODO get the correct result_json...
+      val dummy_card = ElementCardJs(0, 0, false, result_json(0))
+      val dummy_element = ElementNodeJs("", dummy_card, root)
+      
+      {{
+    		  modal.open(
+    				  js.Dynamic.literal(
+    						  templateUrl = "templates/form_builder.html",
+    						  controller = "formBuilderCtrl", 
+    						  //TODO: don't make this static
+    						  backdrop = "static",
+    						  size = "xl",
+    						  resolve = js.Dynamic.literal(
+    						      node_to_edit = () => dummy_element,
+    						      formception_mode = () => true
+    						      )
+    						      .asInstanceOf[js.Dictionary[js.Any]]
+    						  )
+    						  .asInstanceOf[ModalOptions]
+    				  )
+    				  .result.then((x: Unit) => {
+    				    // (do nothing this is display only)
+    				  })    				  
+      }}      
+    }}
+  }
   
   @JSExport
   def undo(): Unit = {
@@ -350,7 +375,7 @@ object BucketBuilderController extends Controller[Scope] {
     }}
   }
   
-  protected def regenerateJson() = {
+  protected def regenerateJson(): Unit = {
       element_service.getMutableRoot().foreach { root => {
         json_gen_service.generateJson(root)                   
         scope.has_errors = !json_gen_service.getCurrentErrors().isEmpty
@@ -358,7 +383,7 @@ object BucketBuilderController extends Controller[Scope] {
   }
   
   @JSExport
-  def enableOrDisableElement(card: ElementCardJs) = {
+  def enableOrDisableElement(card: ElementCardJs): Unit = {
     card.enabled = !card.enabled
     scope.curr_element.children.find(node => node.element == card).foreach { node => {
       undo_redo_service.registerState(EnableOrDisableElement(node, !card.enabled, card.enabled))
@@ -390,31 +415,36 @@ object BucketBuilderController extends Controller[Scope] {
 						  )
 						  .asInstanceOf[ModalOptions] 
 				  )
-  }
+  }  
+}
+
+object BucketBuilderController {
+  val templateUrl = "templates/bucket_viewer.html"
+}
+
+/**
+ * The specific scope data used in this controller
+ */
+@js.native
+trait BucketBuilderScope extends Scope {
   
-  /**
-   * The specific scope data used in this controller
-   */
-  @js.native
-  trait ControllerData extends Scope {
-    
-    // Data Model
-    
-    var breadcrumb: js.Array[String] = js.native
-    var breadcrumb_system: js.Array[String] = js.native
+  // Data Model
+  
+  var breadcrumb: js.Array[String] = js.native
+  var breadcrumb_system: js.Array[String] = js.native
 
-    var curr_element: ElementNodeJs = js.native
-    
-    var element_template_tree: js.Array[ElementTemplateNodeJs] = js.native
-    var element_template_tree_expanded: js.Array[ElementTemplateNodeJs] = js.native
-    var element_template_tree_opts: js.Object = js.native
+  var curr_element: ElementNodeJs = js.native
+  
+  var element_template_tree: js.Array[ElementTemplateNodeJs] = js.native
+  var element_template_tree_expanded: js.Array[ElementTemplateNodeJs] = js.native
+  var element_template_tree_opts: js.Object = js.native
 
-    var element_template_array: js.Array[ElementTemplateJs]
-    
-    var element_grid: js.Array[ElementCardJs] = js.native
-    var element_grid_options: GridsterOptionsJs = js.native
-    
-    var has_errors: Boolean = js.native
+  var element_template_array: js.Array[ElementTemplateJs]
+  
+  var element_grid: js.Array[ElementCardJs] = js.native
+  var element_grid_options: GridsterOptionsJs = js.native
+  
+  var has_errors: Boolean = js.native
 
-  }
+  var formception_mode: Boolean = js.native
 }

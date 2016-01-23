@@ -56,7 +56,7 @@ object ElementTemplateJs {
     expandable: Boolean = false,
     schema: js.Array[js.Dictionary[js.Any]] = null,
     form_info: String = null,
-    default_model: js.Dictionary[js.Any]
+    default_model: js.Dictionary[js.Any] = null
     ) =
   js.Dynamic.literal(display_name = display_name, key = key, categories = categories, filters = filters,
       expandable = expandable, schema = schema, form_info = form_info, default_model = default_model
