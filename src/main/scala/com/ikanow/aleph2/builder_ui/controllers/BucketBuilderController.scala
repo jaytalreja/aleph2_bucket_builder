@@ -152,32 +152,45 @@ class BucketBuilderController(
     // Special formception mode, render the form being built
     element_service.getMutableRoot().foreach { root => {
 
-      var result_json = JSON.parse(global_io_service.generated_output_str()).asInstanceOf[js.Array[ElementTemplateJs]]
+      val result_json = JSON.parse(global_io_service.generated_output_str()).asInstanceOf[js.Array[ElementTemplateJs]]
 
-      //TODO get the correct result_json...
-      val dummy_card = ElementCardJs(0, 0, false, result_json(0))
+      def getParent(curr: ElementNodeJs): ElementNodeJs = {
+        if (curr.root) curr
+        else if (curr.$parent.root) curr
+        else getParent(curr.$parent)
+      }
+      val top_of_tree = getParent(scope.curr_element)
+      
+      // Top level, nothing to render
+      if (top_of_tree.root) return
+      
+      // Where am I in the grid?
+      
+      val index = 
+      top_of_tree.$parent
+        .children
+        .sortBy { node => (node.element.row, node.element.col) }
+        .indexOf(top_of_tree)
+      
+      val dummy_card = ElementCardJs(0, 0, false, result_json(index))
       val dummy_element = ElementNodeJs("", dummy_card, root)
       
-      {{
-    		  modal.open(
-    				  js.Dynamic.literal(
-    						  templateUrl = "templates/form_builder.html",
-    						  controller = "formBuilderCtrl", 
-    						  //TODO: don't make this static
-    						  backdrop = "static",
-    						  size = "xl",
-    						  resolve = js.Dynamic.literal(
-    						      node_to_edit = () => dummy_element,
-    						      formception_mode = () => true
-    						      )
-    						      .asInstanceOf[js.Dictionary[js.Any]]
-    						  )
-    						  .asInstanceOf[ModalOptions]
-    				  )
-    				  .result.then((x: Unit) => {
-    				    // (do nothing this is display only)
-    				  })    				  
-      }}      
+  		  modal.open(
+  				  js.Dynamic.literal(
+  						  templateUrl = "templates/form_builder.html",
+  						  controller = "formBuilderCtrl", 
+  						  size = "xl",
+  						  resolve = js.Dynamic.literal(
+  						      node_to_edit = () => dummy_element,
+  						      formception_mode = () => true
+  						      )
+  						      .asInstanceOf[js.Dictionary[js.Any]]
+  						  )
+  						  .asInstanceOf[ModalOptions]
+  				  )
+  				  .result.then((x: Unit) => {
+  				    // (do nothing this is display only)
+  				  })    				  
     }}
   }
   

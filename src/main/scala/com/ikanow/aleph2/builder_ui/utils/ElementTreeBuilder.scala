@@ -189,7 +189,7 @@ object ElementTreeBuilder {
       // Step 1: sort the children
       
       JsOption(curr_template.children).foreach { children => {
-        var sorted_children = curr_template.children.sortBy { node => (node.element.col, node.element.row) }      
+        var sorted_children = curr_template.children.sortBy { node => (node.element.row, node.element.col) }      
         sorted_children.foreach { child => {
           
           // Step 2: recurse through

@@ -1,0 +1,782 @@
+{
+  "root": true,
+  "label": "Template",
+  "children": [
+    {
+      "root": false,
+      "label": "Global Function",
+      "element": {
+        "enabled": true,
+        "short_name": "a2_copy",
+        "summary": "",
+        "row": 0,
+        "col": 0,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "js": "function(from, to) { \n  for (x in from) to[x] = from[x]; \n}"
+        },
+        "template": {
+          "display_name": "Global Function",
+          "form_info": "<p>Use unique keys as function names to declare global functions that the other templates in this file can use.</p> \n<p>No attempt is made to manage scope etc so use with care</p>",
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "key": "global_function",
+          "categories": [
+            "Developer"
+          ],
+          "building_function": {
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.key = template.element.short_name;  obj.global_function = { '$fn': template.element.form_model.js }; curr_obj.push(obj); return obj;}"
+          },
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Function Name",
+                "placeholder": "The function name (Give it a unique name)",
+                "required": true
+              }
+            },
+            {
+              "key": "js",
+              "type": "code_input",
+              "templateOptions": {
+                "label": "Global Function",
+                "codemirror": {
+                  "lineNumbers": true,
+                  "smartIndent": true,
+                  "mode": "javascript"
+                }
+              }
+            }
+          ],
+          "default_model": {
+            "js": "function(from, to) { \n  for (x in from) to[x] = from[x]; \n}"
+          }
+        }
+      },
+      "children": []
+    },
+    {
+      "root": false,
+      "label": "Template Builder",
+      "element": {
+        "enabled": true,
+        "short_name": "Global Function",
+        "summary": "<p>Use unique keys as function names to declare global functions that the other templates in this file can use.</p> \n<p>No attempt is made to manage scope etc so use with care</p>",
+        "row": 1,
+        "col": 0,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "filters": "Template/",
+          "expandable": false,
+          "key": "global_function",
+          "categories": "Developer"
+        },
+        "template": {
+          "display_name": "Template Builder",
+          "key": "template_builder",
+          "categories": [
+            "Template"
+          ],
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "form_info": "Create a new template element",
+          "building_function": {
+            "expr0": "curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;",
+            "expr1": "a2_copy(template.element.form_model, obj);",
+            "expr2": "obj.categories = a2_csv_to_array(obj.categories);",
+            "expr3": "obj.categories = a2_csv_to_array(obj.filters);",
+            "expr4": "obj.categories = a2_csv_to_array(obj.child_filters);",
+            "expr5": "obj.schema = []; curr_obj.push(obj); return obj.schema;",
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.display_name = template.element.short_name; obj.form_info = template.element.summary;a2_copy(template.element.form_model, obj);obj.categories = a2_csv_to_array(obj.categories);obj.filters = a2_csv_to_array(obj.filters);obj.child_filters = a2_csv_to_array(obj.child_filters);obj.schema = []; curr_obj.push(obj); return obj;}"
+          },
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Template Name",
+                "placeholder": "The template name",
+                "required": true
+              }
+            },
+            {
+              "key": "_summary",
+              "type": "horizontalTextArea",
+              "defaultValue": "<p>Help here</p>",
+              "templateOptions": {
+                "label": "Form Info",
+                "placeholder": "Text or HTML providing help for the user",
+                "required": true
+              }
+            },
+            {
+              "key": "key",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Role/Key",
+                "placeholder": "The role name of the template (used in parent and child filters)",
+                "required": true
+              }
+            },
+            {
+              "key": "categories",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Categories",
+                "placeholder": "Comma-separated list of categories (determines folder name)",
+                "required": true
+              }
+            },
+            {
+              "key": "filters",
+              "type": "horizontalInput",
+              "defaultValue": "Template/template_builder/**",
+              "templateOptions": {
+                "label": "Parent Filters",
+                "placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
+                "required": false
+              }
+            },
+            {
+              "key": "expandable",
+              "type": "horizontalCheckbox",
+              "defaultValue": false,
+              "templateOptions": {
+                "label": "Allow child elements",
+                "required": false
+              }
+            },
+            {
+              "key": "child_filters",
+              "type": "horizontalInput",
+              "hideExpression": "!model.expandable",
+              "templateOptions": {
+                "label": "Child Filters",
+                "placeholder": "Comma-separated list of filters determining which child elements should be displayed",
+                "required": false
+              }
+            }
+          ]
+        }
+      },
+      "children": [
+        {
+          "root": false,
+          "label": "Raw Form JSON",
+          "element": {
+            "enabled": true,
+            "short_name": "Raw JSON",
+            "summary": "",
+            "row": 0,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "[\n\t\t{\n\t\t\t\"key\": \"_short_name\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Function Name\",\n\t\t\t\t\"placeholder\": \"The function name (Give it a unique name)\",\n\t\t\t\t\"required\": true\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"js\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Global Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+            },
+            "template": {
+              "display_name": "Raw Form JSON",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder",
+                "Template/**/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON objects into here to insert them into the schema",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = eval('(' + template.element.form_model.json + ')'); for (i in obj) curr_obj.schema.push(obj[i]); }"
+              },
+              "default_model": {
+                "json": "[\n\t\t{\n\t\t\t\"key\": \"_short_name\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Function Name\",\n\t\t\t\t\"placeholder\": \"The function name (Give it a unique name)\",\n\t\t\t\t\"required\": true\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"js\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Global Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Raw Form JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Raw Default Values",
+          "element": {
+            "enabled": true,
+            "short_name": "Default fn name",
+            "summary": "",
+            "row": 0,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "{\n\t\"js\": \"function(args) {\\n  \\n}\"\n}"
+            },
+            "template": {
+              "display_name": "Raw Default Values",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON into here to create default values for the different schemas (referenced by key)",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); }"
+              },
+              "default_model": {
+                "json": "{\n\t\"js\": \"function(args) {\\n  \\n}\"\n}"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Model JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "root": false,
+      "label": "Global Function",
+      "element": {
+        "enabled": true,
+        "short_name": "a2_csv_to_array",
+        "summary": "",
+        "row": 0,
+        "col": 1,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "js": "function(csv) { \n  var x = (csv || '').replace(/\\\\s*,\\\\s*/g, \",\").split(\",\"); \n  var r = []; \n  for (i in x) if (x[i].length > 0) r.push(x[i]) ; \n  return (r.length > 0) ? r : undefined; \n}"
+        },
+        "template": {
+          "display_name": "Global Function",
+          "form_info": "<p>Use unique keys as function names to declare global functions that the other templates in this file can use.</p> \n<p>No attempt is made to manage scope etc so use with care</p>",
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "key": "global_function",
+          "categories": [
+            "Developer"
+          ],
+          "building_function": {
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.key = template.element.short_name;  obj.global_function = { '$fn': template.element.form_model.js }; curr_obj.push(obj); return obj;}"
+          },
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Function Name",
+                "placeholder": "The function name (Give it a unique name)",
+                "required": true
+              }
+            },
+            {
+              "key": "js",
+              "type": "code_input",
+              "templateOptions": {
+                "label": "Global Function",
+                "codemirror": {
+                  "lineNumbers": true,
+                  "smartIndent": true,
+                  "mode": "javascript"
+                }
+              }
+            }
+          ],
+          "default_model": {
+            "js": "function(from, to) { \n  for (x in from) to[x] = from[x]; \n}"
+          }
+        }
+      },
+      "children": []
+    },
+    {
+      "root": false,
+      "label": "Template Builder",
+      "element": {
+        "enabled": true,
+        "short_name": "Builder Functions",
+        "summary": "<p>Write functions to build the objects and sub-objects based on the fields of the forms</p>\n<p>builder_function runs before the element's children; post_builder_function runs afterwards</p>",
+        "row": 1,
+        "col": 1,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "filters": "Template/template_builder/",
+          "expandable": false,
+          "key": "local_function",
+          "categories": "Developer"
+        },
+        "template": {
+          "display_name": "Template Builder",
+          "key": "template_builder",
+          "categories": [
+            "Template"
+          ],
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "form_info": "Create a new template element",
+          "building_function": {
+            "expr0": "curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;",
+            "expr1": "a2_copy(template.element.form_model, obj);",
+            "expr2": "obj.categories = a2_csv_to_array(obj.categories);",
+            "expr3": "obj.categories = a2_csv_to_array(obj.filters);",
+            "expr4": "obj.categories = a2_csv_to_array(obj.child_filters);",
+            "expr5": "obj.schema = []; curr_obj.push(obj); return obj.schema;",
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.display_name = template.element.short_name; obj.form_info = template.element.summary;a2_copy(template.element.form_model, obj);obj.categories = a2_csv_to_array(obj.categories);obj.filters = a2_csv_to_array(obj.filters);obj.child_filters = a2_csv_to_array(obj.child_filters);obj.schema = []; curr_obj.push(obj); return obj;}"
+          },
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Template Name",
+                "placeholder": "The template name",
+                "required": true
+              }
+            },
+            {
+              "key": "_summary",
+              "type": "horizontalTextArea",
+              "defaultValue": "<p>Help here</p>",
+              "templateOptions": {
+                "label": "Form Info",
+                "placeholder": "Text or HTML providing help for the user",
+                "required": true
+              }
+            },
+            {
+              "key": "key",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Role/Key",
+                "placeholder": "The role name of the template (used in parent and child filters)",
+                "required": true
+              }
+            },
+            {
+              "key": "categories",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Categories",
+                "placeholder": "Comma-separated list of categories (determines folder name)",
+                "required": true
+              }
+            },
+            {
+              "key": "filters",
+              "type": "horizontalInput",
+              "defaultValue": "Template/template_builder/**",
+              "templateOptions": {
+                "label": "Parent Filters",
+                "placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
+                "required": false
+              }
+            },
+            {
+              "key": "expandable",
+              "type": "horizontalCheckbox",
+              "defaultValue": false,
+              "templateOptions": {
+                "label": "Allow child elements",
+                "required": false
+              }
+            },
+            {
+              "key": "child_filters",
+              "type": "horizontalInput",
+              "hideExpression": "!model.expandable",
+              "templateOptions": {
+                "label": "Child Filters",
+                "placeholder": "Comma-separated list of filters determining which child elements should be displayed",
+                "required": false
+              }
+            }
+          ]
+        }
+      },
+      "children": [
+        {
+          "root": false,
+          "label": "Raw Default Values",
+          "element": {
+            "enabled": true,
+            "short_name": "Default Values",
+            "summary": "",
+            "row": 0,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "{\n\t\"pre_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\",\n\t\"post_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\"\n}"
+            },
+            "template": {
+              "display_name": "Raw Default Values",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON into here to create default values for the different schemas (referenced by key)",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); }"
+              },
+              "default_model": {
+                "json": "{\n\t\"pre_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\",\n\t\"post_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\"\n}"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Model JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Raw Form JSON",
+          "element": {
+            "enabled": true,
+            "short_name": "Code Editors",
+            "summary": "(raw json)",
+            "row": 0,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "[\n\t\t{\n\t\t\t\"key\": \"pre_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n  ,\n\t\t{\n\t\t\t\"key\": \"post_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"defaultValue\": \"{\\n}\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Post Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+            },
+            "template": {
+              "display_name": "Raw Form JSON",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder",
+                "Template/**/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON objects into here to insert them into the schema",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = eval('(' + template.element.form_model.json + ')'); for (i in obj) curr_obj.schema.push(obj[i]); }"
+              },
+              "default_model": {
+                "json": "[\n\t\t{\n\t\t\t\"key\": \"pre_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n  ,\n\t\t{\n\t\t\t\"key\": \"post_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"defaultValue\": \"{\\n}\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Post Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Raw Form JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "root": false,
+      "label": "Template Builder",
+      "element": {
+        "enabled": true,
+        "short_name": "Validation Functions",
+        "summary": "<p>Write functions to validate the fields of the forms</p>\n<p>validation_function runs before the element's children; post_validation_function runs afterwards</p>",
+        "row": 1,
+        "col": 2,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "filters": "Template/template_builder/",
+          "expandable": false,
+          "key": "local_function",
+          "categories": "Developer"
+        },
+        "template": {
+          "display_name": "Template Builder",
+          "key": "template_builder",
+          "categories": [
+            "Template"
+          ],
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "form_info": "Create a new template element",
+          "building_function": {
+            "expr0": "curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;",
+            "expr1": "a2_copy(template.element.form_model, obj);",
+            "expr2": "obj.categories = a2_csv_to_array(obj.categories);",
+            "expr3": "obj.categories = a2_csv_to_array(obj.filters);",
+            "expr4": "obj.categories = a2_csv_to_array(obj.child_filters);",
+            "expr5": "obj.schema = []; curr_obj.push(obj); return obj.schema;",
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.display_name = template.element.short_name; obj.form_info = template.element.summary;a2_copy(template.element.form_model, obj);obj.categories = a2_csv_to_array(obj.categories);obj.filters = a2_csv_to_array(obj.filters);obj.child_filters = a2_csv_to_array(obj.child_filters);obj.schema = []; curr_obj.push(obj); return obj;}"
+          },
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Template Name",
+                "placeholder": "The template name",
+                "required": true
+              }
+            },
+            {
+              "key": "_summary",
+              "type": "horizontalTextArea",
+              "defaultValue": "<p>Help here</p>",
+              "templateOptions": {
+                "label": "Form Info",
+                "placeholder": "Text or HTML providing help for the user",
+                "required": true
+              }
+            },
+            {
+              "key": "key",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Role/Key",
+                "placeholder": "The role name of the template (used in parent and child filters)",
+                "required": true
+              }
+            },
+            {
+              "key": "categories",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Categories",
+                "placeholder": "Comma-separated list of categories (determines folder name)",
+                "required": true
+              }
+            },
+            {
+              "key": "filters",
+              "type": "horizontalInput",
+              "defaultValue": "Template/template_builder/**",
+              "templateOptions": {
+                "label": "Parent Filters",
+                "placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
+                "required": false
+              }
+            },
+            {
+              "key": "expandable",
+              "type": "horizontalCheckbox",
+              "defaultValue": false,
+              "templateOptions": {
+                "label": "Allow child elements",
+                "required": false
+              }
+            },
+            {
+              "key": "child_filters",
+              "type": "horizontalInput",
+              "hideExpression": "!model.expandable",
+              "templateOptions": {
+                "label": "Child Filters",
+                "placeholder": "Comma-separated list of filters determining which child elements should be displayed",
+                "required": false
+              }
+            }
+          ]
+        }
+      },
+      "children": [
+        {
+          "root": false,
+          "label": "Raw Default Values",
+          "element": {
+            "enabled": true,
+            "short_name": "Default Values",
+            "summary": "",
+            "row": 0,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "{\n\t\"pre_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\",\n\t\"post_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\"\n}"
+            },
+            "template": {
+              "display_name": "Raw Default Values",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON into here to create default values for the different schemas (referenced by key)",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); }"
+              },
+              "default_model": {
+                "json": "{\n\t\"pre_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\",\n\t\"post_fn\": \"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\\n  \\n}\"\n}"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Model JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Raw Form JSON",
+          "element": {
+            "enabled": true,
+            "short_name": "Code Editors",
+            "summary": "(raw json)",
+            "row": 0,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "[\n\t\t{\n\t\t\t\"key\": \"pre_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Validation Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n  ,\n\t\t{\n\t\t\t\"key\": \"post_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"defaultValue\": \"{\\n}\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Post Validation Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+            },
+            "template": {
+              "display_name": "Raw Form JSON",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder",
+                "Template/**/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON objects into here to insert them into the schema",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = eval('(' + template.element.form_model.json + ')'); for (i in obj) curr_obj.schema.push(obj[i]); }"
+              },
+              "default_model": {
+                "json": "[\n\t\t{\n\t\t\t\"key\": \"pre_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n  ,\n\t\t{\n\t\t\t\"key\": \"post_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"defaultValue\": \"{\\n}\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Post Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Raw Form JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        }
+      ]
+    }
+  ]
+}
