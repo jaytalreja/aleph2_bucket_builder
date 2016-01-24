@@ -59,7 +59,9 @@ object ElementCardJs {
   def apply(row: Int, col: Int, expandable: Boolean, template: ElementTemplateJs): ElementCardJs = {
     js.Dynamic.literal(enabled = true, short_name = template.display_name, summary = "", row = row, col = col, sizeX = 1, sizeY = 1, 
                         expandable = expandable, configurable = true, deletable = true,
-                        form_model = JsOption(template.default_model).getOrElse(js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]]),
+                        form_model = JsOption(template.default_model)
+                                      .map { x => JSON.parse(JSON.stringify(x)) }
+                                      .getOrElse(js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]]),
                         template = template
                         )
       .asInstanceOf[ElementCardJs]

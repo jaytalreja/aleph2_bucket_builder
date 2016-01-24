@@ -16,8 +16,7 @@
 			</manifest>
 			
 			<zipfileset dir="assets" prefix="assets/">
-				<exclude name="**/index-dev.html"/>
-				<exclude name="**/parent_index-dev.html"/>
+				<exclude name="**/*-dev.html"/>
 			</zipfileset>
 			<zipfileset dir="target/scala-2.11" prefix="target/scala-2.11/">
 				<include name="aleph2_bucket_builder-jsdeps.min.js"/>

@@ -278,6 +278,73 @@
             }
           },
           "children": []
+        },
+        {
+          "root": false,
+          "label": "Builder Functions",
+          "element": {
+            "enabled": true,
+            "short_name": "Builder Functions",
+            "summary": "",
+            "row": 1,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.key = template.element.short_name;\n  curr_obj.global_function = { '$fn': template.element.form_model.js };\n}",
+              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+            },
+            "template": {
+              "display_name": "Builder Functions",
+              "form_info": "<p>Write functions to build the objects and sub-objects based on the fields of the forms</p>\n<p>builder_function runs before the element's children; post_builder_function runs afterwards</p>",
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "key": "local_function",
+              "categories": [
+                "Developer"
+              ],
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.building_function = {'$fn': template.element.form_model.pre_fn};curr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; }"
+              },
+              "schema": [
+                {
+                  "key": "pre_fn",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                },
+                {
+                  "key": "post_fn",
+                  "type": "code_input",
+                  "defaultValue": "{\n}",
+                  "templateOptions": {
+                    "label": "Post Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ],
+              "default_model": {
+                "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}",
+                "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
         }
       ]
     },
@@ -357,7 +424,7 @@
         "configurable": true,
         "deletable": true,
         "form_model": {
-          "filters": "Template/template_builder/",
+          "filters": "Template/template_builder",
           "expandable": false,
           "key": "local_function",
           "categories": "Developer"
@@ -557,6 +624,73 @@
             }
           },
           "children": []
+        },
+        {
+          "root": false,
+          "label": "Builder Functions",
+          "element": {
+            "enabled": true,
+            "short_name": "Builder Functions",
+            "summary": "",
+            "row": 1,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.building_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; \n}",
+              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+            },
+            "template": {
+              "display_name": "Builder Functions",
+              "form_info": "<p>Write functions to build the objects and sub-objects based on the fields of the forms</p>\n<p>builder_function runs before the element's children; post_builder_function runs afterwards</p>",
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "key": "local_function",
+              "categories": [
+                "Developer"
+              ],
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.building_function = {'$fn': template.element.form_model.pre_fn};curr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; }"
+              },
+              "schema": [
+                {
+                  "key": "pre_fn",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                },
+                {
+                  "key": "post_fn",
+                  "type": "code_input",
+                  "defaultValue": "{\n}",
+                  "templateOptions": {
+                    "label": "Post Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ],
+              "default_model": {
+                "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.building_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; \n}",
+                "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
         }
       ]
     },
@@ -575,7 +709,7 @@
         "configurable": true,
         "deletable": true,
         "form_model": {
-          "filters": "Template/template_builder/",
+          "filters": "Template/template_builder",
           "expandable": false,
           "key": "local_function",
           "categories": "Developer"
@@ -757,6 +891,594 @@
               },
               "default_model": {
                 "json": "[\n\t\t{\n\t\t\t\"key\": \"pre_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n  ,\n\t\t{\n\t\t\t\"key\": \"post_fn\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"defaultValue\": \"{\\n}\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Post Building Function\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Raw Form JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Builder Functions",
+          "element": {
+            "enabled": true,
+            "short_name": "Builder Functions",
+            "summary": "",
+            "row": 1,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.validation_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_validation_function = {'$fn': template.element.form_model.post_fn}; \n}",
+              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+            },
+            "template": {
+              "display_name": "Builder Functions",
+              "form_info": "<p>Write functions to build the objects and sub-objects based on the fields of the forms</p>\n<p>builder_function runs before the element's children; post_builder_function runs afterwards</p>",
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "key": "local_function",
+              "categories": [
+                "Developer"
+              ],
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.building_function = {'$fn': template.element.form_model.pre_fn};curr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; }"
+              },
+              "schema": [
+                {
+                  "key": "pre_fn",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                },
+                {
+                  "key": "post_fn",
+                  "type": "code_input",
+                  "defaultValue": "{\n}",
+                  "templateOptions": {
+                    "label": "Post Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ],
+              "default_model": {
+                "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.building_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; \n}",
+                "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "root": false,
+      "label": "Template Builder",
+      "element": {
+        "enabled": true,
+        "short_name": "Template Builder",
+        "summary": "Create a new template element",
+        "row": 2,
+        "col": 0,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "filters": "Template",
+          "expandable": true,
+          "key": "template_builder",
+          "categories": "Template"
+        },
+        "template": {
+          "display_name": "Template Builder",
+          "key": "template_builder",
+          "categories": [
+            "Template"
+          ],
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "form_info": "Create a new template element",
+          "building_function": {
+            "expr0": "curr_obj.display_name = template.element.short_name; curr_obj.form_info = template.element.summary;",
+            "expr1": "a2_copy(template.element.form_model, obj);",
+            "expr2": "obj.categories = a2_csv_to_array(obj.categories);",
+            "expr3": "obj.categories = a2_csv_to_array(obj.filters);",
+            "expr4": "obj.categories = a2_csv_to_array(obj.child_filters);",
+            "expr5": "obj.schema = []; curr_obj.push(obj); return obj.schema;",
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = {}; obj.display_name = template.element.short_name; obj.form_info = template.element.summary;a2_copy(template.element.form_model, obj);obj.categories = a2_csv_to_array(obj.categories);obj.filters = a2_csv_to_array(obj.filters);obj.child_filters = a2_csv_to_array(obj.child_filters);obj.schema = []; curr_obj.push(obj); return obj;}"
+          },
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Template Name",
+                "placeholder": "The template name",
+                "required": true
+              }
+            },
+            {
+              "key": "_summary",
+              "type": "horizontalTextArea",
+              "defaultValue": "<p>Help here</p>",
+              "templateOptions": {
+                "label": "Form Info",
+                "placeholder": "Text or HTML providing help for the user",
+                "required": true
+              }
+            },
+            {
+              "key": "key",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Role/Key",
+                "placeholder": "The role name of the template (used in parent and child filters)",
+                "required": true
+              }
+            },
+            {
+              "key": "categories",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Categories",
+                "placeholder": "Comma-separated list of categories (determines folder name)",
+                "required": true
+              }
+            },
+            {
+              "key": "filters",
+              "type": "horizontalInput",
+              "defaultValue": "Template/template_builder/**",
+              "templateOptions": {
+                "label": "Parent Filters",
+                "placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
+                "required": false
+              }
+            },
+            {
+              "key": "expandable",
+              "type": "horizontalCheckbox",
+              "defaultValue": false,
+              "templateOptions": {
+                "label": "Allow child elements",
+                "required": false
+              }
+            },
+            {
+              "key": "child_filters",
+              "type": "horizontalInput",
+              "hideExpression": "!model.expandable",
+              "templateOptions": {
+                "label": "Child Filters",
+                "placeholder": "Comma-separated list of filters determining which child elements should be displayed",
+                "required": false
+              }
+            }
+          ]
+        }
+      },
+      "children": [
+        {
+          "root": false,
+          "label": "Raw Form JSON",
+          "element": {
+            "enabled": true,
+            "short_name": "Raw Form JSON",
+            "summary": "7 elements",
+            "row": 0,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "[\n\t\t{\n\t\t\t\"key\": \"_short_name\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Template Name\",\n\t\t\t\t\"placeholder\": \"The template name\",\n\t\t\t\t\"required\": true\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"_summary\",\n\t\t\t\"type\": \"horizontalTextArea\",\n\t\t\t\"defaultValue\": \"<p>Help here</p>\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Form Info\",\n\t\t\t\t\"placeholder\": \"Text or HTML providing help for the user\",\n\t\t\t\t\"required\": true\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"key\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Role/Key\",\n\t\t\t\t\"placeholder\": \"The role name of the template (used in parent and child filters)\",\n\t\t\t\t\"required\": true\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"categories\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Categories\",\n\t\t\t\t\"placeholder\": \"Comma-separated list of categories (determines folder name)\",\n\t\t\t\t\"required\": true\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"filters\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"defaultValue\": \"Template/template_builder/**\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Parent Filters\",\n\t\t\t\t\"placeholder\": \"Comma-separated list of filters determining for which parents this should be displayed\",\n\t\t\t\t\"required\": false\n\t\t\t}\t\t\t\n\t\t},\n\t\t{\n\t\t\t\"key\": \"expandable\",\n\t\t\t\"type\": \"horizontalCheckbox\",\n\t\t\t\"defaultValue\": false,\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Allow child elements\",\n\t\t\t\t\"required\": false\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"key\": \"child_filters\",\n\t\t\t\"type\": \"horizontalInput\",\n\t\t\t\"hideExpression\": \"!model.expandable\", \n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Child Filters\",\n\t\t\t\t\"placeholder\": \"Comma-separated list of filters determining which child elements should be displayed\",\n\t\t\t\t\"required\": false\n\t\t\t}\t\t\t\n\t\t}\n]"
+            },
+            "template": {
+              "display_name": "Raw Form JSON",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder",
+                "Template/**/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON objects into here to insert them into the schema",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = eval('(' + template.element.form_model.json + ')'); for (i in obj) curr_obj.schema.push(obj[i]); }"
+              },
+              "default_model": {
+                "json": "[\n  {\n    \n  }\n]"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Raw Form JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Builder Functions",
+          "element": {
+            "enabled": true,
+            "short_name": "Builder Functions",
+            "summary": "",
+            "row": 0,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n\t\tvar obj = {}; \n\t\tobj.display_name = template.element.short_name; \n\t\tobj.form_info = template.element.summary;\n\t\ta2_copy(template.element.form_model, obj);\n\t\tobj.categories = a2_csv_to_array(obj.categories);\n\t\tobj.filters = a2_csv_to_array(obj.filters);\n\t\tobj.child_filters = a2_csv_to_array(obj.child_filters);\n\t\tobj.schema = []; \n\t\tcurr_obj.push(obj); \n\t\treturn obj;  \n}",
+              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+            },
+            "template": {
+              "display_name": "Builder Functions",
+              "form_info": "<p>Write functions to build the objects and sub-objects based on the fields of the forms</p>\n<p>builder_function runs before the element's children; post_builder_function runs afterwards</p>",
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "key": "local_function",
+              "categories": [
+                "Developer"
+              ],
+              "schema": [
+                {
+                  "key": "pre_fn",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                },
+                {
+                  "key": "post_fn",
+                  "type": "code_input",
+                  "defaultValue": "{\n}",
+                  "templateOptions": {
+                    "label": "Post Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ],
+              "default_model": {
+                "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}",
+                "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.building_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; \n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "root": false,
+      "label": "Template Builder",
+      "element": {
+        "enabled": true,
+        "short_name": "Raw Default Values",
+        "summary": "Type raw JSON into here to create default values for the different schemas (referenced by key)",
+        "row": 3,
+        "col": 0,
+        "sizeX": 1,
+        "sizeY": 1,
+        "expandable": true,
+        "configurable": true,
+        "deletable": true,
+        "form_model": {
+          "filters": "Template/template_builder",
+          "expandable": false,
+          "key": "template_element",
+          "categories": "Generic"
+        },
+        "template": {
+          "display_name": "Template Builder",
+          "form_info": "Create a new template element",
+          "filters": [
+            "Template"
+          ],
+          "expandable": true,
+          "key": "template_builder",
+          "categories": [
+            "Template"
+          ],
+          "schema": [
+            {
+              "key": "_short_name",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Template Name",
+                "placeholder": "The template name",
+                "required": true
+              }
+            },
+            {
+              "key": "_summary",
+              "type": "horizontalTextArea",
+              "defaultValue": "<p>Help here</p>",
+              "templateOptions": {
+                "label": "Form Info",
+                "placeholder": "Text or HTML providing help for the user",
+                "required": true
+              }
+            },
+            {
+              "key": "key",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Role/Key",
+                "placeholder": "The role name of the template (used in parent and child filters)",
+                "required": true
+              }
+            },
+            {
+              "key": "categories",
+              "type": "horizontalInput",
+              "templateOptions": {
+                "label": "Categories",
+                "placeholder": "Comma-separated list of categories (determines folder name)",
+                "required": true
+              }
+            },
+            {
+              "key": "filters",
+              "type": "horizontalInput",
+              "defaultValue": "Template/template_builder/**",
+              "templateOptions": {
+                "label": "Parent Filters",
+                "placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
+                "required": false
+              }
+            },
+            {
+              "key": "expandable",
+              "type": "horizontalCheckbox",
+              "defaultValue": false,
+              "templateOptions": {
+                "label": "Allow child elements",
+                "required": false
+              }
+            },
+            {
+              "key": "child_filters",
+              "type": "horizontalInput",
+              "hideExpression": "!model.expandable",
+              "templateOptions": {
+                "label": "Child Filters",
+                "placeholder": "Comma-separated list of filters determining which child elements should be displayed",
+                "required": false
+              }
+            }
+          ],
+          "building_function": {
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n\t\tvar obj = {}; \n\t\tobj.display_name = template.element.short_name; \n\t\tobj.form_info = template.element.summary;\n\t\ta2_copy(template.element.form_model, obj);\n\t\tobj.categories = a2_csv_to_array(obj.categories);\n\t\tobj.filters = a2_csv_to_array(obj.filters);\n\t\tobj.child_filters = a2_csv_to_array(obj.child_filters);\n\t\tobj.schema = []; \n\t\tcurr_obj.push(obj); \n\t\treturn obj;  \n}"
+          },
+          "post_building_function": {
+            "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+          }
+        }
+      },
+      "children": [
+        {
+          "root": false,
+          "label": "Raw Default Values",
+          "element": {
+            "enabled": true,
+            "short_name": "Raw Default Values",
+            "summary": "json",
+            "row": 0,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "{\n\t\"json\": \"{\\n\\n}\"\n}"
+            },
+            "template": {
+              "display_name": "Raw Default Values",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON into here to create default values for the different schemas (referenced by key)",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); }"
+              },
+              "default_model": {
+                "json": "{\n\n}"
+              },
+              "schema": [
+                {
+                  "key": "json",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Model JSON",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Builder Functions",
+          "element": {
+            "enabled": true,
+            "short_name": "Builder Functions",
+            "summary": "",
+            "row": 0,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); \n}",
+              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+            },
+            "template": {
+              "display_name": "Builder Functions",
+              "form_info": "<p>Write functions to build the objects and sub-objects based on the fields of the forms</p>\n<p>builder_function runs before the element's children; post_builder_function runs afterwards</p>",
+              "filters": [
+                "Template/template_builder"
+              ],
+              "expandable": false,
+              "key": "local_function",
+              "categories": [
+                "Developer"
+              ],
+              "schema": [
+                {
+                  "key": "pre_fn",
+                  "type": "code_input",
+                  "templateOptions": {
+                    "label": "Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                },
+                {
+                  "key": "post_fn",
+                  "type": "code_input",
+                  "defaultValue": "{\n}",
+                  "templateOptions": {
+                    "label": "Post Building Function",
+                    "codemirror": {
+                      "lineNumbers": true,
+                      "smartIndent": true,
+                      "mode": "javascript"
+                    }
+                  }
+                }
+              ],
+              "default_model": {
+                "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}",
+                "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.building_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; \n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Raw Form JSON",
+          "element": {
+            "enabled": true,
+            "short_name": "Raw Form JSON",
+            "summary": "",
+            "row": 1,
+            "col": 0,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "json": "[\n\t\t{\n\t\t\t\"key\": \"json\",\n\t\t\t\"type\": \"code_input\",\n\t\t\t\"templateOptions\": {\n\t\t\t\t\"label\": \"Model JSON\",\n\t\t\t\t\"codemirror\": {\n\t\t\t\t\t\"lineNumbers\": true,\n\t\t\t\t\t\"smartIndent\": true,\n\t\t\t\t\t\"mode\": \"javascript\"\n\t\t\t\t}\n\t\t\t}\n\t\t}\n]"
+            },
+            "template": {
+              "display_name": "Raw Form JSON",
+              "key": "template_element",
+              "categories": [
+                "Generic"
+              ],
+              "filters": [
+                "Template/template_builder",
+                "Template/**/template_builder"
+              ],
+              "expandable": false,
+              "form_info": "Type raw JSON objects into here to insert them into the schema",
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = eval('(' + template.element.form_model.json + ')'); for (i in obj) curr_obj.schema.push(obj[i]); }"
+              },
+              "default_model": {
+                "json": "[\n  {\n    \n  }\n]"
               },
               "schema": [
                 {
