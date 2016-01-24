@@ -39,6 +39,11 @@ import com.ikanow.aleph2.builder_ui.data_model._
 @injectable("undoRedoService")
 class UndoRedoService {
   
+  def clearAll(): Unit = {
+    undo_list.clear()
+    redo_list.clear()
+  }
+  
   def registerState(state_change: UndoRedoElement): Unit = {    
     adjustElement(state_change) +=: undo_list
     redo_list.clear()

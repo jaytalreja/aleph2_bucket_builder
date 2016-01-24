@@ -101,8 +101,24 @@ class BucketBuilderController(
         }
     }}
 
-    // Register some callbacksx
+    // Register some callbacks
     
+    scope.$on("import_json", (event: Event, import_json: ElementNodeJs) => {
+      element_service.getMutableRoot().foreach { root => {
+        undo_redo_service.clearAll()
+        
+        root.children.clear();
+        root.children.appendAll(import_json.children)
+        ElementTreeBuilder.fillInImportedTree(root)
+        
+        scope.curr_element = root
+        rebuildBreadcrumbs(root)
+        buildGrid()
+        regenerateJson()
+        
+        refreshTemplates()        
+      }}
+    })
     scope.$on("quick_navigate", (event: Event, message: ElementNodeJs) => {
       navigateTo(message)
     })
@@ -235,6 +251,24 @@ class BucketBuilderController(
   }
   
   @JSExport
+  def duplicateElement(item: ElementCardJs): Unit = {
+    scope.curr_element.children.find { node => node.element == item }.foreach { to_dup => {
+
+      val new_node = JSON.parse(ElementTreeBuilder.stringifyTree(to_dup)).asInstanceOf[ElementNodeJs]
+
+      // Fill in parents
+      ElementTreeBuilder.fillInImportedTree(new_node)
+      new_node.$parent = scope.curr_element
+      
+      val col_row = getNextGridPosition()
+      new_node.element.col = col_row._1
+      new_node.element.row = col_row._2
+      
+      insertNewNode_internal(new_node)
+    }}
+  }
+  
+  @JSExport
   def insertElement(template: ElementTemplateNodeJs):Unit = {
     
     // Remove any dummy elements:
@@ -243,6 +277,18 @@ class BucketBuilderController(
     // Get the value
     val bean = scope.element_template_array(template.templateIndex)
     
+    val col_row = getNextGridPosition()
+    
+    // Create new card
+    val new_card = ElementCardJs(col_row._2, col_row._1, bean.expandable, bean)
+
+    // Add to the current element's children
+    val new_node = ElementNodeJs(new_card.short_name, new_card, scope.curr_element)
+    
+    insertNewNode_internal(new_node)
+  }
+
+  protected def getNextGridPosition(): Tuple2[Int, Int] = {
     // Get current highest row:
     val tmp_max_row = scope.element_grid.map { card => card.row + card.sizeY - 1 }.reduceOption(_ max _).getOrElse(0)
     // Get current highest col:
@@ -251,13 +297,11 @@ class BucketBuilderController(
     val col_row = (tmp_max_col, tmp_max_row) match {
       case (c, r) if (c > 2) => (0, 1 + r)
       case (c, r) => (c + 1, r)
-    }
-         
-    // Create new card
-    val new_card = ElementCardJs(col_row._2, col_row._1, bean.expandable, bean)
-
-    // Add to the current element's children
-    val new_node = ElementNodeJs(new_card.short_name, new_card, scope.curr_element)
+    }    
+    col_row
+  }
+  
+  protected def insertNewNode_internal(new_node: ElementNodeJs): Unit = {
     scope.curr_element.children.push(new_node)
         
     // Rebuild grid (also resets all the watches)
@@ -267,9 +311,9 @@ class BucketBuilderController(
     undo_redo_service.registerState(AddElement(new_node))
     
     // Recalculate derived json
-    regenerateJson()
+    regenerateJson()    
   }
-
+  
   @JSExport
   def expandElementConfig(item: ElementCardJs): Unit = {
     

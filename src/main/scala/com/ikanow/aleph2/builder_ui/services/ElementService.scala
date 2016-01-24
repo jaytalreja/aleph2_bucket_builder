@@ -38,7 +38,7 @@ import com.ikanow.aleph2.builder_ui.utils._
 @injectable("elementService")
 class ElementService(global_io_service: GlobalInputOutputService) {
   
-  val root:ElementNodeJs = global_io_service.config_input_object()
+  private val root:ElementNodeJs = global_io_service.config_input_object()
                             .filter { start_obj => !JsOption(start_obj.children).isEmpty } // (can't even ref the other 2 since they're not JS objects)
                             .map { start_obj => ElementTreeBuilder.fillInImportedTree(start_obj) }
                             .getOrElse(ElementNodeJs.buildRoot(global_io_service.root_element()))
