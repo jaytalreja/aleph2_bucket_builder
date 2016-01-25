@@ -107,7 +107,6 @@
       {
         "key": "filters",
         "type": "horizontalInput",
-        "defaultValue": "Template/template_builder/**",
         "templateOptions": {
           "label": "Parent Filters",
           "placeholder": "Comma-separated list of filters determining for which parents this should be displayed",
@@ -347,6 +346,54 @@
     }
   },
   {
+    "display_name": "Default Values UI",
+    "form_info": "Select starting values for the various keys",
+    "filters": [
+      "Template/template_builder"
+    ],
+    "expandable": false,
+    "key": "template_element",
+    "categories": [
+      "Generic"
+    ],
+    "schema": [
+      {
+        "templateOptions": {
+          "btnText": "Add",
+          "fields": [
+            {
+              "templateOptions": {
+                "required": true,
+                "pattern": "[a-zA-Z0-9_-]+",
+                "label": "Key",
+                "placeholder": "The key to which to assign a default value"
+              },
+              "key": "key",
+              "type": "horizontalInput"
+            },
+            {
+              "templateOptions": {
+                "required": true,
+                "label": "Value",
+                "placeholder": "The default value for this key"
+              },
+              "key": "value",
+              "type": "horizontalInput"
+            }
+          ]
+        },
+        "type": "repeatSection",
+        "key": "default_values"
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.default_model = {};\n  for (i in template.element.form_model.default_values) {\n    var el = template.element.form_model.default_values[i];\n    curr_obj.default_model[el.key] = el.value;\n  }\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
     "display_name": "Horizontal Line",
     "form_info": "Insert horizontal line",
     "filters": [
@@ -426,7 +473,70 @@
     "categories": [
       "Layout"
     ],
-    "schema": [],
+    "schema": [
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "select",
+            "templateOptions": {
+              "options": [
+                {
+                  "name": "0",
+                  "value": "0"
+                },
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "2",
+                  "value": "2"
+                },
+                {
+                  "name": "3",
+                  "value": "3"
+                },
+                {
+                  "name": "4",
+                  "value": "4"
+                },
+                {
+                  "name": "5",
+                  "value": "5"
+                },
+                {
+                  "name": "6",
+                  "value": "6"
+                },
+                {
+                  "name": "7",
+                  "value": "7"
+                },
+                {
+                  "name": "8",
+                  "value": "8"
+                },
+                {
+                  "name": "9",
+                  "value": "9"
+                },
+                {
+                  "name": "10",
+                  "value": "10"
+                },
+                {
+                  "name": "11",
+                  "value": "11"
+                }
+              ]
+            }
+          },
+          "label": "Column widths (must add up to <= 12)"
+        },
+        "key": "columns"
+      }
+    ],
     "default_model": {
       "class": "row"
     },
@@ -434,7 +544,7 @@
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n var m = template.element.form_model;\n var obj = { schema: [] }; \n curr_obj.schema.push(obj); \n obj.className = m.class; \n return obj; \n}"
     },
     "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length-1]; \n  me.fieldGroup = me.schema;me.schema = undefined;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length-1]; \n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n  if (template.element.form_model.columns) {\n    for (i in template.element.form_model.columns) {\n      var col = template.element.form_model.columns[i];\n      m.fieldGroup[i].className = 'col-xs-' + col;\n    }\n  }\n}"
     }
   },
   {
@@ -653,11 +763,11 @@
       }
     ],
     "default_model": {
-      "type": "horizontalInput",
+      "type": "horizontalTextArea",
       "key": "TODO_KEY"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.key = template.element.form_model.key;\n  obj.type = template.element.form_model.type;   \n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.key = template.element.form_model.key;\n  obj.type = template.element.form_model.type;   \n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  if (template.element.form_model.rows) obj.templateOptions.rows = parseInt(template.element.form_model.rows);\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -741,6 +851,75 @@
     },
     "building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "2-Line Input",
+    "form_info": "Text input element with label on the line above",
+    "filters": [
+      "Template/template_builder",
+      "Template/template_builder/**"
+    ],
+    "expandable": false,
+    "key": "simple_input",
+    "categories": [
+      "Text"
+    ],
+    "schema": [
+      {
+        "key": "_short_name",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Label",
+          "placeholder": "The label displayed next to the input",
+          "required": true
+        }
+      },
+      {
+        "key": "_summary",
+        "type": "horizontalTextArea",
+        "templateOptions": {
+          "label": "Placeholder",
+          "placeholder": "The placeholder text displayed when the input is empty",
+          "required": true
+        }
+      },
+      {
+        "key": "key",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Key",
+          "pattern": "[a-zA-Z0-9_]+",
+          "placeholder": "The key for this input",
+          "required": true
+        }
+      },
+      {
+        "key": "required",
+        "type": "horizontalCheckbox",
+        "templateOptions": {
+          "label": "Is this element required?"
+        }
+      },
+      {
+        "key": "pattern",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Pattern",
+          "placeholder": "Optional validation regular expression",
+          "required": false
+        }
+      }
+    ],
+    "default_model": {
+      "type": "input",
+      "key": "TODO_KEY"
+    },
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.key = template.element.form_model.key;\n  obj.type = template.element.form_model.type;   \n  obj.templateOptions.required = (true === template.element.form_model.required);\n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -854,7 +1033,7 @@
   },
   {
     "display_name": "Multi Text Input",
-    "form_info": "TODO debug A variable list of text fields",
+    "form_info": "A variable list of text fields",
     "filters": [
       "Template/template_builder",
       "Template/template_builder/**"
@@ -904,7 +1083,7 @@
       }
     ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { type: 'multiInput', templateOptions: { inputOptions: { type: 'input', templateOptions: {} } } };\n  obj.key = template.element.form_model.key;\n  obj.templateOptions.inputOptions.label = template.element.short_name; \n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.inputOptions.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.inputOptions.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { type: 'multiInput', templateOptions: { inputOptions: { type: 'input', templateOptions: {} } } };\n  obj.key = template.element.form_model.key;\n  obj.templateOptions.label = template.element.short_name; \n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.inputOptions.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.inputOptions.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -912,7 +1091,7 @@
   },
   {
     "display_name": "Multi Dropdown",
-    "form_info": "TODO DEBUG Variable sized list of dropdowns",
+    "form_info": "Variable sized list of dropdowns",
     "filters": [
       "Template/template_builder",
       "Template/template_builder/**"
@@ -979,7 +1158,121 @@
       "key": "TODO_KEY"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { type: 'multiInput', templateOptions: { inputOptions: { type: 'select', templateOptions: {} } } };\n  obj.key = template.element.form_model.key;\n  obj.templateOptions.inputOptions.label = template.element.short_name; \n  obj.templateOptions.inputOptions.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { type: 'multiInput', templateOptions: { inputOptions: { type: 'select', templateOptions: {} } } };\n  obj.key = template.element.form_model.key;\n  obj.templateOptions.label = template.element.short_name; \n  obj.templateOptions.inputOptions.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Standalone Checkbox",
+    "form_info": "Non-compact checkbox input element",
+    "filters": [
+      "Template/template_builder",
+      "Template/template_builder/**"
+    ],
+    "expandable": false,
+    "key": "simple_input",
+    "categories": [
+      "Selection"
+    ],
+    "schema": [
+      {
+        "key": "_short_name",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Label",
+          "placeholder": "The label displayed next to the input",
+          "required": true
+        }
+      },
+      {
+        "key": "key",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Key",
+          "pattern": "[a-zA-Z0-9_]+",
+          "placeholder": "The key for this input",
+          "required": true
+        }
+      }
+    ],
+    "default_model": {
+      "type": "checkbox",
+      "key": "TODO_KEY"
+    },
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Vertical Text Area",
+    "form_info": "Text area input element with label at the top",
+    "filters": [
+      "Template/template_builder",
+      "Template/template_builder/**"
+    ],
+    "expandable": false,
+    "key": "simple_input",
+    "categories": [
+      "Text"
+    ],
+    "schema": [
+      {
+        "key": "_short_name",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Label",
+          "placeholder": "The label displayed next to the input",
+          "required": true
+        }
+      },
+      {
+        "key": "_summary",
+        "type": "horizontalTextArea",
+        "templateOptions": {
+          "label": "Placeholder",
+          "placeholder": "The placeholder text displayed when the input is empty",
+          "required": true
+        }
+      },
+      {
+        "key": "key",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Key",
+          "pattern": "[a-zA-Z0-9_]+",
+          "placeholder": "The key for this input",
+          "required": true
+        }
+      },
+      {
+        "key": "required",
+        "type": "horizontalCheckbox",
+        "templateOptions": {
+          "label": "Is this element required?"
+        }
+      },
+      {
+        "templateOptions": {
+          "required": false,
+          "pattern": "[0-9]+",
+          "label": "Number of rows",
+          "placeholder": "Override the starting number of rows"
+        },
+        "key": "rows",
+        "type": "horizontalInput"
+      }
+    ],
+    "default_model": {
+      "type": "textarea",
+      "key": "TODO_KEY"
+    },
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.key = template.element.form_model.key;\n  obj.type = template.element.form_model.type;   \n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  if (template.element.form_model.rows) obj.templateOptions.rows = parseInt(template.element.form_model.rows);\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
