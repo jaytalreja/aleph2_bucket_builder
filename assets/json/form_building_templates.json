@@ -713,9 +713,8 @@
             {
               "templateOptions": {
                 "required": true,
-                "pattern": "[a-zA-Z0-9_]+",
                 "label": "Name",
-                "placeholder": "The key associated with the dropdown value"
+                "placeholder": "The display name associated with the dropdown value"
               },
               "key": "name",
               "type": "horizontalInput"
@@ -723,8 +722,9 @@
             {
               "templateOptions": {
                 "required": true,
+                "pattern": "[a-zA-Z0-9_]+",
                 "label": "Value",
-                "placeholder": "The displayed value in the dropdown"
+                "placeholder": "The key for the selected dropdown element"
               },
               "key": "value",
               "type": "horizontalInput"
@@ -741,6 +741,112 @@
     },
     "building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Code Editor",
+    "form_info": "Write code in various languages (or JSON/XML/HTML)",
+    "filters": [
+      "Template/template_builder",
+      "Template/template_builder/**"
+    ],
+    "expandable": false,
+    "key": "simple_input",
+    "categories": [
+      "Text"
+    ],
+    "schema": [
+      {
+        "key": "_short_name",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Label",
+          "placeholder": "The label displayed next to the input",
+          "required": true
+        }
+      },
+      {
+        "key": "key",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Key",
+          "pattern": "[a-zA-Z0-9_]+",
+          "placeholder": "The key for this input",
+          "required": true
+        }
+      },
+      {
+        "key": "required",
+        "type": "horizontalCheckbox",
+        "templateOptions": {
+          "label": "Is this element required?"
+        }
+      },
+      {
+        "templateOptions": {
+          "required": true,
+          "label": "Language",
+          "options": [
+            {
+              "value": "clike",
+              "name": "Scala"
+            },
+            {
+              "value": "javascript",
+              "name": "Javascript/JSON"
+            },
+            {
+              "value": "r",
+              "name": "R"
+            },
+            {
+              "value": "python",
+              "name": "Python"
+            },
+            {
+              "value": "xml",
+              "name": "XML"
+            },
+            {
+              "value": "lua",
+              "name": "Lua"
+            },
+            {
+              "value": "yaml",
+              "name": "YAML"
+            },
+            {
+              "value": "properties",
+              "name": "Properties"
+            },
+            {
+              "value": "htmlembedded",
+              "name": "HTML (embedded)"
+            },
+            {
+              "value": "htmlmixed",
+              "name": "HTML (mixed)"
+            }
+          ]
+        },
+        "type": "horizontalSelect",
+        "key": "mode"
+      }
+    ],
+    "default_model": {
+      "type": "code_input",
+      "templateOptions": {
+        "codemirror": {
+          "lineNumbers": true,
+          "smartIndent": true
+        }
+      }
+    },
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    type: template.element.form_model.type,\n    templateOptions: template.element.form_model.templateOptions \n  };\n  obj.templateOptions.codemirror.mode = template.element.form_model.mode;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.required = template.element.form_model.required;\n  curr_obj.schema.push(obj);\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
