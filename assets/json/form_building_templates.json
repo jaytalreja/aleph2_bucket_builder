@@ -3,7 +3,7 @@
     "display_name": "Global Function",
     "form_info": "<p>Use unique keys as function names to declare global functions that the other templates in this file can use.</p> \n<p>No attempt is made to manage scope etc so use with care</p>",
     "filters": [
-      "Template/"
+      "Template"
     ],
     "expandable": false,
     "key": "global_function",
@@ -597,7 +597,7 @@
       "key": "TODO_KEY"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -740,7 +740,7 @@
       "key": "TODO_KEY"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -847,6 +847,139 @@
     },
     "building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    type: template.element.form_model.type,\n    templateOptions: template.element.form_model.templateOptions \n  };\n  obj.templateOptions.codemirror.mode = template.element.form_model.mode;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.required = template.element.form_model.required;\n  curr_obj.schema.push(obj);\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Multi Text Input",
+    "form_info": "TODO debug A variable list of text fields",
+    "filters": [
+      "Template/template_builder",
+      "Template/template_builder/**"
+    ],
+    "expandable": false,
+    "key": "template_element",
+    "categories": [
+      "Text"
+    ],
+    "schema": [
+      {
+        "key": "_short_name",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Label",
+          "placeholder": "The label displayed next to the input",
+          "required": true
+        }
+      },
+      {
+        "key": "_summary",
+        "type": "horizontalTextArea",
+        "templateOptions": {
+          "label": "Placeholder",
+          "placeholder": "The placeholder text displayed when the input is empty",
+          "required": true
+        }
+      },
+      {
+        "key": "key",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Key",
+          "pattern": "[a-zA-Z0-9_]+",
+          "placeholder": "The key for this input",
+          "required": true
+        }
+      },
+      {
+        "key": "pattern",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Pattern",
+          "placeholder": "Optional validation regular expression",
+          "required": false
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { type: 'multiInput', templateOptions: { inputOptions: { type: 'input', templateOptions: {} } } };\n  obj.key = template.element.form_model.key;\n  obj.templateOptions.inputOptions.label = template.element.short_name; \n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.inputOptions.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.inputOptions.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Multi Dropdown",
+    "form_info": "TODO DEBUG Variable sized list of dropdowns",
+    "filters": [
+      "Template/template_builder",
+      "Template/template_builder/**"
+    ],
+    "expandable": false,
+    "key": "simple_input",
+    "categories": [
+      "Selection"
+    ],
+    "schema": [
+      {
+        "key": "_short_name",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Label",
+          "placeholder": "The label displayed next to the input",
+          "required": true
+        }
+      },
+      {
+        "key": "key",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Key",
+          "pattern": "[a-zA-Z0-9_]+",
+          "placeholder": "The key for this input",
+          "required": true
+        }
+      },
+      {
+        "className": "section-label",
+        "template": "<hr /><div><strong>Dropdown Elements:</strong></div>"
+      },
+      {
+        "templateOptions": {
+          "btnText": "Add",
+          "fields": [
+            {
+              "templateOptions": {
+                "required": true,
+                "label": "Name",
+                "placeholder": "The display name associated with the dropdown value"
+              },
+              "key": "name",
+              "type": "horizontalInput"
+            },
+            {
+              "templateOptions": {
+                "required": true,
+                "pattern": "[a-zA-Z0-9_]+",
+                "label": "Value",
+                "placeholder": "The key for the selected dropdown element"
+              },
+              "key": "value",
+              "type": "horizontalInput"
+            }
+          ]
+        },
+        "type": "repeatSection",
+        "key": "options"
+      }
+    ],
+    "default_model": {
+      "key": "TODO_KEY"
+    },
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { type: 'multiInput', templateOptions: { inputOptions: { type: 'select', templateOptions: {} } } };\n  obj.key = template.element.form_model.key;\n  obj.templateOptions.inputOptions.label = template.element.short_name; \n  obj.templateOptions.inputOptions.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
