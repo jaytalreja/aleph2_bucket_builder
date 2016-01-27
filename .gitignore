@@ -1,7 +1,0 @@
-/**/target/
-target/
-bin/
-/.cache-main
-/dist/
-/.tmpBin/
-/.classpath
