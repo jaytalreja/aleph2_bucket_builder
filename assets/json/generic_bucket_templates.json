@@ -30,19 +30,6 @@
 			}			
 		},
 		{
-            "key": "node_list_rules",
-            "type": "multiInput",
-            "defaultValue": [],
-            "templateOptions": {
-               "label": "List of nodes this job can run on",
-               "inputOptions": {
-                  "type": "input"
-               },
-               "placeholder": "glob or regex e.g. api001.*",
-               "required": false
-            }
-         },
-		{
 			"template": "<hr/>"
 		},
 		{
@@ -112,7 +99,7 @@
 		}		
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.full_name = template.element.form_model.full_name;\n   curr_obj.node_list_rules = template.element.form_model.node_list_rules;\n \tvar pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \t\tif (template.element.form_model.requested_num_objects) { curr_obj.test_params = {};\n\t\tvar doc = curr_obj.test_params;\n\t\tdoc.requested_num_objects = parseInt(template.element.form_model.requested_num_objects);\n\t\tdoc.max_startup_time_secs = parseInt(template.element.form_model.max_startup_time_secs);\n\t\tdoc.max_run_time_secs = parseInt(template.element.form_model.max_run_time_secs);\n\t\tif ((template.element.form_model.max_storage_time_secs || '').length > 0) doc.max_storage_time_secs = parseInt(template.element.form_model.max_storage_time_secs);\n\t\tdoc.overwrite_existing_data = template.element.form_model.overwrite_existing_data; }\n\n}" }																
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.full_name = template.element.form_model.full_name;\n    \tvar pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \t\tif (template.element.form_model.requested_num_objects) { curr_obj.test_params = {};\n\t\tvar doc = curr_obj.test_params;\n\t\tdoc.requested_num_objects = parseInt(template.element.form_model.requested_num_objects);\n\t\tdoc.max_startup_time_secs = parseInt(template.element.form_model.max_startup_time_secs);\n\t\tdoc.max_run_time_secs = parseInt(template.element.form_model.max_run_time_secs);\n\t\tif ((template.element.form_model.max_storage_time_secs || '').length > 0) doc.max_storage_time_secs = parseInt(template.element.form_model.max_storage_time_secs);\n\t\tdoc.overwrite_existing_data = template.element.form_model.overwrite_existing_data; }\n\n}" }																
 	}
 	,
 	{
@@ -179,7 +166,7 @@
 			}
 		},
 		{
-			"key": "node_rules",
+			"key": "node_list_rules",
 			"type": "horizontalInput",
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
@@ -226,7 +213,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n   curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  curr_obj.node_rules = (template.element.form_model.node_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n}\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n   curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  curr_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n}\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
 	}	
 	,
 	{
@@ -401,7 +388,7 @@
 			}
 		},
 		{
-			"key": "node_rules",
+			"key": "node_list_rules",
 			"type": "horizontalInput",
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
@@ -417,6 +404,16 @@
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
 				"label": "Lock analytic job to the same node/set of nodes (recommend leave as false)",
+				"required": false
+			}
+		},
+		{
+			"key": "external_emit_paths",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Allowed external output paths",
+				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
 				"required": false
 			}
 		},
@@ -438,7 +435,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.lock_to_nodes = template.element.form_model.lock_to_nodes; new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  root_obj.external_emit_paths = template.element.form_model.external_emit_paths;\n var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.lock_to_nodes = template.element.form_model.lock_to_nodes; new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  new_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Batch Enrichment Pipeline",
@@ -509,7 +506,7 @@
 			}
 		},
 		{
-			"key": "node_rules",
+			"key": "node_list_rules",
 			"type": "horizontalInput",
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
@@ -519,11 +516,21 @@
 			}
 		},
 		{
+			"key": "external_emit_paths",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Allowed external output paths",
+				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+				"required": false
+			}
+		},
+		{
 			"template": "<hr/>"
 		}
 		],
 		"post_building_function" : {"$fn":"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {var lib_map = {}; var curr_job = curr_obj.jobs[curr_obj.jobs.length-1]; for ( var e in curr_job.config.enrich_pipeline ) { for ( l in curr_job.config.enrich_pipeline[e].library_names_or_ids ) { lib_map[curr_job.config.enrich_pipeline[e].library_names_or_ids[l]] = true;}} var libs = []; for(var k in lib_map) libs.push(k); curr_job.library_names_or_ids = libs; }"},
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'batch'; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = 'BatchEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { 'enrich_pipeline': [] }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  root_obj.external_emit_paths = template.element.form_model.external_emit_paths;\n var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'batch'; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = 'BatchEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  new_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { 'enrich_pipeline': [] }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Streaming Enrichment Topology",
@@ -582,7 +589,7 @@
 			}
 		},
 		{
-			"key": "node_rules",
+			"key": "node_list_rules",
 			"type": "horizontalInput",
 			"hideExpression": "!model.show_advanced", 
 			"templateOptions": {
@@ -592,11 +599,21 @@
 			}
 		},
 		{
+			"key": "external_emit_paths",
+			"type": "horizontalInput",
+			"hideExpression": "!model.show_advanced", 
+			"templateOptions": {
+				"label": "Allowed external output paths",
+				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+				"required": false
+			}
+		},
+		{
 			"template": "<hr/>"
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'streaming'; \n  \tnew_obj.analytic_technology_name_or_id = 'StreamingEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_rules && (template.element.form_model.node_rules.length > 0)) {\n\t  new_obj.node_rules = (template.element.form_model.node_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  root_obj.external_emit_paths = template.element.form_model.external_emit_paths;\n var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'streaming'; \n  \tnew_obj.analytic_technology_name_or_id = 'StreamingEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  new_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Raw JSON Analytic Trigger",
@@ -847,6 +864,7 @@
 		"categories": ["Schema"],
 		"filters": ["Bucket/**"],
 		"expandable": true,
+		"child_filters": [ "enrichment_meta" ],
 	
 		"form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
 		
@@ -865,118 +883,7 @@
 			}
 		}
 		],
-		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.document_schema; }" }
-	},	
-	{
-		"display_name": "Basic Search Index Schema",
-		"key": "data_service_schema",
-		"categories": ["Schema"],
-		"filters": ["Bucket/**"],
-		"expandable": false,
-	
-		"form_info": "Creates a basic data service schema without any custom config",
-		
-		"schema": [
-		{
-			"key": "schema",
-			"type": "checkbox",
-          "defaultValue":true,
-			"templateOptions": {
-				"label": "Enable Search Index"
-			}
-		}
-		],
-		
-      "building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var schema = {}; if ( template.element.form_model.schema == undefined || template.element.form_model.schema == true){ schema.enabled = true; schema.technology_override_schema = {}; } curr_obj.search_index_schema = schema; return curr_obj.search_index_schema; }" }
-	},	
-	{
-		"display_name": "Basic Columnar Schema",
-		"key": "data_service_schema",
-		"categories": ["Schema"],
-		"filters": ["Bucket/**"],
-		"expandable": false,
-	
-		"form_info": "Creates a basic data service schema without any custom config",
-		
-		"schema": [
-		{
-			"key": "schema",
-			"type": "checkbox",
-          "defaultValue":true,
-			"templateOptions": {
-				"label": "Enable Columnar"
-			}
-		}
-		],
-		
-      "building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var schema = {}; if ( template.element.form_model.schema == undefined || template.element.form_model.schema == true){ schema.enabled = true; schema.technology_override_schema = {}; } curr_obj.columnar_schema = schema; return curr_obj.columnar_schema; }" }
-	},	
-	{
-		"display_name": "Basic Document Schema",
-		"key": "data_service_schema",
-		"categories": ["Schema"],
-		"filters": ["Bucket/**"],
-		"expandable": false,
-	
-		"form_info": "Creates a basic data service schema without any custom config",
-		
-		"schema": [
-		{
-			"key": "schema",
-			"type": "checkbox",
-          "defaultValue":true,
-			"templateOptions": {
-				"label": "Enable Document"
-			}
-		}
-		],
-		
-      "building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var schema = {}; if ( template.element.form_model.schema == undefined || template.element.form_model.schema == true){ schema.enabled = true; schema.technology_override_schema = {}; } curr_obj.document_schema = schema; return curr_obj.document_schema; }" }
-	},	
-	{
-		"display_name": "Basic Storage Schema",
-		"key": "data_service_schema",
-		"categories": ["Schema"],
-		"filters": ["Bucket/**"],
-		"expandable": false,
-	
-		"form_info": "Creates a basic data service schema without any custom config",
-		
-		"schema": [
-		{
-			"key": "schema",
-			"type": "checkbox",
-          "defaultValue":true,
-			"templateOptions": {
-				"label": "Enable Storage"
-			}
-		}
-		],
-		
-      "building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var schema = {}; if ( template.element.form_model.schema == undefined || template.element.form_model.schema == true){ schema.enabled = true; schema.technology_override_schema = {}; } curr_obj.storage_schema = schema; return curr_obj.storage_schema; }" }
-	},	
-	{
-		"display_name": "Basic Temporal Schema",
-		"key": "data_service_schema",
-		"categories": ["Schema"],
-		"filters": ["Bucket/**"],
-		"expandable": false,
-	
-		"form_info": "Creates a basic data service schema without any custom config",
-		
-		"schema": [
-		{
-			"key": "schema",
-			"type": "checkbox",
-          "defaultValue":true,
-			"templateOptions": {
-				"label": "Enable Temporal"
-			}
-		}
-		],
-		
-      "building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var schema = {}; if ( template.element.form_model.schema == undefined || template.element.form_model.schema == true){ schema.enabled = true; schema.technology_override_schema = {}; } curr_obj.temporal_schema = schema; return curr_obj.temporal_schema; }" }
-	}			
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); curr_obj.document_schema.custom_deduplication_configs = []; return curr_obj.document_schema.custom_deduplication_configs; }" }
+	}	
 ]
 
