@@ -97,8 +97,11 @@ class BucketBuilderController(
           
           // (Note this requires globals to have been registered hence after recalculateTemplates)
           //  TODO: make this more stable to eg the templates changing and removing a global used in the builder)
-          regenerateJson()
+          regenerateJson()          
         }
+        
+          // Refresh:
+          scope.$apply("");                  
     }}
 
     // Register some callbacks
