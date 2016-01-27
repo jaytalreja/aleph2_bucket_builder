@@ -4,6 +4,10 @@ Enables buckets (or in fact any complex JSON object) to be built up by adding ca
 
 ![screenshot](https://raw.githubusercontent.com/Alex-Ikanow/aleph2_bucket_builder/master/aleph2_bucket_builder.png)
 
+Live demos:
+* [Bucket builder](http://alex-ikanow.github.io/aleph2_bucket_builder/assets/html/sample_index.html#/home)
+* [Form builder](http://alex-ikanow.github.io/aleph2_bucket_builder/assets/html/form_builder.html#/home)
+
 The [wiki](https://github.com/Alex-Ikanow/aleph2_bucket_builder/wiki) contains the user documentation for the builder.
 
 # Install
