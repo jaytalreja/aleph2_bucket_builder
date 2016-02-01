@@ -33,6 +33,7 @@ import scala.scalajs.js.annotation.JSExport
 import com.ikanow.aleph2.builder_ui.data_model._
 import com.ikanow.aleph2.builder_ui.services._
 import com.ikanow.aleph2.builder_ui.utils.ElementTreeBuilder
+import com.ikanow.aleph2.builder_ui.utils.JsOption
 
 import scala.collection.mutable._
 
@@ -100,8 +101,12 @@ class BucketBuilderController(
           regenerateJson()          
         }
         
-          // Refresh:
-          scope.$apply("");                  
+        // Refresh:
+        scope.$apply("");  
+          
+        // Finally, if there's a starting position set navigate there
+    
+        initialNavigation(root)        
     }}
 
     // Register some callbacks
@@ -120,6 +125,8 @@ class BucketBuilderController(
         regenerateJson()
         
         refreshTemplates()        
+        
+        initialNavigation(import_json)
       }}
     })
     scope.$on("quick_navigate", (event: Event, message: ElementNodeJs) => {
@@ -133,6 +140,30 @@ class BucketBuilderController(
 
   var grid_mod_starting_topology: List[Tuple4[Int, Int, Int, Int]] = List()
 
+  protected def initialNavigation(root: ElementNodeJs): Unit = {
+      def getStartingElement(curr: ElementNodeJs, map: List[Int]): ElementNodeJs = {
+        map match {
+          case Nil => curr
+          case head :: tail => getStartingElement(curr.children(head), tail)
+        }
+      }      
+      JsOption(root.start_pos)
+        .filter { array => !array.isEmpty }
+        .map { array => getStartingElement(root, array.toList) }
+        .foreach { x => navigateTo(x) }    
+  }
+  
+  @JSExport
+  def toggleSelect(): Unit = {
+    scope.element_grid
+          .sortBy { card => (card.row, card.col) }
+          .headOption
+          .foreach { card => {
+            val new_enabled = !card.enabled
+            scope.element_grid.foreach { other_card => other_card.enabled = new_enabled }
+          }}
+  }
+  
   @JSExport
   def gridElementMoveOrResize_start(): Unit = {
     grid_mod_starting_topology = scope.element_grid.map { card => (card.row, card.col, card.sizeX, card.sizeY) }.toList
@@ -379,19 +410,23 @@ class BucketBuilderController(
   def rebuildBreadcrumbs(new_node: ElementNodeJs):Unit = {
       scope.breadcrumb.clear()
       scope.breadcrumb.appendAll(
-          rebuildBreadcrumb(List(), new_node, n => n.element.short_name).reverse
+          rebuildBreadcrumb(List(), new_node, n => Option(n.label), n => n.element.short_name).reverse
           )
       scope.breadcrumb_system.clear()
       scope.breadcrumb_system.appendAll(
-          rebuildBreadcrumb(List(), new_node, n => n.element.template.key).reverse
+          rebuildBreadcrumb(List(), new_node, n => Option(n.label), n => n.element.template.key).reverse
           )    
+          
+      global_io_service.setStartingPosition(
+          rebuildBreadcrumb(List(), new_node, n => Option.empty, n => n.$parent.children.indexOf(n)).reverse.toJSArray
+          )
   }
   
-  def rebuildBreadcrumb(acc:List[String], element: ElementNodeJs, extractor: ElementNodeJs => String):List[String] = {
+  def rebuildBreadcrumb[A](acc:List[A], element: ElementNodeJs, on_root: ElementNodeJs => Option[A], extractor: ElementNodeJs => A):List[A] = {
     if (element.root)
-      element.label :: acc
+      on_root(element).map { n => n :: acc }.getOrElse(acc)
     else 
-      extractor(element) :: rebuildBreadcrumb(acc, element.$parent, extractor)
+      extractor(element) :: rebuildBreadcrumb(acc, element.$parent, on_root, extractor)
   }
   
   @JSExport
