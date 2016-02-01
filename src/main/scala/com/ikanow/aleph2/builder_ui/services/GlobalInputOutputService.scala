@@ -72,10 +72,10 @@ class GlobalInputOutputService {
     js.Dynamic.global.aleph2_json_builder__generated_output_str = str
   }
   def setErrors(errs: js.Array[String]) = {
-    js.Dynamic.global.aleph2_json_builder__output_errs = js.Array(errs)
+    js.Dynamic.global.aleph2_json_builder__output_errs = js.Array().concat(errs)
   }
   def setStartingPosition(pos: js.Array[Int]) = {
-    js.Dynamic.global.aleph2_json_builder__output_start_pos = js.Array(pos)
+    js.Dynamic.global.aleph2_json_builder__output_start_pos = js.Array().concat(pos)
   }
 }
 
