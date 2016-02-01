@@ -13,7 +13,7 @@
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
-        "expandable": true,
+        "expandable": false,
         "configurable": true,
         "deletable": true,
         "form_model": {
@@ -353,7 +353,7 @@
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
-        "expandable": true,
+        "expandable": false,
         "configurable": true,
         "deletable": true,
         "form_model": {
