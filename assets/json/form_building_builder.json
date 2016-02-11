@@ -2812,7 +2812,7 @@
             "deletable": true,
             "form_model": {
               "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n var m = template.element.form_model;\n var obj = { schema: [] }; \n curr_obj.schema.push(obj); \n obj.className = m.class; \n return obj; \n}",
-              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length-1]; \n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n  if (template.element.form_model.columns) {\n    for (i in template.element.form_model.columns) {\n      var col = template.element.form_model.columns[i];\n      m.fieldGroup[i].className = 'col-xs-' + col;\n    }\n  }\n}"
+              "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length-1]; \n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n  if (template.element.form_model.columns) {\n    for (i in template.element.form_model.columns) {\n      var col = template.element.form_model.columns[i];\n      me.fieldGroup[i].className = 'col-xs-' + col;\n    }\n  }\n}"
             },
             "template": {
               "display_name": "Builder Functions",
@@ -3019,7 +3019,7 @@
       "element": {
         "enabled": true,
         "short_name": "Show/Hide Section",
-        "summary": "The children of this section are hidden based on an expression",
+        "summary": "The children of this section are hidden based on a JS/AngularJS expression - other variables in the format are available in the model object (eg key thisCheckbox is accessed via \"model.thisCheckbox\")",
         "row": 3,
         "col": 3,
         "sizeX": 1,
@@ -3136,7 +3136,7 @@
             "configurable": true,
             "deletable": true,
             "form_model": {
-              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { hideExpression = template.element.form_model.hideExpression, schema: [] };\n  curr_obj.schema.push(obj);\n  return obj;\n}",
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { hideExpression: template.element.form_model.hideExpression, schema: [] };\n  curr_obj.schema.push(obj);\n  return obj;\n}",
               "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length - 1];\n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n}"
             },
             "template": {
@@ -3238,6 +3238,97 @@
               },
               "building_function": {
                 "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); \n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "2-Line Input",
+          "element": {
+            "enabled": true,
+            "short_name": "Expression returning true to hide the section",
+            "summary": "Enter a JS expression into here to determine when the elements in this section should be visible",
+            "row": 0,
+            "col": 2,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "type": "input",
+              "key": "hideExpression",
+              "required": true
+            },
+            "template": {
+              "display_name": "2-Line Input",
+              "form_info": "Text input element with label on the line above",
+              "filters": [
+                "Template/template_builder",
+                "Template/template_builder/**"
+              ],
+              "expandable": false,
+              "key": "simple_input",
+              "categories": [
+                "Text"
+              ],
+              "schema": [
+                {
+                  "key": "_short_name",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Label",
+                    "placeholder": "The label displayed next to the input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "_summary",
+                  "type": "horizontalTextArea",
+                  "templateOptions": {
+                    "label": "Placeholder",
+                    "placeholder": "The placeholder text displayed when the input is empty",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "key",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Key",
+                    "pattern": "[a-zA-Z0-9_]+",
+                    "placeholder": "The key for this input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "required",
+                  "type": "horizontalCheckbox",
+                  "templateOptions": {
+                    "label": "Is this element required?"
+                  }
+                },
+                {
+                  "key": "pattern",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Pattern",
+                    "placeholder": "Optional validation regular expression",
+                    "required": false
+                  }
+                }
+              ],
+              "default_model": {
+                "type": "input",
+                "key": "TODO_KEY"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.key = template.element.form_model.key;\n  obj.type = template.element.form_model.type;   \n  obj.templateOptions.required = (true === template.element.form_model.required);\n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
               },
               "post_building_function": {
                 "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"

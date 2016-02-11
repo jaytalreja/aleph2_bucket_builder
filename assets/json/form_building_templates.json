@@ -544,12 +544,12 @@
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n var m = template.element.form_model;\n var obj = { schema: [] }; \n curr_obj.schema.push(obj); \n obj.className = m.class; \n return obj; \n}"
     },
     "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length-1]; \n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n  if (template.element.form_model.columns) {\n    for (i in template.element.form_model.columns) {\n      var col = template.element.form_model.columns[i];\n      m.fieldGroup[i].className = 'col-xs-' + col;\n    }\n  }\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length-1]; \n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n  if (template.element.form_model.columns) {\n    for (i in template.element.form_model.columns) {\n      var col = template.element.form_model.columns[i];\n      me.fieldGroup[i].className = 'col-xs-' + col;\n    }\n  }\n}"
     }
   },
   {
     "display_name": "Show/Hide Section",
-    "form_info": "The children of this section are hidden based on an expression",
+    "form_info": "The children of this section are hidden based on a JS/AngularJS expression - other variables in the format are available in the model object (eg key thisCheckbox is accessed via \"model.thisCheckbox\")",
     "filters": [
       "Template/template_builder",
       "Template/**/template_builder"
@@ -559,9 +559,19 @@
     "categories": [
       "Layout"
     ],
-    "schema": [],
+    "schema": [
+      {
+        "templateOptions": {
+          "required": true,
+          "label": "Expression returning true to hide the section",
+          "placeholder": "Enter a JS expression into here to determine when the elements in this section should be visible"
+        },
+        "key": "hideExpression",
+        "type": "input"
+      }
+    ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { hideExpression = template.element.form_model.hideExpression, schema: [] };\n  curr_obj.schema.push(obj);\n  return obj;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { hideExpression: template.element.form_model.hideExpression, schema: [] };\n  curr_obj.schema.push(obj);\n  return obj;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var me = curr_obj.schema[curr_obj.schema.length - 1];\n  me.fieldGroup = me.schema;\n  me.schema = undefined;\n}"
