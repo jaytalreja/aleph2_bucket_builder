@@ -5546,7 +5546,7 @@
             "configurable": true,
             "deletable": true,
             "form_model": {
-              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    type: template.element.form_model.type,\n    templateOptions: template.element.form_model.templateOptions \n  };\n  obj.templateOptions.codemirror.mode = template.element.form_model.mode;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.required = template.element.form_model.required;\n  curr_obj.schema.push(obj);\n}",
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    key: template.element.form_model.key,\n    type: template.element.form_model.type,\n    templateOptions: template.element.form_model.templateOptions \n  };\n  obj.templateOptions.codemirror.mode = template.element.form_model.mode;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.required = template.element.form_model.required;\n  curr_obj.schema.push(obj);\n}",
               "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
             },
             "template": {
