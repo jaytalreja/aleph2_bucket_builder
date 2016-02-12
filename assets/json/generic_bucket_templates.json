@@ -885,5 +885,163 @@
 		],
 		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); curr_obj.document_schema.custom_deduplication_configs = []; return curr_obj.document_schema.custom_deduplication_configs; }" }
 	}	
-]
+,
 
+
+
+
+
+
+
+
+
+
+  {
+    "display_name": "Document Schema",
+    "form_info": "Configures the document service (supporting deduplication)",
+    "expandable": true,
+    "key": "data_service_schema",
+    "sub_keys": [
+      "document_schema"
+    ],
+    "categories": [
+      "Schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "child_filters": [
+      "batch_enrichment_meta",
+      "enrichment_meta"
+    ],
+    "schema": [
+      {
+        "templateOptions": {
+          "required": true,
+          "label": "Deduplication Policy",
+          "options": [
+            {
+              "name": "Leave existing objects",
+              "value": "leave"
+            },
+            {
+              "name": "Overwrite with newer objects, else leave",
+              "value": "update"
+            },
+            {
+              "name": "Overwrite existing objects",
+              "value": "overwrite"
+            },
+            {
+              "name": "Merge incoming and existing objects",
+              "value": "custom"
+            },
+            {
+              "name": "Merge newer incoming and existing objects",
+              "value": "custom_update"
+            }
+          ]
+        },
+        "type": "horizontalSelect",
+        "key": "deduplication_policy"
+      },
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "input",
+            "templateOptions": {
+              "placeholder": "The list of fields over which to deduplicate"
+            }
+          },
+          "label": "Deduplication Fields"
+        },
+        "key": "deduplication_fields"
+      },
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "input",
+            "templateOptions": {
+              "placeholder": "A list of bucket paths/globs to which to apply the deduplication"
+            }
+          },
+          "label": "Deduplication Contexts"
+        },
+        "key": "deduplication_contexts"
+      },
+      {
+        "templateOptions": {
+          "label": "Finalize all object sets with custom enrichment step, singletons and duplicates",
+          "placeholder": "If true (default: false) then all objects are run through the custom dedup (ie acting as a \"finalize\" step before emitting when there is no matching dedup)"
+        },
+        "type": "checkbox",
+        "key": "custom_finalize_all_objects"
+      },
+      {
+        "key": "technology_override_schema",
+        "type": "code_input",
+        "templateOptions": {
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          },
+          "label": "Technology Override Schema"
+        }
+      }
+    ],
+    "default_model": {
+      "deduplication_timing": "custom",
+      "deduplication_policy": "leave",
+      "deduplication_fields": [],
+      "deduplication_contexts": [],
+      "custom_deduplication_configs": [],
+      "custom_finalize_all_objects": false,
+      "technology_override_schema": "{\n\t\n}"
+    },
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Deduplication Service",
+    "form_info": "An enrichment engine providing deduplication and lookup functionality",
+    "expandable": true,
+    "child_filters": [
+      "document_schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "categories": [
+      "Deduplication"
+    ],
+    "key": "enrichment_meta",
+    "sub_keys": [
+      "batch_enrichment_meta"
+    ],
+    "schema": [
+      {
+        "templateOptions": {
+          "required": true,
+          "pattern": "[a-zA-Z0-9_]+",
+          "label": "Unique Element Name",
+          "placeholder": "A Short Name For This Enrichment Element (Alphanumeric/_ only, no spaces - used for dependencies etc)"
+        },
+        "key": "_short_name",
+        "type": "horizontalInput"
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.DeduplicationService\",\n    config: {}\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n  var obj_to_mod;\n  if (Array.isArray(curr_obj)) {\n    obj_to_mod = curr_obj[curr_obj.length - 1];\n  }\n  else if (curr_obj.config) { \n    if (curr_obj.config.enrich_pipeline) {\n\t    obj_to_mod = curr_obj.config.enrich_pipeline[curr_obj.config.enrich_pipeline.length - 1];      \n  \t}\n  \telse obj_to_mod = curr_obj.config; \n  } \n  else obj_to_mod = curr_obj;\n  \n  obj_to_mod.config.doc_schema_override = obj_to_mod.document_schema;\n  obj_to_mod.document_schema = undefined;\n}"
+    }
+  }
+]

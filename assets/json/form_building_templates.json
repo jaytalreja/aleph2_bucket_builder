@@ -96,6 +96,15 @@
         }
       },
       {
+        "key": "sub_keys",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Sub-Role/Keys",
+          "placeholder": "Optional sub-keys used only in child filters",
+          "required": false
+        }
+      },
+      {
         "key": "categories",
         "type": "horizontalInput",
         "templateOptions": {
@@ -134,7 +143,7 @@
       }
     ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n\t\tvar obj = {}; \n\t\tobj.display_name = template.element.short_name; \n\t\tobj.form_info = template.element.summary;\n\t\ta2_copy(template.element.form_model, obj);\n\t\tobj.categories = a2_csv_to_array(obj.categories);\n\t\tobj.filters = a2_csv_to_array(obj.filters);\n\t\tobj.child_filters = a2_csv_to_array(obj.child_filters);\n\t\tobj.schema = []; \n\t\tcurr_obj.push(obj); \n\t\treturn obj;  \n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n\t\tvar obj = {}; \n\t\tobj.display_name = template.element.short_name; \n\t\tobj.form_info = template.element.summary;\n\t\ta2_copy(template.element.form_model, obj);\n\t\tobj.categories = a2_csv_to_array(obj.categories);\n\t\tobj.sub_keys = a2_csv_to_array(obj.sub_keys);\n  \t\tif (0 == (obj.sub_keys || []).length) obj.sub_keys = undefined;\n\t\tobj.filters = a2_csv_to_array(obj.filters);\n\t\tobj.child_filters = a2_csv_to_array(obj.child_filters);\n\t\tobj.schema = []; \n\t\tcurr_obj.push(obj); \n\t\treturn obj;  \n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -1035,7 +1044,7 @@
       }
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    type: template.element.form_model.type,\n    templateOptions: template.element.form_model.templateOptions \n  };\n  obj.templateOptions.codemirror.mode = template.element.form_model.mode;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.required = template.element.form_model.required;\n  curr_obj.schema.push(obj);\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    key: template.element.form_model.key,\n    type: template.element.form_model.type,\n    templateOptions: template.element.form_model.templateOptions \n  };\n  obj.templateOptions.codemirror.mode = template.element.form_model.mode;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.required = template.element.form_model.required;\n  curr_obj.schema.push(obj);\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"

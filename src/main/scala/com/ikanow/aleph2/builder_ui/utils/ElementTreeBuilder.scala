@@ -54,7 +54,10 @@ object ElementTreeBuilder {
         .filter { case (bean, index) => JsOption(curr_node.element)
                                             .map { el => el.template }
                                             .flatMap { t => JsOption(t.child_filters) }
-                                            .map { cf => cf.toSet.contains(bean.key) } // 2) child matches parent filter
+                                            .map { cf => { // 2) child matches parent filter with either key or sub-key
+                                              val cf_set = cf.toSet
+                                              cf_set.contains(bean.key) || !cf_set.intersect(JsOption(bean.sub_keys).getOrElse(js.Array).asInstanceOf[js.Array[String]].toSet).isEmpty                                              
+                                            } } 
                                          .getOrElse(true) 
         }  
         .flatMap { case (bean, index) => bean.categories.map { cat => (cat, (bean, index)) } }
