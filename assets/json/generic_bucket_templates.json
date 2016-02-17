@@ -4,6 +4,10 @@
 		"global_function": { "$fn": "function(curr_obj, obj) { if (Array.isArray(curr_obj)) curr_obj.push(obj); else if (curr_obj.config) { if (curr_obj.config.enrich_pipeline) curr_obj.config.enrich_pipeline.push(obj); else curr_obj.config = obj; } else for (x in obj) curr_obj[x] = obj[x]; }" }
 	},
 	{
+		"key": "a2_optional_array_from_csv",
+		"global_function": { "$fn": "function(obj) { var out = (obj || '').replace(/\\s*,\\s*/g, \",\").split(\",\").filter(function(x) {return x.length > 0;}); if (out.length > 0) return out; else return undefined; }" }
+	},
+	{
 		"display_name": "Bucket Metadata",
 		"key": "data_bucket",
 		"categories": ["Metadata"],
@@ -213,7 +217,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n   curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  curr_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(/\\s*,\\s*/g, \",\").split(\",\");\n}\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n   curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  curr_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}" }						
 	}	
 	,
 	{
@@ -224,7 +228,19 @@
 		"child_filters": [ "batch_enrichment_meta", "enrichment_meta" ],
 		"expandable": true,
 	
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.master_enrichment_type = 'batch'; curr_obj.batch_enrichment_configs = []; return curr_obj.batch_enrichment_configs; }" },
+		"schema": [
+		{
+			"key": "external_emit_paths",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Allowed external output paths",
+				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+				"required": false
+			}
+		}
+		],
+	
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths);curr_obj.master_enrichment_type = 'batch'; curr_obj.batch_enrichment_configs = []; return curr_obj.batch_enrichment_configs; }" },
 	
 		"form_info": "<p>This is a container for a batch enrichment pipeline that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
 	},
@@ -236,7 +252,19 @@
 		"child_filters": [ "stream_enrichment_meta", "enrichment_meta" ],
 		"expandable": true,
 	
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.master_enrichment_type = 'streaming'; curr_obj.streaming_enrichment_topology = {}; return curr_obj.streaming_enrichment_topology; }" },
+		"schema": [
+		{
+			"key": "external_emit_paths",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Allowed external output paths",
+				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+				"required": false
+			}
+		}
+		],
+	
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths);\n curr_obj.master_enrichment_type = 'streaming'; curr_obj.streaming_enrichment_topology = {}; return curr_obj.streaming_enrichment_topology; }" },
 	
 		"form_info": "<p>This is a container for a streaming enrichment engine that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
 	},
@@ -276,7 +304,19 @@
 		"child_filters": [ "analytic_job", "analytic_trigger" ],
 		"expandable": true,
 	
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }" },
+		"schema": [
+		{
+			"key": "external_emit_paths",
+			"type": "horizontalInput",
+			"templateOptions": {
+				"label": "Allowed external output paths",
+				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+				"required": false
+			}
+		}
+		],
+		
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths); curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }" },
 	
 		"form_info": "<p>This is a container for the analytic jobs that fill the bucket with data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n"
 	},
@@ -408,16 +448,6 @@
 			}
 		},
 		{
-			"key": "external_emit_paths",
-			"type": "horizontalInput",
-			"hideExpression": "!model.show_advanced", 
-			"templateOptions": {
-				"label": "Allowed external output paths",
-				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
-				"required": false
-			}
-		},
-		{
 			"template": "<hr/>"
 		},
 		{
@@ -435,7 +465,7 @@
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  root_obj.external_emit_paths = template.element.form_model.external_emit_paths;\n var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.lock_to_nodes = template.element.form_model.lock_to_nodes; new_obj.analytic_type = template.element.form_model.analytic_type; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  new_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.lock_to_nodes = template.element.form_model.lock_to_nodes; new_obj.analytic_type = template.element.form_model.analytic_type; \n  new_obj.dependencies = a2_optional_array_from_csv(template.element.form_model.dependencies);\n  new_obj.analytic_technology_name_or_id = template.element.form_model.analytic_technology_name_or_id; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.entry_point = template.element.form_model.entry_point; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n  new_obj.config = JSON.parse(template.element.form_model.config || '{}'); \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Batch Enrichment Pipeline",
@@ -516,21 +546,11 @@
 			}
 		},
 		{
-			"key": "external_emit_paths",
-			"type": "horizontalInput",
-			"hideExpression": "!model.show_advanced", 
-			"templateOptions": {
-				"label": "Allowed external output paths",
-				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
-				"required": false
-			}
-		},
-		{
 			"template": "<hr/>"
 		}
 		],
 		"post_building_function" : {"$fn":"function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {var lib_map = {}; var curr_job = curr_obj.jobs[curr_obj.jobs.length-1]; for ( var e in curr_job.config.enrich_pipeline ) { for ( l in curr_job.config.enrich_pipeline[e].library_names_or_ids ) { lib_map[curr_job.config.enrich_pipeline[e].library_names_or_ids[l]] = true;}} curr_job.library_names_or_ids = []; var libs = (template.element.form_model.library_names_or_ids || []); for (var kk in libs) curr_job.library_names_or_ids.push(libs[kk]); for (var k in lib_map) curr_job.library_names_or_ids.push(k); }" },
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  root_obj.external_emit_paths = template.element.form_model.external_emit_paths;\n var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'batch'; \n  if (template.element.form_model.dependencies && (template.element.form_model.dependencies.length > 0)) {\n  \tnew_obj.dependencies = (template.element.form_model.dependencies || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.analytic_technology_name_or_id = 'BatchEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  new_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { 'enrich_pipeline': [] }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'batch'; \n  new_obj.dependencies = a2_optional_array_from_csv(template.element.form_model.dependencies);\n  new_obj.analytic_technology_name_or_id = 'BatchEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n  new_obj.config = { 'enrich_pipeline': [] }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Streaming Enrichment Topology",
@@ -599,21 +619,11 @@
 			}
 		},
 		{
-			"key": "external_emit_paths",
-			"type": "horizontalInput",
-			"hideExpression": "!model.show_advanced", 
-			"templateOptions": {
-				"label": "Allowed external output paths",
-				"placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
-				"required": false
-			}
-		},
-		{
 			"template": "<hr/>"
 		}
 		],
 		
-		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  root_obj.external_emit_paths = template.element.form_model.external_emit_paths;\n var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'streaming'; \n  \tnew_obj.analytic_technology_name_or_id = 'StreamingEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  if (template.element.form_model.node_list_rules && (template.element.form_model.node_list_rules.length > 0)) {\n\t  new_obj.node_list_rules = (template.element.form_model.node_list_rules || '').replace(\"\\\\s*,\\\\s*\", \",\").split(\",\");\n  }\n  new_obj.config = { }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
+		"building_function": { "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'streaming'; \n  \tnew_obj.analytic_technology_name_or_id = 'StreamingEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n  new_obj.config = { }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}" }
 	},
 	{
 		"display_name": "Raw JSON Analytic Trigger",
