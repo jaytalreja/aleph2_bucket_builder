@@ -217,9 +217,9 @@ var function_builder_object =
 		"expandable": false,
       "deletable": true,
       "form_model": {
-    	 //(samples)
-        //"pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}",
-        //"post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    	  //(can get overwritten)
+        "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}",
+        "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
       },
       "template": {
         "display_name": "Builder Functions",
@@ -300,12 +300,12 @@ input_json_array.forEach(function(input_json) {
 	var copy_of_function_builder = JSON.parse(JSON.stringify(function_builder_object));
 
 	//Row/cols
-	copy_of_top_level.row = mutable_top_level_row_col.row;
-	copy_of_top_level.col = mutable_top_level_row_col.col;	
-	copy_of_top_level.col++;
-	if (copy_of_top_level.col > 5) {
-		copy_of_top_level.col = 0;
-		copy_of_top_level.row++;
+	copy_of_top_level.element.row = mutable_top_level_row_col.row;
+	copy_of_top_level.element.col = mutable_top_level_row_col.col;	
+	mutable_top_level_row_col.col++;
+	if (mutable_top_level_row_col.col > 3) {
+		mutable_top_level_row_col.col = 0;
+		mutable_top_level_row_col.row++;
 	}
 	
 //	console.log("----------------------------------------------------------------");
@@ -313,8 +313,8 @@ input_json_array.forEach(function(input_json) {
 	
 	// 1) Top level
 	
-	copy_of_top_level.short_name = input_json.display_name;
-	copy_of_top_level.summary = input_json.form_info;
+	copy_of_top_level.element.short_name = input_json.display_name;
+	copy_of_top_level.element.summary = input_json.form_info;
 		
 	copy_of_top_level.element.form_model.expandable = input_json.expandable || false;
 	copy_of_top_level.element.form_model.key = input_json.key;
@@ -340,7 +340,7 @@ input_json_array.forEach(function(input_json) {
 	
 	var mutable_row_col = {
 			row: 0,
-			col: 0
+			col: 1
 		};
 	
 	if (input_json.schema) input_json.schema.forEach(function(schema) {
@@ -348,21 +348,21 @@ input_json_array.forEach(function(input_json) {
 		var copy_of_raw_json = JSON.parse(JSON.stringify(raw_json_file));
 		
 		//Row/cols
-		copy_of_raw_json.row = mutable_row_col.row;
-		copy_of_raw_json.col = mutable_row_col.col;	
+		copy_of_raw_json.element.row = mutable_row_col.row;
+		copy_of_raw_json.element.col = mutable_row_col.col;	
 		mutable_row_col.col++;
-		if (mutable_row_col.col > 5) {
+		if (mutable_row_col.col > 3) {
 			mutable_row_col.col = 0;
 			mutable_row_col.row++;
 		}
 		
 		if ((null != schema.templateOptions) && (null != schema.templateOptions.label)) {
-			copy_of_raw_json.short_name = schema.templateOptions.label;
+			copy_of_raw_json.element.short_name = schema.templateOptions.label;
 		}
 		else {
-			copy_of_raw_json.short_name = schema.key;
+			copy_of_raw_json.element.short_name = (schema.key || 'Raw HTML');
 		}
-		copy_of_raw_json.summary = "Type: " + schema.type;
+		copy_of_raw_json.element.summary = "Type: " + (schema.type || 'Raw HTML');
 		
 		copy_of_raw_json.element.form_model.json = JSON.stringify([ schema ])
 		
