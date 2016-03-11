@@ -57,7 +57,8 @@ object BucketBuilderApp extends JSApp {
   		// Preferred c'tor method
 			module
   			.controller[BucketBuilderController]
-  			.controller[QuickNavigateController]
+  			.controller[QuickNavigateModalController]
+        .controller[QuickNavigateTreeController]
   			.controller[FormBuilderController]
   			.controller[StatusViewerController]
   			

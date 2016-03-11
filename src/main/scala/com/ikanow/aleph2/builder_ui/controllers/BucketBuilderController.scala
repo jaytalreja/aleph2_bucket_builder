@@ -92,9 +92,14 @@ class BucketBuilderController(
         buildGrid()
         
         if (scope.element_grid.isEmpty) {
+          scope.show_templates = true
+          scope.show_elements = false
+          
           scope.element_grid.append(ElementCardJs.buildDummy("Add content from 'Templates' list"))
         }
         else { // build the generated object immediately
+          scope.show_templates = false
+          scope.show_elements = true
           
           // (Note this requires globals to have been registered hence after recalculateTemplates)
           //  TODO: make this more stable to eg the templates changing and removing a global used in the builder)
@@ -162,6 +167,20 @@ class BucketBuilderController(
             val new_enabled = !card.enabled
             scope.element_grid.foreach { other_card => other_card.enabled = new_enabled }
           }}
+  }
+  
+  @JSExport
+  def selectTreeTab(tab_name: String): Unit = {
+    tab_name match {
+      case "templates" => {
+          scope.show_templates = true
+          scope.show_elements = false        
+      }
+      case "elements" => {
+          scope.show_templates = false
+          scope.show_elements = true                
+      }      
+    }
   }
   
   @JSExport
@@ -492,7 +511,7 @@ class BucketBuilderController(
 		  modal.open(
 				  js.Dynamic.literal(
 						  templateUrl = "templates/quick_navigate.html",
-						  controller = "quickNavigateCtrl", 
+						  controller = "quickNavigateModalCtrl", 
 						  size = size
 						  )
 						  .asInstanceOf[ModalOptions] 
@@ -541,5 +560,9 @@ trait BucketBuilderScope extends Scope {
   
   var has_errors: Boolean = js.native
 
+  // (tree tab)
+  var show_templates: Boolean = js.native
+  var show_elements: Boolean = js.native
+  
   var formception_mode: Boolean = js.native
 }

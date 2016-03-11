@@ -11,30 +11,66 @@
 		
 		<!-- 1] CATEGORY/ELEMENT TREE -->
 
-		<div class="panel panel-default" style="height:100%">
-		  <div class="panel-heading">Templates</div>
+		<div class="panel with-nav-tabs panel-default" style="height:100%">
+		  <div class="panel-heading">
+			<ul class="nav nav-tabs">
+	          <li ng-class="show_templates ? 'active' : ''"><a ng-click="controller.selectTreeTab('templates')">Add Elements</a></li>
+	          <li ng-class="show_elements ? 'active' : ''"><a ng-click="controller.selectTreeTab('elements')">View Elements</a></li>
+	        </ul>
+		  </div>
 		  <div class="panel-body">
 		  
-				<!-- 1.1] TREE CONTROLS -->
+				<!-- 1.1] TEMPLATE VIEW -->
+				
+				<div ng-if="show_templates">
+				
+					<!-- 1.1.1] TREE CONTROLS -->
+				
+					<div class="input-group padding-below">
+						<span class="input-group-btn">
+							<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
+						 </span>
+						<input type="text" class="form-control" placeholder="Search" ng-model="element_search">
+						<span class="input-group-btn" >
+							<button tooltip="Refresh template list" tooltip-placement="bottom" class="btn btn-default" ng-click="controller.refreshTemplates(true)" type="button"><span class="glyphicon glyphicon-refresh"></span></button>
+						 </span>
+					</div>
 		
-				<div class="input-group padding-below">
-					<span class="input-group-btn">
-						<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
-					 </span>
-					<input type="text" class="form-control" placeholder="Search" ng-model="element_search">
-					<span class="input-group-btn">
-						<button tooltip="Refresh template list" tooltip-placement="bottom" class="btn btn-default" ng-click="controller.refreshTemplates(true)" type="button"><span class="glyphicon glyphicon-refresh"></span></button>
-					 </span>
-				</div>		
+					<!-- 1.1.2] ACTUAL TREE -->
 		
-				<!-- 1.2] ACTUAL TREE -->
+					<treecontrol ng-if="show_templates" class="tree-classic" tree-model="element_template_tree" 
+						filter-expression="element_search" expanded-nodes="element_template_tree_expanded"
+						options="element_template_tree_opts">
+						{{node.label}}
+						<a tooltip="Add element to grid" tooltip-placement="bottom"  tooltip-append-to-body="true" ng-click="controller.insertElement(node)" ng-hide="node.category" class="glyphicon glyphicon-plus"></a>
+					</treecontrol>
+				</div>
+				
+				<!-- 1.2] ELEMENT VIEW -->
+				
+				<div ng-controller="quickNavigateTreeCtrl" ng-if="show_elements" >
+				
+					<!-- 1.2.1] TREE CONTROLS -->
+				
+					<div class="input-group padding-below">
+						<span class="input-group-btn">
+							<button class="btn btn-default disabled" type="button"><span class="glyphicon glyphicon-filter"></span></button>
+						 </span>
+						<input type="text" class="form-control" placeholder="Search" ng-model="element_search">
+					</div>
 		
-				<treecontrol class="tree-classic" tree-model="element_template_tree" 
-					filter-expression="element_search" expanded-nodes="element_template_tree_expanded"
-					options="element_template_tree_opts">
-					{{node.label}}
-					<a tooltip="Add element to grid" tooltip-placement="bottom"  tooltip-append-to-body="true" ng-click="controller.insertElement(node)" ng-hide="node.category" class="glyphicon glyphicon-plus"></a>
-				</treecontrol>
+					<!-- 1.2.2] ACTUAL TREE -->
+		
+					<treecontrol class="tree-light" tree-model="element_tree" 
+						filter-expression="element_search" expanded-nodes="element_tree_expanded" selected-node="selected_item"
+						options="element_tree_opts"
+						order-by="[element.row,element.col]"
+						>
+						{{controller.displayLine(node)}} {{(!node.root && !node.element.enabled) ? "[DISABLED]" : ""}} 
+						<a tooltip="Configure this element" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="node.element.configurable" ng-click="controller.navigateMaybeEdit(node, true)" class="glyphicon glyphicon-cog"></a>
+						<a tooltip="View/configure this element's children" tooltip-placement="bottom" tooltip-append-to-body="true" ng-show="node.root || node.element.expandable" ng-click="controller.navigateMaybeEdit(node, false)" class="glyphicon glyphicon-fullscreen"></a>
+					</treecontrol>
+				</div>
 		  </div>
 		</div>
 	</div>
