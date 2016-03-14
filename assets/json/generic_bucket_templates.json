@@ -1187,5 +1187,169 @@
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n  var obj_to_mod;\n  if (Array.isArray(curr_obj)) {\n    obj_to_mod = curr_obj[curr_obj.length - 1];\n  }\n  else if (curr_obj.config) { \n    if (curr_obj.config.enrich_pipeline) {\n\t    obj_to_mod = curr_obj.config.enrich_pipeline[curr_obj.config.enrich_pipeline.length - 1];      \n  \t}\n  \telse obj_to_mod = curr_obj.config; \n  } \n  else obj_to_mod = curr_obj;\n  \n  obj_to_mod.config.doc_schema_override = obj_to_mod.document_schema;\n  obj_to_mod.document_schema = undefined;\n}"
     }
+  },
+  {
+    "display_name": "Logging Schema",
+    "form_info": "Contains defaults and overrides for logging output settings",
+    "expandable": false,
+    "key": "logging_schema",
+    "categories": [
+      "Schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "templateOptions": {
+          "label": "Enabled",
+          "placeholder": ""
+        },
+        "type": "horizontalCheckbox",
+        "key": "enabled"
+      },
+      {
+        "templateOptions": {
+          "required": true,
+          "label": "Default Log Level",
+          "options": [
+            {
+              "name": "ALL",
+              "value": "ALL"
+            },
+            {
+              "name": "TRACE",
+              "value": "TRACE"
+            },
+            {
+              "name": "DEBUG",
+              "value": "DEBUG"
+            },
+            {
+              "name": "INFO",
+              "value": "INFO"
+            },
+            {
+              "name": "WARN",
+              "value": "WARN"
+            },
+            {
+              "name": "ERROR",
+              "value": "ERROR"
+            },
+            {
+              "name": "FATAL",
+              "value": "FATAL"
+            },
+            {
+              "name": "OFF",
+              "value": "OFF"
+            }
+          ]
+        },
+        "type": "horizontalSelect",
+        "key": "log_level"
+      },
+      {
+        "templateOptions": {
+          "btnText": "Add",
+          "fields": [
+            {
+              "className": "row",
+              "fieldGroup": [
+                {
+                  "templateOptions": {
+                    "required": true,
+                    "label": "Service Name",
+                    "placeholder": "storage_service"
+                  },
+                  "key": "service_name",
+                  "type": "horizontalInput",
+                  "className": "col-xs-8"
+                },
+                {
+                  "templateOptions": {
+                    "required": true,
+                    "label": "Logging Level",
+                    "options": [
+                      {
+                        "name": "ALL",
+                        "value": "ALL"
+                      },
+                      {
+                        "name": "TRACE",
+                        "value": "TRACE"
+                      },
+                      {
+                        "name": "DEBUG",
+                        "value": "DEBUG"
+                      },
+                      {
+                        "name": "INFO",
+                        "value": "INFO"
+                      },
+                      {
+                        "name": "WARN",
+                        "value": "WARN"
+                      },
+                      {
+                        "name": "ERROR",
+                        "value": "ERROR"
+                      },
+                      {
+                        "name": "FATAL",
+                        "value": "FATAL"
+                      },
+                      {
+                        "name": "OFF",
+                        "value": "OFF"
+                      }
+                    ]
+                  },
+                  "type": "horizontalSelect",
+                  "key": "service_level",
+                  "className": "col-xs-4"
+                }
+              ]
+            }
+          ]
+        },
+        "type": "repeatSection",
+        "key": "ll_overrides"
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    },
+    "default_model": {
+      "enabled": "true",
+      "log_level": "ERROR"
+    }
+  },
+  {
+    "display_name": "Management Schema",
+    "form_info": "General Management Schema",
+    "expandable": true,
+    "key": "management_schema",
+    "categories": [
+      "Metadata"
+    ],
+    "child_filters": [
+      "data_service_schema",
+      "logging_schema"
+    ],
+    "filters": [
+      "Bucket"
+    ],
+    "schema": [],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.management_schema = {}; \n  return curr_obj.management_schema;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
   }
 ]
