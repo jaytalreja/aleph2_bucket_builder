@@ -36,11 +36,10 @@ import com.ikanow.aleph2.builder_ui.services._
  * Controller for the main page
  */
 @JSExport
-@injectable("quickNavigateCtrl")
-class QuickNavigateController(
-    scope: QuickNavigationScope, 
+@injectable("quickNavigateTreeCtrl")
+class QuickNavigateTreeController(
+    scope: QuickNavigationModalScope, 
     root_scope: RootScope, 
-    modal: ModalInstance[Unit],
     element_service: ElementService
     ) extends AbstractController[Scope](scope) {
 
@@ -79,8 +78,6 @@ class QuickNavigateController(
       case true => root_scope.$broadcast("quick_navigate_and_open", node)
       case false => root_scope.$broadcast("quick_navigate", node)
     }
-    
-    modal.close()
   }
   
   @JSExport
@@ -92,17 +89,6 @@ class QuickNavigateController(
   }
   
   @JSExport
-  def ok(): Unit = {    
-    
-    navigateMaybeEdit(scope.selected_item, js.undefined)
-  }  
-  
-  @JSExport
-  def cancel(): Unit = {
-    modal.close()
-  }
-  
-  @JSExport
   def isSelectable(node: ElementNodeJs):Boolean = node.element.expandable
 }
 
@@ -110,7 +96,7 @@ class QuickNavigateController(
  * The specific scope data used in this controller
  */
 @js.native
-trait QuickNavigationScope extends Scope {
+trait QuickNavigationTreeScope extends Scope {
   var selected_item: ElementNodeJs = js.native
   
   var element_tree: js.Array[ElementNodeJs] = js.native

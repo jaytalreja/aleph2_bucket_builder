@@ -66,6 +66,8 @@ class StatusViewerController(
     
     scope.result_json = JSON.parse(global_io_service.generated_output_str())
    
+    scope.to_import_json_str = js.Dynamic.literal(text = "").asInstanceOf[js.Dictionary[String]];
+    
     scope.buildOptions = js.Dynamic.literal(
         lineNumbers = true,
         readOnly = "nocursor",
@@ -82,6 +84,13 @@ class StatusViewerController(
     
   }
 
+  @JSExport
+  def importJson(): Unit = {    
+    modal.close()
+    
+     root_scope.$broadcast("import_json", JSON.parse(scope.to_import_json_str("text")).asInstanceOf[ElementNodeJs])
+ }
+  
   @JSExport
   def gotoElement(node: ElementNodeJs):Unit = {
     modal.close()
@@ -117,6 +126,9 @@ trait StatusViewerScope extends Scope {
 
   @js.native
   var resultOptions: js.Any = js.native
+  
+  @js.native
+  var to_import_json_str: js.Dictionary[String] = js.native  
   
   @js.native
   var buildOptions: js.Any = js.native

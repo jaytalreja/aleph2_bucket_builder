@@ -54,7 +54,10 @@ object ElementTreeBuilder {
         .filter { case (bean, index) => JsOption(curr_node.element)
                                             .map { el => el.template }
                                             .flatMap { t => JsOption(t.child_filters) }
-                                            .map { cf => cf.toSet.contains(bean.key) } // 2) child matches parent filter
+                                            .map { cf => { // 2) child matches parent filter with either key or sub-key
+                                              val cf_set = cf.toSet
+                                              cf_set.contains(bean.key) || !cf_set.intersect(JsOption(bean.sub_keys).getOrElse(js.Array).asInstanceOf[js.Array[String]].toSet).isEmpty                                              
+                                            } } 
                                          .getOrElse(true) 
         }  
         .flatMap { case (bean, index) => bean.categories.map { cat => (cat, (bean, index)) } }
@@ -121,7 +124,7 @@ object ElementTreeBuilder {
      * @param cols
      */
     def generateOutput(curr_template: ElementNodeJs, root_template: ElementNodeJs, 
-                      mutable_curr_output: js.Any, mutable_root_output: js.Dictionary[js.Any], 
+                      mutable_curr_output: js.Any, mutable_root_output: js.Any, 
                       hierarchy: List[ElementNodeJs], rows: Seq[ElementNodeJs], cols: Seq[ElementNodeJs],
                       mutable_errs: MutableList[Tuple2[String, ElementNodeJs]]
     ): Unit = {
@@ -186,10 +189,19 @@ object ElementTreeBuilder {
         else
           curr_template :: hierarchy; 
       
+      // The first calls gets the original root (eg for buckets S = { pxPipe: [ data_bucket: {} ] } as root and its transform (eg S.pxPipe[0].data_bucket) as curr
+      // subsequent calls get S.pxPipe[0].data_bucket as root and whatever's returned from the fns as curr
+      // that way you can still write to S if you really really have to (ie from the top level) but normally you write to its transform
+      val new_root = 
+        if (curr_template.root)
+          mutable_curr_output
+        else
+          mutable_root_output
+      
       // Step 1: sort the children
       
       JsOption(curr_template.children).foreach { children => {
-        var sorted_children = curr_template.children.sortBy { node => (node.element.col, node.element.row) }      
+        var sorted_children = curr_template.children.sortBy { node => (node.element.row, node.element.col) }      
         sorted_children.foreach { child => {
           
           // Step 2: recurse through
@@ -197,7 +209,7 @@ object ElementTreeBuilder {
           val new_rows = getRows(curr_template, child)
           val new_cols = getCols(curr_template, child)
           
-          generateOutput(child, root_template, maybe_new_obj.getOrElse(mutable_curr_output), mutable_root_output,
+          generateOutput(child, root_template, maybe_new_obj.getOrElse(mutable_curr_output), new_root,
               new_hierarchy, new_rows, new_cols, mutable_errs) }
         }}
       }
@@ -268,7 +280,7 @@ object ElementTreeBuilder {
         curr_node: ElementNodeJs,
         curr_obj: js.Any,
         full_builder: ElementNodeJs,
-        full_json: js.Dictionary[js.Any],
+        full_json: js.Any,
         hierarchy: List[ElementNodeJs], rows: Seq[ElementNodeJs], cols: Seq[ElementNodeJs]
         
     ): Option[js.Any] = {
@@ -280,11 +292,11 @@ object ElementTreeBuilder {
             ElementNodeJs, // card
             js.Any, // object
             ElementNodeJs, // full_builder
-            js.Dictionary[js.Any], // root object
+            js.Any, // root object
             js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Array[ElementNodeJs], //hierachy, rows, cols
             js.Any // return val
           ]          
-          = js.eval("temp = " + fn_str).asInstanceOf[js.Function8[js.Array[String], ElementNodeJs, js.Any, ElementNodeJs, js.Dictionary[js.Any], 
+          = js.eval("temp = " + fn_str).asInstanceOf[js.Function8[js.Array[String], ElementNodeJs, js.Any, ElementNodeJs, js.Any, 
             js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Array[ElementNodeJs], js.Any]]
             
           val tmp_errs: js.Array[String] = js.Array()

@@ -38,6 +38,8 @@ import com.ikanow.aleph2.builder_ui.utils.JsOption
 @injectable("globalIoService")
 class GlobalInputOutputService {
 
+  // INPUT VARIABLES
+  
   def root_element(): String = js.Dynamic.global.aleph2_json_builder__root_element.asInstanceOf[String]
   
   def template_url(): Option[String] = JsOption(js.Dynamic.global.aleph2_json_builder__template_url).map { el => el.asInstanceOf[String] }
@@ -53,9 +55,15 @@ class GlobalInputOutputService {
   def get_input_root_fn: Option[js.Function1[js.Dictionary[js.Any], js.Any]] = 
     JsOption(js.Dynamic.global.aleph2_json_builder__get_input_root_fn).map { obj => obj.asInstanceOf[js.Function1[js.Dictionary[js.Any], js.Any]] }
     
+  // OUTPUT VARIABLES
+  
   def config_output_str(): String = js.Dynamic.global.aleph2_json_builder__config_output_str.asInstanceOf[String]
   
   def generated_output_str(): String = js.Dynamic.global.aleph2_json_builder__generated_output_str.asInstanceOf[String]
+  
+  def errors(): js.Array[String] = js.Dynamic.global.aleph2_json_builder__output_errs.asInstanceOf[js.Array[String]]
+  
+  def starting_position(): js.Array[Int] = js.Dynamic.global.aleph2_json_builder__output_start_pos.asInstanceOf[js.Array[Int]]
   
   def setConfigOutputStr(str: String): Unit = {
     js.Dynamic.global.aleph2_json_builder__config_output_str = str
@@ -63,8 +71,11 @@ class GlobalInputOutputService {
   def setGeneratedOutputStr(str: String): Unit = {
     js.Dynamic.global.aleph2_json_builder__generated_output_str = str
   }
-  def setErrors(errs: js.Array[String]) {
-    js.Dynamic.global.aleph2_json_builder__output_errs = js.Array(errs)
+  def setErrors(errs: js.Array[String]) = {
+    js.Dynamic.global.aleph2_json_builder__output_errs = js.Array().concat(errs)
+  }
+  def setStartingPosition(pos: js.Array[Int]) = {
+    js.Dynamic.global.aleph2_json_builder__output_start_pos = js.Array().concat(pos)
   }
 }
 

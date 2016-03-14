@@ -29,11 +29,13 @@ import scala.scalajs.js.annotation.JSExport
 trait ElementTemplateJs extends js.Object {
     val display_name: String = js.native
     val key: String = js.native
+    val sub_keys: js.Array[String] = js.native
     val categories: js.Array[String] = js.native
     val filters: js.Array[String] = js.native
     val child_filters: js.Array[String] = js.native
     val expandable: Boolean = js.native
     val schema: js.Array[js.Dictionary[js.Any]] = js.native
+    val default_model: js.Dictionary[js.Any] = js.native
     val form_info: String = js.native
     
     // String versions of the functions (in the format { "_$fn": string }
@@ -50,14 +52,16 @@ object ElementTemplateJs {
   def apply(
     display_name: String = null,
     key: String = null,
+    sub_keys: js.Array[String] = null,
     categories: js.Array[String] = null,
     filters: js.Array[String] = null,
     expandable: Boolean = false,
     schema: js.Array[js.Dictionary[js.Any]] = null,
-    form_info: String = null
+    form_info: String = null,
+    default_model: js.Dictionary[js.Any] = null
     ) =
-  js.Dynamic.literal(display_name = display_name, key = key, categories = categories, filters = filters,
-      expandable = expandable, schema = schema, form_info = form_info
+  js.Dynamic.literal(display_name = display_name, key = key, sub_keys = sub_keys, categories = categories, filters = filters,
+      expandable = expandable, schema = schema, form_info = form_info, default_model = default_model
       )
       .asInstanceOf[ElementTemplateJs]
 }

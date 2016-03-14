@@ -26,16 +26,38 @@
 						</table>
 					</tab>
     				<tab heading="Result object" active="start_on_results">
+						<div class="row">
+							<div class="col-md-12">
+								<textarea readonly="true" onclick="this.select()" style='width:100%' rows=16>{{result_json | json}}</textarea>
+							</div>
+						</div>
+<!-- Codemirror with tabs is a bit of a hassle, see this issue and linked plunkr demo: https://github.com/angular-ui/ui-codemirror/issues/42
 			            <pre>{{result_json | json}}</pre>
-<!-- (for some reason I can't get these working)
-			            <textarea rows="32" ui-codemirror="resultOptions" ng-model="result_json | json" ui-refresh="refresh"></textarea>
+			            <textarea rows="32" ui-codemirror="resultOptions" ng-model="result_json" ui-refresh="refresh"></textarea>
 -->
 					</tab>
     				<tab heading="Build object">
-			            <pre>{{build_json | json}}</pre>
+						<div class="row">
+							<div class="col-md-12">
+								<textarea readonly="true" onclick="this.select()" style='width:100%' rows=16>{{build_json | json}}</textarea>
+							</div>
+						</div>
 <!--
-			            <textarea rows="32" ui-codemirror="buildOptions" ng-model="build_json | json" ui-refresh="refresh"></textarea>
+			            <pre>{{build_json | json}}</pre>
+			            <textarea rows="32" ui-codemirror="buildOptions" ng-model="build_json_str" ui-refresh="refresh"></textarea>
 -->
+					</tab>
+    				<tab heading="Load Build Object">
+						<div class="row">
+							<div class="col-md-12">
+								<textarea ng-model="to_import_json_str.text" style='width:100%' rows=16></textarea>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-1">
+				     		     <button class="btn btn-danger" ng-click="controller.importJson()">IMPORT</button>
+							</div>
+						</div>
 					</tab>
 				</tabset>
 			  </div>
