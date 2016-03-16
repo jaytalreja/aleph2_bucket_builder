@@ -1,5 +1,169 @@
 [
   {
+    "display_name": "Logging Schema",
+    "form_info": "Contains defaults and overrides for logging output settings",
+    "expandable": false,
+    "key": "logging_schema",
+    "categories": [
+      "Schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "templateOptions": {
+          "label": "Enabled",
+          "placeholder": ""
+        },
+        "type": "horizontalCheckbox",
+        "key": "enabled"
+      },
+      {
+        "templateOptions": {
+          "required": true,
+          "label": "Default Log Level",
+          "options": [
+            {
+              "name": "ALL",
+              "value": "ALL"
+            },
+            {
+              "name": "TRACE",
+              "value": "TRACE"
+            },
+            {
+              "name": "DEBUG",
+              "value": "DEBUG"
+            },
+            {
+              "name": "INFO",
+              "value": "INFO"
+            },
+            {
+              "name": "WARN",
+              "value": "WARN"
+            },
+            {
+              "name": "ERROR",
+              "value": "ERROR"
+            },
+            {
+              "name": "FATAL",
+              "value": "FATAL"
+            },
+            {
+              "name": "OFF",
+              "value": "OFF"
+            }
+          ]
+        },
+        "type": "horizontalSelect",
+        "key": "log_level"
+      },
+      {
+        "templateOptions": {
+          "btnText": "Add",
+          "fields": [
+            {
+              "className": "row",
+              "fieldGroup": [
+                {
+                  "templateOptions": {
+                    "required": true,
+                    "label": "Service Name",
+                    "placeholder": "storage_service"
+                  },
+                  "key": "service_name",
+                  "type": "horizontalInput",
+                  "className": "col-xs-8"
+                },
+                {
+                  "templateOptions": {
+                    "required": true,
+                    "label": "Logging Level",
+                    "options": [
+                      {
+                        "name": "ALL",
+                        "value": "ALL"
+                      },
+                      {
+                        "name": "TRACE",
+                        "value": "TRACE"
+                      },
+                      {
+                        "name": "DEBUG",
+                        "value": "DEBUG"
+                      },
+                      {
+                        "name": "INFO",
+                        "value": "INFO"
+                      },
+                      {
+                        "name": "WARN",
+                        "value": "WARN"
+                      },
+                      {
+                        "name": "ERROR",
+                        "value": "ERROR"
+                      },
+                      {
+                        "name": "FATAL",
+                        "value": "FATAL"
+                      },
+                      {
+                        "name": "OFF",
+                        "value": "OFF"
+                      }
+                    ]
+                  },
+                  "type": "horizontalSelect",
+                  "key": "service_level",
+                  "className": "col-xs-4"
+                }
+              ]
+            }
+          ]
+        },
+        "type": "repeatSection",
+        "key": "ll_overrides"
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    },
+    "default_model": {
+      "enabled": "true",
+      "log_level": "ERROR"
+    }
+  },
+  {
+    "display_name": "Management Schema",
+    "form_info": "General Management Schema",
+    "expandable": true,
+    "key": "management_schema",
+    "categories": [
+      "Metadata"
+    ],
+    "child_filters": [
+      "data_service_schema",
+      "logging_schema"
+    ],
+    "filters": [
+      "Bucket"
+    ],
+    "schema": [],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.management_schema = {}; \n  return curr_obj.management_schema;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
     "key": "a2_optional_array_from_csv",
     "global_function": {
       "$fn": "function(obj) {\n  var out = (obj || '').replace(/\\\\s*,\\\\s*/g, \",\").split(\",\").filter(function(x) {return x.length > 0;}); if (out.length > 0) return out; else return undefined;\n}"
@@ -9,6 +173,73 @@
     "key": "a2_inject_enrichment",
     "global_function": {
       "$fn": "function(curr_obj, obj) {\n  if (Array.isArray(curr_obj)) curr_obj.push(obj); else if (curr_obj.config) { if (curr_obj.config.enrich_pipeline) curr_obj.config.enrich_pipeline.push(obj); else curr_obj.config = obj; } else for (x in obj) curr_obj[x] = obj[x];\n}"
+    }
+  },
+  {
+    "display_name": "Batch Enrichment Pipeline",
+    "form_info": "<p>This is a container for a batch enrichment pipeline that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
+    "expandable": true,
+    "key": "enrichment_engine",
+    "categories": [
+      "Enrichment"
+    ],
+    "filters": [
+      "Bucket"
+    ],
+    "child_filters": [
+      "batch_enrichment_meta",
+      "enrichment_meta",
+      "batch_technology_override"
+    ],
+    "schema": [
+      {
+        "key": "external_emit_paths",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Allowed external output paths",
+          "placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+          "required": false
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths);\n  curr_obj.master_enrichment_type = 'batch'; \n  curr_obj.batch_enrichment_configs = []; \n  return curr_obj.batch_enrichment_configs; \n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n}"
+    }
+  },
+  {
+    "display_name": "Streaming Enrichment Topology",
+    "form_info": "<p>This is a container for a streaming enrichment engine that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
+    "expandable": true,
+    "key": "enrichment_engine",
+    "categories": [
+      "Enrichment"
+    ],
+    "filters": [
+      "Bucket"
+    ],
+    "child_filters": [
+      "stream_enrichment_meta",
+      "enrichment_meta"
+    ],
+    "schema": [
+      {
+        "key": "external_emit_paths",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Allowed external output paths",
+          "placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+          "required": false
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths);\n curr_obj.master_enrichment_type = 'streaming'; curr_obj.streaming_enrichment_topology = {}; return curr_obj.streaming_enrichment_topology; }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
   {
@@ -239,138 +470,6 @@
     }
   },
   {
-    "display_name": "Batch Enrichment Pipeline",
-    "form_info": "<p>This is a container for a batch enrichment pipeline that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
-    "expandable": true,
-    "key": "enrichment_engine",
-    "categories": [
-      "Enrichment"
-    ],
-    "filters": [
-      "Bucket"
-    ],
-    "child_filters": [
-      "batch_enrichment_meta",
-      "enrichment_meta"
-    ],
-    "schema": [
-      {
-        "key": "external_emit_paths",
-        "type": "horizontalInput",
-        "templateOptions": {
-          "label": "Allowed external output paths",
-          "placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
-          "required": false
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths);curr_obj.master_enrichment_type = 'batch'; curr_obj.batch_enrichment_configs = []; return curr_obj.batch_enrichment_configs; }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Streaming Enrichment Topology",
-    "form_info": "<p>This is a container for a streaming enrichment engine that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
-    "expandable": true,
-    "key": "enrichment_engine",
-    "categories": [
-      "Enrichment"
-    ],
-    "filters": [
-      "Bucket"
-    ],
-    "child_filters": [
-      "stream_enrichment_meta",
-      "enrichment_meta"
-    ],
-    "schema": [
-      {
-        "key": "external_emit_paths",
-        "type": "horizontalInput",
-        "templateOptions": {
-          "label": "Allowed external output paths",
-          "placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
-          "required": false
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths);\n curr_obj.master_enrichment_type = 'streaming'; curr_obj.streaming_enrichment_topology = {}; return curr_obj.streaming_enrichment_topology; }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Raw JSON Enrichment Element",
-    "form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
-    "expandable": false,
-    "key": "enrichment_meta",
-    "categories": [
-      "Generic"
-    ],
-    "filters": [
-      "Bucket/**"
-    ],
-    "schema": [
-      {
-        "key": "element",
-        "type": "code_input",
-        "defaultValue": "{\n}",
-        "templateOptions": {
-          "label": "Enrichment Element JSON",
-          "codemirror": {
-            "lineNumbers": true,
-            "smartIndent": true,
-            "mode": "javascript"
-          }
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = JSON.parse(template.element.form_model.element || '{}'); a2_inject_enrichment(curr_obj, obj); }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Analytic Thread Container",
-    "form_info": "<p>This is a container for the analytic jobs that fill the bucket with data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
-    "expandable": true,
-    "key": "analytic_thread",
-    "categories": [
-      "Analytics"
-    ],
-    "filters": [
-      "Bucket"
-    ],
-    "child_filters": [
-      "analytic_job",
-      "analytic_trigger"
-    ],
-    "schema": [
-      {
-        "key": "external_emit_paths",
-        "type": "horizontalInput",
-        "templateOptions": {
-          "label": "Allowed external output paths",
-          "placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
-          "required": false
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths); curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
     "display_name": "Generic Analytic Job",
     "form_info": "A streaming or batch analytic job that performs processing on input or stored data. ",
     "expandable": true,
@@ -541,7 +640,8 @@
       "analytic_input",
       "analytic_output",
       "enrichment_meta",
-      "batch_enrichment_meta"
+      "batch_enrichment_meta",
+      "batch_technology_override"
     ],
     "schema": [
       {
@@ -619,7 +719,139 @@
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'batch'; \n  new_obj.dependencies = a2_optional_array_from_csv(template.element.form_model.dependencies);\n  new_obj.analytic_technology_name_or_id = 'BatchEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n  new_obj.config = { 'enrich_pipeline': [] }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}"
     },
     "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {var lib_map = {}; var curr_job = curr_obj.jobs[curr_obj.jobs.length-1]; for ( var e in curr_job.config.enrich_pipeline ) { for ( l in curr_job.config.enrich_pipeline[e].library_names_or_ids ) { lib_map[curr_job.config.enrich_pipeline[e].library_names_or_ids[l]] = true;}} curr_job.library_names_or_ids = []; var libs = (template.element.form_model.library_names_or_ids || []); for (var kk in libs) curr_job.library_names_or_ids.push(libs[kk]); for (var k in lib_map) curr_job.library_names_or_ids.push(k); }"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var lib_map = {}; var curr_job = curr_obj.jobs[curr_obj.jobs.length-1]; \n  for ( var e in curr_job.config.enrich_pipeline ) { \n    for ( l in curr_job.config.enrich_pipeline[e].library_names_or_ids ) { \n      lib_map[curr_job.config.enrich_pipeline[e].library_names_or_ids[l]] = true;\n    }\n  } \n  curr_job.library_names_or_ids = []; var libs = (template.element.form_model.library_names_or_ids || []); \n  for (var kk in libs) curr_job.library_names_or_ids.push(libs[kk]); \n  for (var k in lib_map) curr_job.library_names_or_ids.push(k); \n}"
+    }
+  },
+  {
+    "display_name": "Raw JSON Enrichment Element",
+    "form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
+    "expandable": false,
+    "key": "enrichment_meta",
+    "categories": [
+      "Generic"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "key": "element",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Enrichment Element JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { var obj = JSON.parse(template.element.form_model.element || '{}'); a2_inject_enrichment(curr_obj, obj); }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Analytic Thread Container",
+    "form_info": "<p>This is a container for the analytic jobs that fill the bucket with data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
+    "expandable": true,
+    "key": "analytic_thread",
+    "categories": [
+      "Analytics"
+    ],
+    "filters": [
+      "Bucket"
+    ],
+    "child_filters": [
+      "analytic_job",
+      "analytic_trigger"
+    ],
+    "schema": [
+      {
+        "key": "external_emit_paths",
+        "type": "horizontalInput",
+        "templateOptions": {
+          "label": "Allowed external output paths",
+          "placeholder": "Comma-separated list of paths/globs to which the bucket is allowed to 'externalEmit'",
+          "required": false
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths); curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Raw JSON Global Input Config",
+    "form_info": "Empty JSON object used to configure the global default input configuration for all inputs in this analytic job\n",
+    "expandable": false,
+    "key": "analytic_input",
+    "categories": [
+      "Input"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "key": "global_input_config",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Analytic Global Input Configuration JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.global_input_config = JSON.parse(template.element.form_model.global_input_config || '{}'); }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Raw JSON Analytic Input",
+    "form_info": "Empty JSON object used to configure an input for this analytic job\n",
+    "expandable": false,
+    "key": "analytic_input",
+    "categories": [
+      "Input"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "key": "input",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Analytic Input JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.inputs.push(JSON.parse(template.element.form_model.input || '{}')); }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
   {
@@ -752,127 +984,6 @@
     }
   },
   {
-    "display_name": "Raw JSON Global Input Config",
-    "form_info": "Empty JSON object used to configure the global default input configuration for all inputs in this analytic job\n",
-    "expandable": false,
-    "key": "analytic_input",
-    "categories": [
-      "Input"
-    ],
-    "filters": [
-      "Bucket/**"
-    ],
-    "schema": [
-      {
-        "key": "global_input_config",
-        "type": "code_input",
-        "defaultValue": "{\n}",
-        "templateOptions": {
-          "label": "Analytic Global Input Configuration JSON",
-          "codemirror": {
-            "lineNumbers": true,
-            "smartIndent": true,
-            "mode": "javascript"
-          }
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.global_input_config = JSON.parse(template.element.form_model.global_input_config || '{}'); }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Raw JSON Analytic Input",
-    "form_info": "Empty JSON object used to configure an input for this analytic job\n",
-    "expandable": false,
-    "key": "analytic_input",
-    "categories": [
-      "Input"
-    ],
-    "filters": [
-      "Bucket/**"
-    ],
-    "schema": [
-      {
-        "key": "input",
-        "type": "code_input",
-        "defaultValue": "{\n}",
-        "templateOptions": {
-          "label": "Analytic Input JSON",
-          "codemirror": {
-            "lineNumbers": true,
-            "smartIndent": true,
-            "mode": "javascript"
-          }
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.inputs.push(JSON.parse(template.element.form_model.input || '{}')); }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Raw JSON Analytic Output",
-    "form_info": "Empty JSON object used to configure a single output for this analytic job\n",
-    "expandable": false,
-    "key": "analytic_output",
-    "categories": [
-      "Output"
-    ],
-    "filters": [
-      "Bucket/**"
-    ],
-    "schema": [
-      {
-        "key": "output",
-        "type": "code_input",
-        "defaultValue": "{\n}",
-        "templateOptions": {
-          "label": "Analytic Output JSON",
-          "codemirror": {
-            "lineNumbers": true,
-            "smartIndent": true,
-            "mode": "javascript"
-          }
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.output = JSON.parse(template.element.form_model.output || '{}'); }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Data Schema Container",
-    "form_info": "<p>This is a container for the data schema for the different attributes of the stored data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
-    "expandable": true,
-    "key": "data_schema",
-    "categories": [
-      "Metadata"
-    ],
-    "filters": [
-      "Bucket"
-    ],
-    "child_filters": [
-      "data_service_schema"
-    ],
-    "schema": [],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema = {}; return curr_obj.data_schema; }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
     "display_name": "Raw JSON Search Index Schema",
     "form_info": "For advanced users: create an empty search index schema JSON object that can be Raw JSON to provide the desired functionality\n",
     "expandable": false,
@@ -939,6 +1050,97 @@
     }
   },
   {
+    "display_name": "Raw JSON Analytic Output",
+    "form_info": "Empty JSON object used to configure a single output for this analytic job\n",
+    "expandable": false,
+    "key": "analytic_output",
+    "categories": [
+      "Output"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "key": "output",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Analytic Output JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.output = JSON.parse(template.element.form_model.output || '{}'); }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Data Schema Container",
+    "form_info": "<p>This is a container for the data schema for the different attributes of the stored data</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
+    "expandable": true,
+    "key": "data_schema",
+    "categories": [
+      "Metadata"
+    ],
+    "filters": [
+      "Bucket"
+    ],
+    "child_filters": [
+      "data_service_schema"
+    ],
+    "schema": [],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_schema = {}; return curr_obj.data_schema; }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Raw JSON Document Schema",
+    "form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
+    "expandable": true,
+    "key": "data_service_schema",
+    "categories": [
+      "Schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "child_filters": [
+      "enrichment_meta"
+    ],
+    "schema": [
+      {
+        "key": "schema",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Document Schema JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); curr_obj.document_schema.custom_deduplication_configs = []; return curr_obj.document_schema.custom_deduplication_configs; }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
     "display_name": "Raw JSON Columnar Schema",
     "form_info": "For advanced users: create an empty columnar schema JSON object that can be Raw JSON to provide the desired functionality\n",
     "expandable": false,
@@ -999,42 +1201,6 @@
     ],
     "building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.storage_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.storage_schema; }"
-    },
-    "post_building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
-    }
-  },
-  {
-    "display_name": "Raw JSON Document Schema",
-    "form_info": "For advanced users: create an empty document schema JSON object that can be Raw JSON to provide the desired functionality\n",
-    "expandable": true,
-    "key": "data_service_schema",
-    "categories": [
-      "Schema"
-    ],
-    "filters": [
-      "Bucket/**"
-    ],
-    "child_filters": [
-      "enrichment_meta"
-    ],
-    "schema": [
-      {
-        "key": "schema",
-        "type": "code_input",
-        "defaultValue": "{\n}",
-        "templateOptions": {
-          "label": "Document Schema JSON",
-          "codemirror": {
-            "lineNumbers": true,
-            "smartIndent": true,
-            "mode": "javascript"
-          }
-        }
-      }
-    ],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.document_schema = JSON.parse(template.element.form_model.schema || '{}'); curr_obj.document_schema.custom_deduplication_configs = []; return curr_obj.document_schema.custom_deduplication_configs; }"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -1189,166 +1355,44 @@
     }
   },
   {
-    "display_name": "Logging Schema",
-    "form_info": "Contains defaults and overrides for logging output settings",
+    "display_name": "Global Raw JSON Batch Technology Override",
+    "form_info": "Applies the raw technology output to all the batch pipeline elements. Should be at the end of the list of batch elements to process.",
     "expandable": false,
-    "key": "logging_schema",
+    "key": "batch_technology_override",
     "categories": [
-      "Schema"
+      "Technology Overrides"
     ],
     "filters": [
       "Bucket/**"
     ],
     "schema": [
       {
+        "key": "technology_override",
+        "type": "code_input",
         "templateOptions": {
-          "label": "Enabled",
-          "placeholder": ""
-        },
-        "type": "horizontalCheckbox",
-        "key": "enabled"
-      },
-      {
-        "templateOptions": {
-          "required": true,
-          "label": "Default Log Level",
-          "options": [
-            {
-              "name": "ALL",
-              "value": "ALL"
-            },
-            {
-              "name": "TRACE",
-              "value": "TRACE"
-            },
-            {
-              "name": "DEBUG",
-              "value": "DEBUG"
-            },
-            {
-              "name": "INFO",
-              "value": "INFO"
-            },
-            {
-              "name": "WARN",
-              "value": "WARN"
-            },
-            {
-              "name": "ERROR",
-              "value": "ERROR"
-            },
-            {
-              "name": "FATAL",
-              "value": "FATAL"
-            },
-            {
-              "name": "OFF",
-              "value": "OFF"
-            }
-          ]
-        },
-        "type": "horizontalSelect",
-        "key": "log_level"
-      },
-      {
-        "templateOptions": {
-          "btnText": "Add",
-          "fields": [
-            {
-              "className": "row",
-              "fieldGroup": [
-                {
-                  "templateOptions": {
-                    "required": true,
-                    "label": "Service Name",
-                    "placeholder": "storage_service"
-                  },
-                  "key": "service_name",
-                  "type": "horizontalInput",
-                  "className": "col-xs-8"
-                },
-                {
-                  "templateOptions": {
-                    "required": true,
-                    "label": "Logging Level",
-                    "options": [
-                      {
-                        "name": "ALL",
-                        "value": "ALL"
-                      },
-                      {
-                        "name": "TRACE",
-                        "value": "TRACE"
-                      },
-                      {
-                        "name": "DEBUG",
-                        "value": "DEBUG"
-                      },
-                      {
-                        "name": "INFO",
-                        "value": "INFO"
-                      },
-                      {
-                        "name": "WARN",
-                        "value": "WARN"
-                      },
-                      {
-                        "name": "ERROR",
-                        "value": "ERROR"
-                      },
-                      {
-                        "name": "FATAL",
-                        "value": "FATAL"
-                      },
-                      {
-                        "name": "OFF",
-                        "value": "OFF"
-                      }
-                    ]
-                  },
-                  "type": "horizontalSelect",
-                  "key": "service_level",
-                  "className": "col-xs-4"
-                }
-              ]
-            }
-          ]
-        },
-        "type": "repeatSection",
-        "key": "ll_overrides"
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          },
+          "label": "Technology Override Schema",
+          "required": false
+        }
       }
     ],
+    "default_model": {
+      "technology_override": "{\n}"
+    },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var array = [];\n  if (Array.isArray(curr_obj)) \n    array = curr_obj; \n  else if (curr_obj.config) \n    array = curr_obj.config.enrich_pipeline;\n  \n  for (var e in array) {\n    array[e].technology_override = JSON.parse(template.element.form_model.technology_override);\n  }\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     },
-    "default_model": {
-      "enabled": "true",
-      "log_level": "ERROR"
-    }
-  },
-  {
-    "display_name": "Management Schema",
-    "form_info": "General Management Schema",
-    "expandable": true,
-    "key": "management_schema",
-    "categories": [
-      "Metadata"
-    ],
-    "child_filters": [
-      "data_service_schema",
-      "logging_schema"
-    ],
-    "filters": [
-      "Bucket"
-    ],
-    "schema": [],
-    "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.management_schema = {}; \n  return curr_obj.management_schema;\n}"
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var array = [];\n  if (Array.isArray(curr_obj)) \n    array = curr_obj; \n  else if (curr_obj.config) \n    array = curr_obj.config.enrich_pipeline;\n\n  if (array.length == 0) errs.push(\"Can't be the first element in the pipeline\");\n}"
     },
-    "post_building_function": {
+    "post_validation_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   }
