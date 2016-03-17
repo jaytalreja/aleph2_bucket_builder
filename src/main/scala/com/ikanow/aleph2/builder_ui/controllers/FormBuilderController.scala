@@ -160,10 +160,6 @@ class FormBuilderController(
          
         // Refresh:
         scope.$apply("");  
-         
-         /**/
-         println(scope.template_update_explanation)
-         println("???\n" + JSON.stringify(scope.latest_template))
        }}
   }
 

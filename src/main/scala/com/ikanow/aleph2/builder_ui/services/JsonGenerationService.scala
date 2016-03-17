@@ -57,6 +57,9 @@ class JsonGenerationService(global_io_service: GlobalInputOutputService) {
 
     val start_obj_curr =  global_io_service.get_input_root_fn.map { fn => fn(start_obj_root) }.getOrElse(start_obj_root)    
     
+    //TODO (#6): for each card, also store the Formly validation errors for each card and then just always add those...
+    // (then I think in the form itself, filter them out but display the "real-time" validation errors)
+    
     curr_errors.clear()
     ElementTreeBuilder.generateOutput(root, root, start_obj_curr, start_obj_root, List(), List(), List(), curr_errors)
 
