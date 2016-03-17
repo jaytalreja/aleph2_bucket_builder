@@ -47,6 +47,7 @@ class FormBuilderController(
     scope: FormBuilderScope,
     root_scope: RootScope,
     element_service: ElementService,
+    element_template_service: ElementTemplateService,
     undo_redo_service: UndoRedoService,
     json_gen_service: JsonGenerationService,
     modal: ModalInstance[Unit],
@@ -129,8 +130,49 @@ class FormBuilderController(
       else
         p(curr_card_node.element.template.form_info).toString()
     }
+              
+     // If there's a unique template then allow overwrite:
+     
+     element_template_service.requestElementTemplates(true)
+       .foreach { templates => { 
+         val filtered_array_1 = templates
+           .filter { template => template.display_name ==  curr_card_node.element.template.display_name }
+
+         if (filtered_array_1.size == 1) { // (nasty if block)
+           val filtered_array = 
+                 filtered_array_1
+                   .filter { template => JSON.stringify(template) != JSON.stringify(curr_card_node.element.template) } //(don't bother if they're the same)
+           
+           if (1 == filtered_array.size) {// (only if _exactly_ 1)
+             scope.latest_template = filtered_array(0)
+             scope.template_update_explanation = "System template is different to this. Press this button to update (WARNING: may cause the bucket to stop working)"
+           }
+           else {
+             scope.template_update_explanation = "System template with the same name is identical."           
+           }           
+         }  
+         else if (filtered_array_1.isEmpty) {
+           scope.template_update_explanation = "No system template with this name."                      
+         }
+         else {
+           scope.template_update_explanation = "Multiple system templates with this name found - couldn't resolve which one."           
+         }
+         
+        // Refresh:
+        scope.$apply("");  
+         
+         /**/
+         println(scope.template_update_explanation)
+         println("???\n" + JSON.stringify(scope.latest_template))
+       }}
   }
 
+  @JSExport
+  def updateTemplate(): Unit = {
+    node_to_edit.element.template = scope.latest_template
+    modal.close()
+  }
+  
   @JSExport
   def expandElementConfig(): Unit = {
     if (!scope.element_expands) return
@@ -191,6 +233,10 @@ trait FormBuilderScope extends Scope {
   var element_errors: js.Array[String] = js.native
   
   var element_expands: Boolean = js.native
+  
+  var latest_template: ElementTemplateJs = js.native
+  
+  var template_update_explanation: String = js.native
 }
 
 /** Configures the formly element
@@ -378,8 +424,7 @@ object FormlyConfig extends Config {
           """) // (currently can't get controller working as a scala method, get horrible $$scope/$$scopeProvider error)
         )
         .asInstanceOf[js.Dictionary[js.Any]]
-     )
-     
+     )   
   }  
 }
 

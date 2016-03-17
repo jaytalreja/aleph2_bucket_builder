@@ -7,7 +7,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 2,
+        "row": 1,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -673,7 +673,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 2,
+        "row": 1,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -1445,7 +1445,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 1,
+        "row": 0,
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
@@ -1687,7 +1687,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 1,
+        "row": 0,
         "col": 3,
         "sizeX": 1,
         "sizeY": 1,
@@ -1929,7 +1929,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 3,
+        "row": 2,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -2171,7 +2171,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 3,
+        "row": 2,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -2298,7 +2298,7 @@
             "expandable": false,
             "deletable": true,
             "form_model": {
-              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths); curr_obj.analytic_thread = { jobs: [] }; return curr_obj.analytic_thread; }",
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.external_emit_paths = a2_optional_array_from_csv(template.element.form_model.external_emit_paths); \n  curr_obj.analytic_thread = { jobs: [] }; \n  return curr_obj.analytic_thread; \n}",
               "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
             },
             "template": {
@@ -2413,7 +2413,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 2,
+        "row": 1,
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
@@ -3344,7 +3344,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 2,
+        "row": 1,
         "col": 3,
         "sizeX": 1,
         "sizeY": 1,
@@ -3453,7 +3453,7 @@
             "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
           }
         },
-        "short_name": "Batch Enrichment Pipeline",
+        "short_name": "Batch Analytic Pipeline",
         "summary": "A batch analytic job that uses the batch enrichment engine to perform processing on input or stored data. "
       },
       "children": [
@@ -4010,7 +4010,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 4,
+        "row": 3,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -4119,7 +4119,7 @@
             "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
           }
         },
-        "short_name": "Streaming Enrichment Topology",
+        "short_name": "Streaming Analytic Topology",
         "summary": "A streaming analytic job that uses the streaming enrichment engine to perform processing on input or stored data. "
       },
       "children": [
@@ -4570,7 +4570,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 4,
+        "row": 3,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -4918,7 +4918,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 3,
+        "row": 2,
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
@@ -5160,7 +5160,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 3,
+        "row": 2,
         "col": 3,
         "sizeX": 1,
         "sizeY": 1,
@@ -5402,7 +5402,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 5,
+        "row": 4,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -5644,7 +5644,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 5,
+        "row": 4,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -5833,7 +5833,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 4,
+        "row": 3,
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
@@ -6075,7 +6075,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 4,
+        "row": 3,
         "col": 3,
         "sizeX": 1,
         "sizeY": 1,
@@ -6317,7 +6317,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 6,
+        "row": 5,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -6559,7 +6559,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 6,
+        "row": 5,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -6801,7 +6801,7 @@
       "label": "Template Builder",
       "element": {
         "enabled": true,
-        "row": 5,
+        "row": 4,
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
@@ -7045,7 +7045,7 @@
         "enabled": true,
         "short_name": "Document Schema",
         "summary": "Configures the document service (supporting deduplication)",
-        "row": 7,
+        "row": 6,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -7774,7 +7774,7 @@
         "enabled": true,
         "short_name": "Deduplication Service",
         "summary": "An enrichment engine providing deduplication and lookup functionality",
-        "row": 7,
+        "row": 6,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -8056,7 +8056,7 @@
         "enabled": true,
         "short_name": "a2_inject_enrichment",
         "summary": "",
-        "row": 1,
+        "row": 0,
         "col": 1,
         "sizeX": 1,
         "sizeY": 1,
@@ -8120,7 +8120,7 @@
         "enabled": true,
         "short_name": "a2_optional_array_from_csv",
         "summary": "",
-        "row": 1,
+        "row": 0,
         "col": 0,
         "sizeX": 1,
         "sizeY": 1,
@@ -8128,7 +8128,7 @@
         "configurable": true,
         "deletable": true,
         "form_model": {
-          "js": "function(obj) {\n  var out = (obj || '').replace(/\\\\s*,\\\\s*/g, \",\").split(\",\").filter(function(x) {return x.length > 0;}); if (out.length > 0) return out; else return undefined;\n}"
+          "js": "function(obj) {\n  var out = (obj || '').replace(/\\s*,\\s*/g, \",\").split(\",\").filter(function(x) {return x.length > 0;}); \n  if (out.length > 0) return out; else return undefined;\n}"
         },
         "template": {
           "display_name": "Global Function",
@@ -8184,8 +8184,8 @@
         "enabled": true,
         "short_name": "Logging Schema",
         "summary": "Contains defaults and overrides for logging output settings",
-        "row": 0,
-        "col": 0,
+        "row": 7,
+        "col": 1,
         "sizeX": 1,
         "sizeY": 1,
         "expandable": true,
@@ -9062,8 +9062,8 @@
         "enabled": true,
         "short_name": "Management Schema",
         "summary": "General Management Schema",
-        "row": 0,
-        "col": 1,
+        "row": 7,
+        "col": 0,
         "sizeX": 1,
         "sizeY": 1,
         "expandable": true,
@@ -9252,7 +9252,7 @@
         "enabled": true,
         "short_name": "Global Raw JSON Batch Technology Override",
         "summary": "Applies the raw technology output to all the batch pipeline elements. Should be at the end of the list of batch elements to process.",
-        "row": 7,
+        "row": 6,
         "col": 2,
         "sizeX": 1,
         "sizeY": 1,
