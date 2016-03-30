@@ -1092,6 +1092,28 @@
         "key": "deduplication_policy"
       },
       {
+        "templateOptions": {
+          "required": true,
+          "label": "Custom Policy",
+          "options": [
+            {
+              "name": "Lax",
+              "value": "lax"
+            },
+            {
+              "name": "Strict",
+              "value": "strict"
+            },
+            {
+              "name": "Very Strict",
+              "value": "very_strict"
+            }
+          ]
+        },
+        "type": "horizontalSelect",
+        "key": "custom_policy"
+      },
+      {
         "type": "multiInput",
         "templateOptions": {
           "inputOptions": {
@@ -1126,6 +1148,14 @@
         "key": "custom_finalize_all_objects"
       },
       {
+        "templateOptions": {
+          "label": "Delete unhandled duplicates?",
+          "placeholder": "If true (default: false unless \"custom policy\" is \"very strict\") then all existing duplicates that are not explicitly re-emitted are deleted. In non-custom mode, this ensures that only one object per set of deduplication fields is retained."
+        },
+        "type": "checkbox",
+        "key": "delete_unhandled_duplicates"
+      },
+      {
         "key": "technology_override_schema",
         "type": "code_input",
         "templateOptions": {
@@ -1141,6 +1171,7 @@
     "default_model": {
       "deduplication_timing": "custom",
       "deduplication_policy": "leave",
+      "custom_policy": "strict",
       "deduplication_fields": [],
       "deduplication_contexts": [],
       "custom_deduplication_configs": [],
@@ -1148,7 +1179,7 @@
       "technology_override_schema": "{\n\t\n}"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.custom_policy = template.element.form_model.custom_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.delete_unhandled_duplicates = template.element.form_model.delete_unhandled_duplicates;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"

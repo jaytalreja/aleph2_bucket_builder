@@ -7291,7 +7291,7 @@
             "short_name": "Deduplication Fields",
             "summary": "The list of fields over which to deduplicate",
             "row": 0,
-            "col": 1,
+            "col": 2,
             "sizeX": 1,
             "sizeY": 1,
             "expandable": false,
@@ -7369,7 +7369,7 @@
             "short_name": "Deduplication Contexts",
             "summary": "A list of bucket paths/globs to which to apply the deduplication",
             "row": 0,
-            "col": 2,
+            "col": 3,
             "sizeX": 1,
             "sizeY": 1,
             "expandable": false,
@@ -7447,7 +7447,7 @@
             "short_name": "Finalize all object sets with custom enrichment step, singletons and duplicates",
             "summary": "If true (default: false) then all objects are run through the custom dedup (ie acting as a \"finalize\" step before emitting when there is no matching dedup)",
             "row": 0,
-            "col": 3,
+            "col": 4,
             "sizeX": 1,
             "sizeY": 1,
             "expandable": false,
@@ -7511,8 +7511,8 @@
             "enabled": true,
             "short_name": "Technology Override Schema",
             "summary": "Allows document service technology specific settings",
-            "row": 0,
-            "col": 4,
+            "row": 1,
+            "col": 0,
             "sizeX": 1,
             "sizeY": 1,
             "expandable": false,
@@ -7647,7 +7647,7 @@
             "enabled": true,
             "short_name": "Raw Default Values",
             "summary": "",
-            "row": 1,
+            "row": 2,
             "col": 0,
             "sizeX": 1,
             "sizeY": 1,
@@ -7655,7 +7655,7 @@
             "configurable": true,
             "deletable": true,
             "form_model": {
-              "json": "{\n\t\"deduplication_timing\": \"custom\",\n    \"deduplication_policy\": \"leave\",\n     \"deduplication_fields\": [],\n     \"deduplication_contexts\": [],\n     \"custom_deduplication_configs\": [],\n       \"custom_finalize_all_objects\": false,\n         \"technology_override_schema\": \"{\\n\\t\\n}\"\n}"
+              "json": "{\n\t\"deduplication_timing\": \"custom\",\n    \"deduplication_policy\": \"leave\",\n    \"custom_policy\": \"strict\",\n     \"deduplication_fields\": [],\n     \"deduplication_contexts\": [],\n     \"custom_deduplication_configs\": [],\n       \"custom_finalize_all_objects\": false,\n         \"technology_override_schema\": \"{\\n\\t\\n}\"\n}"
             },
             "template": {
               "display_name": "Raw Default Values",
@@ -7702,7 +7702,7 @@
             "enabled": true,
             "short_name": "Builder Functions",
             "summary": "",
-            "row": 1,
+            "row": 2,
             "col": 1,
             "sizeX": 1,
             "sizeY": 1,
@@ -7710,7 +7710,7 @@
             "configurable": true,
             "deletable": true,
             "form_model": {
-              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}",
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.custom_policy = template.element.form_model.custom_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.delete_unhandled_duplicates = template.element.form_model.delete_unhandled_duplicates;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}",
               "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
             },
             "template": {
@@ -7757,6 +7757,190 @@
               },
               "building_function": {
                 "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n \tcurr_obj.building_function = {'$fn': template.element.form_model.pre_fn};\n \tcurr_obj.post_building_function = {'$fn': template.element.form_model.post_fn}; \n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Standalone Checkbox",
+          "element": {
+            "enabled": true,
+            "short_name": "Delete unhandled duplicates?",
+            "summary": "If true (default: false unless \"custom policy\" is \"very strict\") then all existing duplicates that are not explicitly re-emitted are deleted. In non-custom mode, this ensures that only one object per set of deduplication fields is retained.",
+            "row": 0,
+            "col": 5,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "type": "checkbox",
+              "key": "delete_unhandled_duplicates"
+            },
+            "template": {
+              "display_name": "Standalone Checkbox",
+              "form_info": "Non-compact checkbox input element",
+              "filters": [
+                "Template/template_builder",
+                "Template/template_builder/**"
+              ],
+              "expandable": false,
+              "key": "simple_input",
+              "categories": [
+                "Selection"
+              ],
+              "schema": [
+                {
+                  "key": "_short_name",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Label",
+                    "placeholder": "The label displayed next to the input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "key",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Key",
+                    "pattern": "[a-zA-Z0-9_]+",
+                    "placeholder": "The key for this input",
+                    "required": true
+                  }
+                }
+              ],
+              "default_model": {
+                "type": "checkbox",
+                "key": "TODO_KEY"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Horizontal Dropdown",
+          "element": {
+            "enabled": true,
+            "short_name": "Custom Policy",
+            "summary": "",
+            "row": 0,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "type": "horizontalSelect",
+              "key": "custom_policy",
+              "options": [
+                {
+                  "name": "Lax",
+                  "value": "lax"
+                },
+                {
+                  "name": "Strict",
+                  "value": "strict"
+                },
+                {
+                  "name": "Very Strict",
+                  "value": "very_strict"
+                }
+              ],
+              "required": true
+            },
+            "template": {
+              "display_name": "Horizontal Dropdown",
+              "form_info": "Compact dropdown element",
+              "filters": [
+                "Template/template_builder",
+                "Template/template_builder/**"
+              ],
+              "expandable": false,
+              "key": "simple_input",
+              "categories": [
+                "Selection"
+              ],
+              "schema": [
+                {
+                  "key": "_short_name",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Label",
+                    "placeholder": "The label displayed next to the input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "key",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Key",
+                    "pattern": "[a-zA-Z0-9_]+",
+                    "placeholder": "The key for this input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "required",
+                  "type": "horizontalCheckbox",
+                  "templateOptions": {
+                    "label": "Is this element required?"
+                  }
+                },
+                {
+                  "className": "section-label",
+                  "template": "<hr /><div><strong>Dropdown Elements:</strong></div>"
+                },
+                {
+                  "templateOptions": {
+                    "btnText": "Add",
+                    "fields": [
+                      {
+                        "templateOptions": {
+                          "required": true,
+                          "label": "Name",
+                          "placeholder": "The display name associated with the dropdown value"
+                        },
+                        "key": "name",
+                        "type": "horizontalInput"
+                      },
+                      {
+                        "templateOptions": {
+                          "required": true,
+                          "pattern": "[a-zA-Z0-9_]+",
+                          "label": "Value",
+                          "placeholder": "The key for the selected dropdown element"
+                        },
+                        "key": "value",
+                        "type": "horizontalInput"
+                      }
+                    ]
+                  },
+                  "type": "repeatSection",
+                  "key": "options"
+                }
+              ],
+              "default_model": {
+                "type": "horizontalSelect",
+                "key": "TODO_KEY"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.type = template.element.form_model.type; \n  obj.key = template.element.form_model.key;\n  obj.templateOptions.required = (true === template.element.form_model.required);\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.options = template.element.form_model.options;\n  curr_obj.schema.push(obj)\n}"
               },
               "post_building_function": {
                 "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
