@@ -43,6 +43,15 @@
 			  </div>
 
        		 <div class="modal-footer aleph2_form_modal">
+				<!-- Can't get this working x2 1) button disappears (http://jsfiddle.net/yu10ezkk/1/) 2) need to put the explanation in the controller 
+				<div class="pull-left layer-mask" tooltip="template_update_explanation" tooltip-placement="top">
+					<div class="layer"></div>
+     		     	<button class="btn btn-danger" ng-disabled="!latest_template" ng-click="controller.updateTemplate()">Update Template</button>
+				</div>
+				-->
+     		     <button class="btn btn-danger pull-left" ng-disabled="!latest_template" ng-click="controller.updateTemplate()"
+					tooltip="System template is different to this. Press this button to discard changes, update, and close (WARNING: may cause the bucket to stop working)" tooltip-placement="top"
+					>Update Template</button>
      		     <button type="submit" class="btn btn-primary" ng-disabled="controller.form.$invalid" >OK</button>
      		     <button class="btn btn-warning" ng-click="controller.cancel()">Cancel</button>
        		 </div>
