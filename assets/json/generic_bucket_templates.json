@@ -1191,13 +1191,10 @@
   {
     "display_name": "Logging Schema",
     "form_info": "Contains defaults and overrides for logging output settings",
-    "expandable": true,
+    "expandable": false,
     "key": "logging_schema",
     "categories": [
       "Schema"
-    ],
-    "child_filters": [
-         "data_service_schema"
     ],
     "filters": [
       "Bucket/**"
@@ -1322,7 +1319,7 @@
       }
     ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n  return logging_schema;\n }"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -1341,6 +1338,7 @@
       "Metadata"
     ],
     "child_filters": [
+      "data_service_schema",
       "logging_schema"
     ],
     "filters": [
