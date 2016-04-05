@@ -37,7 +37,7 @@
       "js": "function(args) {\n  \n}"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.key = template.element.short_name;\n  curr_obj.global_function = { '$fn': template.element.form_model.js };\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = {};\n  obj.key = template.element.short_name;\n  obj.global_function = { '$fn': template.element.form_model.js };\n  curr_obj.push(obj);\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
