@@ -977,6 +977,42 @@
     }
   },
   {
+    "display_name": "Raw JSON Graph Schema",
+    "form_info": "For advanced users: create an empty graph schema JSON object that can be Raw JSON to provide the desired functionality",
+    "expandable": true,
+    "key": "data_service_schema",
+    "categories": [
+      "Schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "child_filters": [
+      "enrichment_meta"
+    ],
+    "schema": [
+      {
+        "key": "schema",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Graph Schema JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.graph_schema = JSON.parse(template.element.form_model.schema || '{}'); \n  curr_obj.graph_schema.custom_configs = []; \n  return curr_obj.graph_schema.custom_configs; \n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n   curr_obj.graph_schema.custom_decomposition_configs = curr_obj.graph_schema.custom_decomposition_configs || [];\n   curr_obj.graph_schema.custom_merge_configs = curr_obj.graph_schema.custom_merge_configs || [];\n  for (var x in curr_obj.graph_schema.custom_configs) {\n    var el = curr_obj.graph_schema.custom_configs[x];\n    if (null != el.name) {\n      if (el.name.startsWith(\"merge\")) {\n        curr_obj.graph_schema.custom_merge_configs.push(el);\n      }\n      if (el.name.startsWith(\"decomp\")) {\n        curr_obj.graph_schema.custom_decomposition_configs.push(el);\n      }\n    }\n  }\n  delete curr_obj.graph_schema.custom_configs;\n}"
+    }
+  },
+  {
     "display_name": "Raw JSON Columnar Schema",
     "form_info": "For advanced users: create an empty columnar schema JSON object that can be Raw JSON to provide the desired functionality\n",
     "expandable": false,
@@ -1012,7 +1048,7 @@
   {
     "display_name": "Raw JSON Storage Schema",
     "form_info": "For advanced users: create an empty storage schema JSON object that can be Raw JSON to provide the desired functionality\n",
-    "expandable": true,
+    "expandable": false,
     "key": "data_service_schema",
     "categories": [
       "Schema"
@@ -1037,6 +1073,39 @@
     ],
     "building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.storage_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.storage_schema; }"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    }
+  },
+  {
+    "display_name": "Raw JSON Data Warehouse Schema",
+    "form_info": "For advanced users: create an empty data warehouse schema JSON object that can be Raw JSON to provide the desired functionality",
+    "expandable": false,
+    "key": "data_service_schema",
+    "categories": [
+      "Schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "schema": [
+      {
+        "key": "schema",
+        "type": "code_input",
+        "defaultValue": "{\n}",
+        "templateOptions": {
+          "label": "Data Warehouse Schema JSON",
+          "codemirror": {
+            "lineNumbers": true,
+            "smartIndent": true,
+            "mode": "javascript"
+          }
+        }
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { curr_obj.data_warehouse_schema = JSON.parse(template.element.form_model.schema || '{}'); return curr_obj.storage_schema; }"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -1092,6 +1161,28 @@
         "key": "deduplication_policy"
       },
       {
+        "templateOptions": {
+          "required": true,
+          "label": "Custom Policy",
+          "options": [
+            {
+              "name": "Lax",
+              "value": "lax"
+            },
+            {
+              "name": "Strict",
+              "value": "strict"
+            },
+            {
+              "name": "Very Strict",
+              "value": "very_strict"
+            }
+          ]
+        },
+        "type": "horizontalSelect",
+        "key": "custom_policy"
+      },
+      {
         "type": "multiInput",
         "templateOptions": {
           "inputOptions": {
@@ -1126,6 +1217,14 @@
         "key": "custom_finalize_all_objects"
       },
       {
+        "templateOptions": {
+          "label": "Delete unhandled duplicates?",
+          "placeholder": "If true (default: false unless \"custom policy\" is \"very strict\") then all existing duplicates that are not explicitly re-emitted are deleted. In non-custom mode, this ensures that only one object per set of deduplication fields is retained."
+        },
+        "type": "checkbox",
+        "key": "delete_unhandled_duplicates"
+      },
+      {
         "key": "technology_override_schema",
         "type": "code_input",
         "templateOptions": {
@@ -1141,6 +1240,7 @@
     "default_model": {
       "deduplication_timing": "custom",
       "deduplication_policy": "leave",
+      "custom_policy": "strict",
       "deduplication_fields": [],
       "deduplication_contexts": [],
       "custom_deduplication_configs": [],
@@ -1148,7 +1248,7 @@
       "technology_override_schema": "{\n\t\n}"
     },
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  curr_obj.document_schema = {};\n  curr_obj.document_schema.enabled = true;\n  curr_obj.document_schema.deduplication_timing = template.element.form_model.deduplication_timing;\n  curr_obj.document_schema.deduplication_policy = template.element.form_model.deduplication_policy;\n  curr_obj.document_schema.custom_policy = template.element.form_model.custom_policy;\n  curr_obj.document_schema.deduplication_fields = template.element.form_model.deduplication_fields;\n  curr_obj.document_schema.deduplication_contexts = template.element.form_model.deduplication_contexts;\n  curr_obj.document_schema.custom_deduplication_configs = [];\n  curr_obj.document_schema.custom_finalize_all_objects = template.element.form_model.custom_finalize_all_objects;\n  curr_obj.document_schema.delete_unhandled_duplicates = template.element.form_model.delete_unhandled_duplicates;\n  curr_obj.document_schema.technology_override_schema = JSON.parse(template.element.form_model.technology_override_schema);\n  return curr_obj.document_schema.custom_deduplication_configs;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
@@ -1241,7 +1341,6 @@
       "Metadata"
     ],
     "child_filters": [
-      "data_service_schema",
       "logging_schema"
     ],
     "filters": [
@@ -1258,10 +1357,13 @@
   {
     "display_name": "Logging Schema",
     "form_info": "Contains defaults and overrides for logging output settings",
-    "expandable": false,
+    "expandable": true,
     "key": "logging_schema",
     "categories": [
       "Schema"
+    ],
+    "child_filters": [
+      "data_service_schema"
     ],
     "filters": [
       "Bucket/**"
@@ -1386,7 +1488,7 @@
       }
     ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var logging_schema = {};\n  logging_schema.enabled = template.element.form_model.enabled;\n  logging_schema.log_level = template.element.form_model.log_level;\n  var overrides_map = {};\n  var ll_overrides = template.element.form_model.ll_overrides;\n  for ( var x in ll_overrides ) {\n    var ll_override = ll_overrides[x];\n    overrides_map[ll_override.service_name] = ll_override.service_level;\n  }\n  logging_schema.log_level_overrides = overrides_map;\n  curr_obj.logging_schema = logging_schema;\n return logging_schema;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
