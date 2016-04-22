@@ -1281,13 +1281,44 @@
         },
         "key": "_short_name",
         "type": "horizontalInput"
+      },
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "input",
+            "templateOptions": {
+              "placeholder": "A list of enrichment jobs/inputs that must be completed before this one is run (\"$previous\" to follow on from the last, [] to listen for all inputs)"
+            }
+          },
+          "label": "Dependencies"
+        },
+        "key": "dependencies"
+      },
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "input",
+            "templateOptions": {
+              "placeholder": "The incoming input from this jobs dependencies is grouped according to these fields (\"?\" for code-generated)"
+            }
+          },
+          "label": "Grouping Fields"
+        },
+        "key": "grouping_fields"
       }
     ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.DeduplicationService\",\n    config: {}\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.DeduplicationService\",\n    config: {},\n    grouping_fields: template.element.form_model.grouping_fields,\n    dependencies:  template.element.form_model.dependencies\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n  var obj_to_mod;\n  if (Array.isArray(curr_obj)) {\n    obj_to_mod = curr_obj[curr_obj.length - 1];\n  }\n  else if (curr_obj.config) { \n    if (curr_obj.config.enrich_pipeline) {\n\t    obj_to_mod = curr_obj.config.enrich_pipeline[curr_obj.config.enrich_pipeline.length - 1];      \n  \t}\n  \telse obj_to_mod = curr_obj.config; \n  } \n  else obj_to_mod = curr_obj;\n  \n  obj_to_mod.config.doc_schema_override = obj_to_mod.document_schema;\n  obj_to_mod.document_schema = undefined;\n}"
+    },
+    "default_model": {
+      "dependencies": [
+        "$previous"
+      ]
     }
   },
   {
@@ -1333,6 +1364,73 @@
     }
   },
   {
+    "display_name": "Passthrough Service",
+    "form_info": "An enrichment engine that just passes elements directly through",
+    "expandable": false,
+    "child_filters": [
+      "document_schema"
+    ],
+    "filters": [
+      "Bucket/**"
+    ],
+    "categories": [
+      "Generic"
+    ],
+    "key": "enrichment_meta",
+    "sub_keys": [
+      "batch_enrichment_meta"
+    ],
+    "schema": [
+      {
+        "templateOptions": {
+          "required": true,
+          "pattern": "[a-zA-Z0-9_]+",
+          "label": "Unique Element Name",
+          "placeholder": "A Short Name For This Enrichment Element (Alphanumeric/_ only, no spaces - used for dependencies etc)"
+        },
+        "key": "_short_name",
+        "type": "horizontalInput"
+      },
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "input",
+            "templateOptions": {
+              "placeholder": "A list of enrichment jobs/inputs that must be completed before this one is run (\"$previous\" to follow on from the last, [] to listen for all inputs)"
+            }
+          },
+          "label": "Dependencies"
+        },
+        "key": "dependencies"
+      },
+      {
+        "type": "multiInput",
+        "templateOptions": {
+          "inputOptions": {
+            "type": "input",
+            "templateOptions": {
+              "placeholder": "The incoming input from this jobs dependencies is grouped according to these fields (\"?\" for code-generated)"
+            }
+          },
+          "label": "Grouping Fields"
+        },
+        "key": "grouping_fields"
+      }
+    ],
+    "building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.PassthroughService\",\n    config: {},\n    grouping_fields: template.element.form_model.grouping_fields,\n    dependencies:  template.element.form_model.dependencies\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}"
+    },
+    "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n}"
+    },
+    "default_model": {
+      "dependencies": [
+        "$previous"
+      ]
+    }
+  },
+  {
     "display_name": "Management Schema",
     "form_info": "General Management Schema",
     "expandable": true,
@@ -1369,14 +1467,6 @@
       "Bucket/**"
     ],
     "schema": [
-      {
-        "templateOptions": {
-          "label": "Enabled",
-          "placeholder": ""
-        },
-        "type": "horizontalCheckbox",
-        "key": "enabled"
-      },
       {
         "templateOptions": {
           "required": true,
@@ -1495,7 +1585,7 @@
     },
     "default_model": {
       "enabled": "true",
-      "log_level": "ERROR"
+      "log_level": "INFO"
     }
   }
 ]
