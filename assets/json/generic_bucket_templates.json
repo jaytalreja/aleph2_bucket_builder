@@ -1424,10 +1424,22 @@
           "label": "Grouping Fields"
         },
         "key": "grouping_fields"
+      },
+      {
+        "template": "<hr/>"
+      },
+      {
+        "templateOptions": {
+          "required": false,
+          "label": "Output mode",
+          "placeholder": "Default (\"\"/\"$$internal\") is emit to next bucket, \"$$stop\" to discard, bucket path to external emit, or $<field> to take option from object <field>"
+        },
+        "key": "output",
+        "type": "input"
       }
     ],
     "building_function": {
-      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.PassthroughService\",\n    config: {},\n    grouping_fields: template.element.form_model.grouping_fields,\n    dependencies:  template.element.form_model.dependencies\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}"
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.PassthroughService\",\n    config: {\n      output: template.element.form_model.output\n    },\n    grouping_fields: template.element.form_model.grouping_fields,\n    dependencies:  template.element.form_model.dependencies\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}"
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n}"

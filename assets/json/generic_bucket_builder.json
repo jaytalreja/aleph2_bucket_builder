@@ -2606,7 +2606,7 @@
             "configurable": true,
             "deletable": true,
             "form_model": {
-              "json": "[{\"key\":\"_short_name\",\"type\":\"horizontalInput\",\"templateOptions\":{\"label\":\"Unique Job Name\",\"pattern\":\"[a-zA-Z0-9_]+\",\"placeholder\":\"A Short Name For This Element (Alphanumeric/_ only, no spaces - used for dependencies etc)\",\"required\":true}}]"
+              "json": "[{\n  \"key\":\"_short_name\",\n  \"type\":\"horizontalInput\",\n  \"templateOptions\":\n  {\n    \"label\":\"Unique Job Name\",\"pattern\":\"[a-zA-Z0-9_]+\",\"placeholder\":\"A Short Name For This Element (Alphanumeric/_ only, no spaces - used for dependencies etc)\",\"required\":true}}]"
             },
             "template": {
               "display_name": "Raw Form JSON",
@@ -10774,7 +10774,7 @@
             "configurable": true,
             "deletable": true,
             "form_model": {
-              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.PassthroughService\",\n    config: {},\n    grouping_fields: template.element.form_model.grouping_fields,\n    dependencies:  template.element.form_model.dependencies\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}",
+              "pre_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { \n    name: template.element.short_name,\n    entry_point: \"com.ikanow.aleph2.analytics.services.PassthroughService\",\n    config: {\n      output: template.element.form_model.output\n    },\n    grouping_fields: template.element.form_model.grouping_fields,\n    dependencies:  template.element.form_model.dependencies\n  };\n  a2_inject_enrichment(curr_obj, obj);\n  return obj;\n}",
               "post_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n}"
             },
             "template": {
@@ -11084,7 +11084,7 @@
             "enabled": true,
             "short_name": "Raw Default Values",
             "summary": "",
-            "row": 1,
+            "row": 2,
             "col": 0,
             "sizeX": 1,
             "sizeY": 1,
@@ -11124,6 +11124,139 @@
               },
               "building_function": {
                 "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n curr_obj.default_model = eval('(' + template.element.form_model.json + ')'); \n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "Horizontal Line",
+          "element": {
+            "enabled": true,
+            "short_name": "Horizontal Line",
+            "summary": "",
+            "row": 1,
+            "col": 1,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "html": "<hr/>"
+            },
+            "template": {
+              "display_name": "Horizontal Line",
+              "form_info": "Insert horizontal line",
+              "filters": [
+                "Template/template_builder",
+                "Template/template_builder/**"
+              ],
+              "expandable": false,
+              "key": "template_element",
+              "categories": [
+                "Layout"
+              ],
+              "schema": [],
+              "default_model": {
+                "html": "<hr/>"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n curr_obj.schema.push({template: template.element.form_model.html}); \n}"
+              },
+              "post_building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+              }
+            }
+          },
+          "children": []
+        },
+        {
+          "root": false,
+          "label": "2-Line Input",
+          "element": {
+            "enabled": true,
+            "short_name": "Output mode",
+            "summary": "Default (\"\"/\"$$internal\") is emit to next bucket, \"$$stop\" to discard, bucket path to external emit, or $<field> to take option from object <field>",
+            "row": 1,
+            "col": 2,
+            "sizeX": 1,
+            "sizeY": 1,
+            "expandable": false,
+            "configurable": true,
+            "deletable": true,
+            "form_model": {
+              "type": "input",
+              "key": "output"
+            },
+            "template": {
+              "display_name": "2-Line Input",
+              "form_info": "Text input element with label on the line above",
+              "filters": [
+                "Template/template_builder",
+                "Template/template_builder/**"
+              ],
+              "expandable": false,
+              "key": "simple_input",
+              "categories": [
+                "Text"
+              ],
+              "schema": [
+                {
+                  "key": "_short_name",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Label",
+                    "placeholder": "The label displayed next to the input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "_summary",
+                  "type": "horizontalTextArea",
+                  "templateOptions": {
+                    "label": "Placeholder",
+                    "placeholder": "The placeholder text displayed when the input is empty",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "key",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Key",
+                    "pattern": "[a-zA-Z0-9_]+",
+                    "placeholder": "The key for this input",
+                    "required": true
+                  }
+                },
+                {
+                  "key": "required",
+                  "type": "horizontalCheckbox",
+                  "templateOptions": {
+                    "label": "Is this element required?"
+                  }
+                },
+                {
+                  "key": "pattern",
+                  "type": "horizontalInput",
+                  "templateOptions": {
+                    "label": "Pattern",
+                    "placeholder": "Optional validation regular expression",
+                    "required": false
+                  }
+                }
+              ],
+              "default_model": {
+                "type": "input",
+                "key": "TODO_KEY"
+              },
+              "building_function": {
+                "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var obj = { templateOptions: {} };\n  obj.key = template.element.form_model.key;\n  obj.type = template.element.form_model.type;   \n  obj.templateOptions.required = (true === template.element.form_model.required);\n  if ((template.element.form_model.pattern || '').length > 0) {\n    obj.templateOptions.pattern = template.element.form_model.pattern;\n  }\n  obj.templateOptions.label = template.element.short_name;\n  obj.templateOptions.placeholder = template.element.summary;\n  curr_obj.schema.push(obj)\n}"
               },
               "post_building_function": {
                 "_fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
