@@ -12,6 +12,12 @@
     }
   },
   {
+    "key": "a2_must_edit",
+    "global_function": {
+      "$fn": "function(template, errors) {\n  if (template.element.form_errors && (0 == template.element.form_errors.length)) {\n    errors.push(\"Must open this form and replace default fields\");\n  }\n}"
+    }
+  },
+  {
     "display_name": "Batch Enrichment Pipeline",
     "form_info": "<p>This is a container for a batch enrichment pipeline that will transform incoming objects before writing them into the bucket output.</p>\n<p>It has no attributes of its own - instead expand it using the <a class=\"glyphicon glyphicon-fullscreen\"></a> icon\n and then add the desired attributes from those available.\n</p>\n",
     "expandable": true,
@@ -181,6 +187,12 @@
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  curr_obj.full_name = template.element.form_model.full_name;\n    \tvar pf = template.element.form_model.poll_frequency; \n  curr_obj.poll_frequency = (pf || '').length > 0 ? pf : undefined; \t\tif (template.element.form_model.requested_num_objects) { curr_obj.test_params = {};\n\t\tvar doc = curr_obj.test_params;\n\t\tdoc.requested_num_objects = parseInt(template.element.form_model.requested_num_objects);\n\t\tdoc.max_startup_time_secs = parseInt(template.element.form_model.max_startup_time_secs);\n\t\tdoc.max_run_time_secs = parseInt(template.element.form_model.max_run_time_secs);\n\t\tif ((template.element.form_model.max_storage_time_secs || '').length > 0) doc.max_storage_time_secs = parseInt(template.element.form_model.max_storage_time_secs);\n\t\tdoc.overwrite_existing_data = template.element.form_model.overwrite_existing_data; }\n\n}"
     },
     "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n}"
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
@@ -302,6 +314,12 @@
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n   curr_obj.harvest_technology_name_or_id = template.element.form_model.harvest_technology_name_or_id; \n  curr_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n\t  curr_obj.multi_node_enabled = template.element.form_model.multi_node_enabled;\n  curr_obj.lock_to_nodes = template.element.form_model.lock_to_nodes;\n  curr_obj.harvest_configs = [\n    {\n      module_name_or_id: template.element.form_model.module_name_or_id, \n      library_names_or_ids: template.element.form_model.library_names_or_ids,\n      entry_point: template.element.form_model.entry_point, \n      config: JSON.parse(template.element.form_model.config || '{}') \n    }]; \n}"
     },
     "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
@@ -459,6 +477,12 @@
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
   {
@@ -556,6 +580,12 @@
     },
     "post_building_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  var lib_map = {}; var curr_job = curr_obj.jobs[curr_obj.jobs.length-1]; \n  for ( var e in curr_job.config.enrich_pipeline ) { \n    if (curr_job.config.enrich_pipeline[e].module_name_or_id) {\n      lib_map[curr_job.config.enrich_pipeline[e].module_name_or_id] = true;\n    }\n    for ( l in curr_job.config.enrich_pipeline[e].library_names_or_ids ) { \n      lib_map[curr_job.config.enrich_pipeline[e].library_names_or_ids[l]] = true;\n    }\n  } \n  curr_job.library_names_or_ids = [];\n  var libs = (template.element.form_model.library_names_or_ids || []); \n  for (var kk in libs) curr_job.library_names_or_ids.push(libs[kk]); \n  for (var k in lib_map) curr_job.library_names_or_ids.push(k); \n}"
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
   {
@@ -771,6 +801,12 @@
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) { \n  var new_obj = { inputs: [] };\n  new_obj.name = template.element.short_name; new_obj.analytic_type = 'streaming'; \n  \tnew_obj.analytic_technology_name_or_id = 'StreamingEnrichmentService'; \n  new_obj.module_name_or_id = template.element.form_model.module_name_or_id; \n  new_obj.library_names_or_ids = template.element.form_model.library_names_or_ids; \n  new_obj.node_list_rules = a2_optional_array_from_csv(template.element.form_model.node_list_rules);\n  new_obj.config = { }; \n  curr_obj.jobs.push(new_obj);\n  return new_obj;\n}"
     },
     "post_building_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
       "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
@@ -1327,6 +1363,12 @@
       "dependencies": [
         "$previous"
       ]
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
   {
@@ -1448,6 +1490,12 @@
       "dependencies": [
         "$previous"
       ]
+    },
+    "validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n    a2_must_edit(template, errs);\n}"
+    },
+    "post_validation_function": {
+      "$fn": "function(errs, template, curr_obj, all_templates, root_obj, hierarchy, rows, cols) {\n  \n}"
     }
   },
   {
