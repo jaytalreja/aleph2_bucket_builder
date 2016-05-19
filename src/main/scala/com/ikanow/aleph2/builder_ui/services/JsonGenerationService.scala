@@ -62,7 +62,7 @@ class JsonGenerationService(global_io_service: GlobalInputOutputService) {
     
     curr_errors.clear()
     ElementTreeBuilder.generateOutput(root, root, start_obj_curr, start_obj_root, List(), List(), List(), curr_errors)
-
+    
     global_io_service.setGeneratedOutputStr(JSON.stringify(start_obj_root))
     global_io_service.setErrors(curr_errors.map { t2 => t2._1 }.toJSArray)
   }

@@ -64,9 +64,10 @@ class FormBuilderController(
 			"label": "Short Name",
 			"placeholder": "A Short Name For This Element",
 			"required": true
-		}
-		}
-		"""
+		},
+    "validation": { "show": true }
+	}
+	"""
 
   val summary_schema = """
   {
@@ -76,9 +77,10 @@ class FormBuilderController(
 			"label": "Summary",
 			"placeholder": "A Short Summary Of This Element's Function",
 			"required": false
-		}
-		}
-		"""
+		},
+    "validation": { "show": true }
+	}
+	"""
   
   val line_separator = """
     {
@@ -104,11 +106,12 @@ class FormBuilderController(
          .map { x => x.asInstanceOf[js.Array[js.Any]] }
          .getOrElse(js.Array())
          .map { element => JSON.parse(JSON.stringify(element)).asInstanceOf[js.Dictionary[js.Any]] } // (deep copy)
+         .map { x => { x.put("validation", JSON.parse("""{"show": true}""")); x } } //(enforce validation at least for the top level fields)
          .groupBy { x => x.get("key").filter { name => name.equals("_short_name") || name.equals("_summary") }.getOrElse("") }
     
    fields.clear()
    fields.appendAll(
-       grouped_fields.getOrElse("", js.Array()).toList
+       grouped_fields.getOrElse("", js.Array()).toList                       
         )
 
     val this_short_name_schema = grouped_fields.get("_short_name").filter { short_name => !short_name.isEmpty }.map { short_name => short_name.pop }.getOrElse(JSON.parse(short_name_schema))      
@@ -166,7 +169,8 @@ class FormBuilderController(
   @JSExport
   def updateTemplate(): Unit = {
     node_to_edit.element.template = scope.latest_template
-    modal.close()
+    
+    cancel()
   }
   
   @JSExport
@@ -185,6 +189,9 @@ class FormBuilderController(
 
   @JSExport
   var fields: js.Array[js.Any] = js.Array()
+
+  @JSExport
+  var form: js.Dictionary[js.Any] = null;
     
   @JSExport
   def ok(): Unit = {    
@@ -205,12 +212,35 @@ class FormBuilderController(
       else
         curr_card_node.element.form_model.put(key, value) 
     }
+
+    // Disable this permanently
+    curr_card_node.element.form_errors = js.undefined
     
     modal.close() // (this will trigger JSON regen in the form builder)
   }  
   
   @JSExport
   def cancel(): Unit = {
+
+    //DEBUG
+    //println("???1 " + JSON.stringify(form.keySet.toString()));
+
+    // Docs lacking a bit here, but empirically, sub-fields of form that start with "formly_" correspond to input elements that can have a sub-field called "$error"
+    // If this sub-field is present it points to an object that can have { "required": true } or { "pattern": true }
+    // (ONLY DO THIS until OK has been successfully pressed once...)
+    val curr_card_node = node_to_edit
+    JsOption(curr_card_node.element.form_errors).foreach { errors => 
+      errors.clear()
+      errors.appendAll(
+        form
+          .filter { case (key, value) => key.startsWith("formly_") } //(this prefix ensures we're looking at the fields in the format)
+          .map { case (key, value) =>  (key, value.asInstanceOf[js.Dictionary[js.Dictionary[js.Any]]]) }
+          .map { case (key, value) => (key, value.get("$error")) }
+          .filter { case (key, maybe_error) => maybe_error.map { err => !err.isEmpty }.getOrElse(false) }
+          .map { case (key, definitely_error) => "Form field with name \"" + key + "\" has the following errors: " + definitely_error.get.keySet.mkString(",") }
+          .toSeq    
+          )
+    }        
     modal.close()
   }    
 }
@@ -232,7 +262,7 @@ trait FormBuilderScope extends Scope {
   
   var latest_template: ElementTemplateJs = js.native
   
-  var template_update_explanation: String = js.native
+  var template_update_explanation: String = js.native  
 }
 
 /** Configures the formly element

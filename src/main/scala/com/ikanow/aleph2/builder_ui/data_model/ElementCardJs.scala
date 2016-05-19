@@ -43,6 +43,7 @@ trait ElementCardJs extends js.Object {
   var summary: js.UndefOr[String] = js.native
   var template: ElementTemplateJs = js.native
   val form_model: js.Dictionary[js.Any] = js.native
+  var form_errors: js.UndefOr[js.Array[String]] = js.native
 }
 
 object ElementCardJs {
@@ -51,6 +52,7 @@ object ElementCardJs {
     js.Dynamic.literal(enabled = copy.enabled, short_name = copy.short_name, summary = copy.summary, row = copy.row, col = copy.col, sizeX = copy.sizeX, sizeY = copy.sizeY, 
                         expandable = copy.expandable, configurable = copy.configurable, deletable = copy.deletable,
                         form_model = JSON.parse(JSON.stringify(copy.form_model)), // extra deep!
+                        form_errors = js.Array(),
                         template = copy.template
                         )
       .asInstanceOf[ElementCardJs]    
@@ -62,6 +64,7 @@ object ElementCardJs {
                         form_model = JsOption(template.default_model)
                                       .map { x => JSON.parse(JSON.stringify(x)) }
                                       .getOrElse(js.Dynamic.literal().asInstanceOf[js.Dictionary[js.Any]]),
+                        form_errors = js.Array(),
                         template = template
                         )
       .asInstanceOf[ElementCardJs]

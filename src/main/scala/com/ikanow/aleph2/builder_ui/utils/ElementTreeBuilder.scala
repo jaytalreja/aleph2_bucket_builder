@@ -303,7 +303,13 @@ object ElementTreeBuilder {
 
           val retval = fn.apply(tmp_errs, curr_node, curr_obj, full_builder, full_json, hierarchy.toJSArray, rows.toJSArray, cols.toJSArray)
           
-          errs ++= tmp_errs.map { err => (err,  curr_node) }
+          // First off any static form validation 
+          
+          errs ++= JsOption(curr_node.element.form_errors).map(_.toSeq).getOrElse(Seq.empty).map { err => (err,  curr_node) }
+          
+          // Then user generated validation
+          
+          errs ++= tmp_errs.map { err => (err,  curr_node) }          
           
           retval
         }}
