@@ -31,7 +31,7 @@ libraryDependencies += "com.lihaoyi" %%% "scalatags" % "0.5.3"
 resolvers +=
   "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-libraryDependencies += "com.greencatsoft" %%% "scalajs-angular" % "0.7-SNAPSHOT"
+libraryDependencies += "com.greencatsoft" %%% "scalajs-angular" % "0.8-SNAPSHOT"
 
 // Angular:
 
